@@ -1,0 +1,67 @@
+[
+{
+    "model": "main.category",
+    "pk": 1,
+    "fields": {
+        "name": "Arts"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 2,
+    "fields": {
+        "name": "Career"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 3,
+    "fields": {
+        "name": "Food"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 4,
+    "fields": {
+        "name": "Life skills"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 5,
+    "fields": {
+        "name": "Language"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 6,
+    "fields": {
+        "name": "Local knowledge"
+    }
+},
+{
+    "model": "main.category",
+    "pk": 7,
+    "fields": {
+        "name": "Sports"
+    }
+},
+{
+    "model": "main.subcategory",
+    "pk": 1,
+    "fields": {
+        "name": "English",
+        "category": 5
+    }
+},
+{
+    "model": "main.subcategory",
+    "pk": 2,
+    "fields": {
+        "name": "Spanish",
+        "category": 5
+    }
+}
+]

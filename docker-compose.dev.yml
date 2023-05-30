@@ -1,0 +1,26 @@
+version: '3.2'
+services:
+    web:
+        build:
+            context: .
+        restart: unless-stopped
+        external_links:
+            - postgres
+        ports:
+            - "8001:8001"
+        command: "/usr/local/bin/gunicorn teachbeach.wsgi:application -w 3 -b :8001"
+        volumes:
+            - .:/home/docker/code
+            - type: bind
+              source: ${IMAGE_DIR}
+              target: /home/docker/code/media/uploads
+        env_file:
+            - .env
+        # environment:
+        #     - DJANGO_SETTINGS_MODULE=local_settings
+        container_name: teachbeach_web_dev
+
+networks:
+  default:
+    external:
+      name: teachbeach_default

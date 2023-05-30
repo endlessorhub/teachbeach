@@ -1,0 +1,115 @@
+{% load staticfiles %}<!DOCTYPE html>
+
+<html lang="en" data-hash="{{ hash|safe }}">
+    <!--[if IE 9 ]><html class="ie9"><![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Teach Beach</title>
+
+        <!-- Favicons -->
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static "img/favicon/apple-touch-icon.png" %}">
+        <link rel="icon" type="image/png" href="{% static "" %}img/favicon/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="{% static "" %}img/favicon/favicon-16x16.png" sizes="16x16">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+        <!--[if (lt IE 9)]><script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.helper.ie8.js"></script><![endif]-->
+        <link rel="shortcut icon" href="{% static "" %}img/favicon/favicon.ico">
+        <script async type="text/javascript" src="https://js.stripe.com/v3/"></script>
+        {% if paypal_client %}<script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client }}"></script>{% endif %}
+        <meta name="theme-color" content="#FFFFFF">
+        <% for (var css in htmlWebpackPlugin.files.css) { %>
+          <link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
+        <% } %>
+        <!-- Hotjar Tracking Code for teachbeach.com -->
+        <script>
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:1470118,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        </script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-166291288-1"></script>
+<script id="gapi" async defer></script>
+<script>
+    (function (w, d, src) {
+        window.gapiLoaded = new Promise(function (resolve, reject) {
+            const el = d.getElementById("gapi");
+            el.onload = function () {
+                resolve(true)
+            }
+            el.onreadystatechange = function () {
+                if (this.readyState === 'complete') resolve(true)
+            }
+            el.async = 1;
+            el.defer = 1;
+            el.src = src;
+        });
+    })(window, document, "https://apis.google.com/js/api.js")
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-166291288-1');
+  gtag('config', 'AW-964524864');
+</script>
+
+        <!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+ fbq('init', '311040299877659');
+fbq('track', 'PageView');
+</script>
+<noscript>
+ <img height="1" width="1"
+src="https://www.facebook.com/tr?id=311040299877659&ev=PageView
+&noscript=1"/>
+</noscript>
+        <!-- End Facebook Pixel Code -->
+    </head>
+
+    <body id="body">
+{{ metatags|json_script:"metatags" }}
+
+<script>window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+  return t;
+}(document, "script", "twitter-wjs"));</script>
+
+        <div
+            id="app"
+            data-media-url="{{ media_url|safe }}"
+            data-password-reset="{{ password_reset }}"
+            data-uidb64="{{ uidb64 }}"
+            data-token="{{ token }}"
+            data-stripe-key="{{ stripe_key }}"
+        >
+            <div style="color: black; line-height: 1.5; margin: 0; padding: 10px; font-weight: normal; text-align: center;font-size: 24px;font-family: 'Avenir', Helvetica, Arial, sans-serif">Loading...</div>
+        </div>
+
+    </body>
+</html>

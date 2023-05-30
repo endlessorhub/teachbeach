@@ -1,0 +1,258 @@
+// main container that contain two sub containers.
+
+body{
+	font-family: 'poppins';
+}
+
+.Discussion-divider{
+	// border: 1px solid red;
+	width: 1210px;
+	max-width: 80%;
+	padding: 1rem;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+
+.ModuleContainer{
+	width: 252px;
+	height: 985px;
+	background: #FFFFFF;
+	display: flex;
+	flex-direction: column;
+	padding-top: 1rem;
+	border-radius: 10px;
+
+	h2{
+		font-family: 'poppins';
+		font-weight: 500;
+		font-size: 12px;
+		line-height: 18px;
+		margin-bottom: 0px;
+	}
+
+}
+
+
+.ChatContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	font-family: 'poppins';
+	max-width: 100%;
+	align-items: flex-start;
+	justify-content: flex-start;
+	// border: 1px solid;
+	h3 {
+		font-size: 20px;
+		font-style: 500;
+		text-align: left;
+		vertical-align: top;
+	}
+	.header-selection{
+		display: flex;
+		justify-content: space-between;
+		// border: 1px solid;
+		flex-direction: row;
+		width: 100%;
+	}
+	
+	.selector-options{
+		width: 40%;
+	}
+
+	.selector-options ul{
+		display: flex;
+		gap: 1rem;
+		
+	}
+	.selector-options ul li{
+		list-style-type: none;
+	}
+	// .selector-options ul li:hover{
+	// 	color: #434343;
+	// 	text-decoration: underline;
+	// 	text-decoration-thickness: 3px;
+	// 	text-underline-offset: 6px;
+	// 	cursor: pointer;
+	// }
+    span{
+        cursor: pointer;
+        color:#A8A8A8;
+    }
+    span:hover{
+        color: #757575;
+    }
+    .AboutBio-Person{
+        color: black;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 21px;
+    }
+    p{
+        font-size: 12px;
+        color: #5B5B5B;
+        font-weight: 400;
+        line-height: 19.44px;
+        margin-bottom: 14px;
+        margin-top: 3px;
+    }
+}
+.ChatContainer-WelcomeTab {
+	display: flex;
+	flex-direction: column;
+	height: auto;
+	width: 833px;
+	border-radius: 10px;
+	background: white;
+	padding-bottom: 0.3rem;
+}
+.WelcomeTab-h2 {
+	font-size: 36px;
+	font-weight: 600;
+	margin: auto 0;
+	padding: 1rem 0.6rem;
+	color: #000000;
+	font-family: 'poppins';
+}
+.ChatContainer-Divider {
+	width: 833px;
+	border: 1px solid #E6E6E6;
+}
+.ChatContainer-MessageBox {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	textarea {
+		height: 64px;
+		width: 761px;
+		outline: none;
+		background: white;
+		padding: 0 5px;
+		vertical-align: text-top;
+        font-size: 14px;
+        line-height: 22px;
+        resize: none;
+		overflow: hidden;
+	}
+}
+.ChatContainer-img-primary {
+	width: 43px;
+	height: 43px;
+	border-radius: 30px;
+}
+.ChatContainer-ChatGroup {
+	width: 833px;
+	background: #FFFFFF;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+    padding: 0.3rem 0;
+}
+.ChatGroup-RecieverContent {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	background: #FFFFFF;
+	// padding: 1rem 0;
+    padding-top: 5px;
+
+}
+.RecieverContent-image {
+	flex-basis: 11%;
+	height: 89px;
+	img {
+		width: 43px;
+		height: 43px;
+		border-radius: 20px;
+	}
+}
+.RecieverContent-about {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding-left: 0.5rem;
+}
+.RecieverContent-about-bio {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+    .AboutBio-MessageDate{
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 21.06px;
+    }
+}
+.RecieverContent-about-ShareLinks {
+	display: flex;
+	flex-direction: row;
+	gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    span{
+        font-size: 12px;
+    }
+
+}
+.ChatGroup-SenderContent {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	padding: 0.6rem 0;
+	margin-left: 8rem;
+	border: 1px solid #E6E6E6;
+	margin-right: 2rem;
+	background: #F6F6F6;
+    position: relative;
+}
+
+.SenderContent-AlignmentBar {
+    position: absolute;
+    top: -50px;
+    left: -75px;
+}
+
+.SenderContent-image {
+	flex-basis: 11%;
+	height: 89px;
+	img {
+		width: 30px;
+		height: 30px;
+		border-radius: 15px;
+	}
+}
+.SenderContent-about {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: flex-start;
+	padding-left: 0.5rem;
+}
+.SenderContent-about-bio {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+    .AboutBio-MessageDate{
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 21.06px;
+    }
+}
+.SenderContent-about-ShareLinks {
+	display: flex;
+	flex-direction: row;
+	gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+
+    span{
+        font-size: 12px;
+    }
+}
+.ChatContainer svg {
+	cursor: pointer;
+}
