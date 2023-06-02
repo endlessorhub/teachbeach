@@ -131,7 +131,6 @@ uploads
 _app.*
 screenshots
 videos
-*.txt
 *.csv
 
 public
