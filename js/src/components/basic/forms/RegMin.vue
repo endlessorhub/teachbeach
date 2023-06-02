@@ -75,22 +75,27 @@
           @blur="$v.password.$touch()"
       ></v-text-field>
     <v-btn @click="submitLogin" class="platform-aqua" :loading="isLoading" :disabled="isLoading">Login</v-btn>
+    <!-- facebook and google login     -->
+    <social-auth @loggedIn="socialAuthLogin"/>
   </form>
 </template>
-
 <script>
+import SocialAuth from '../../SocialAuth.vue'
 import _ from 'lodash'
-
 import { validationMixin } from 'vuelidate'
 import { required, maxLength, email, sameAs, minLength } from 'vuelidate/lib/validators'
 import axios from 'axios'
 import Snack from '@/components/basic/Snack'
+import { initFbsdk } from '../../../mixins/facebook'
+import { initGoogleSDK } from '../../../mixins/google'
+
 
 export default {
     mixins: [validationMixin],
 
     components: {
         Snack,
+        SocialAuth
     },
 
     validations: {
@@ -138,7 +143,10 @@ export default {
             this.alerts = this.$store.state.learnerData.alerts
         }
         this.mode = this.initialView;
+        initFbsdk()
+        initGoogleSDK()
     },
+
 
     computed: {
         loginErrors() {
@@ -193,7 +201,7 @@ export default {
     watch: {
         initialView(v) {
             this.mode = v;
-        },
+        }, 
     },
 
     methods: {
@@ -311,6 +319,17 @@ export default {
             }).catch(e => {
                 console.log('final', e)
             })
+        },
+        socialAuthLogin(success) { 
+            // called when user is logged in on the backend with facebook or google
+            if (success) { 
+                //fetches thew data of the logged in user
+                axios.get('/api/init/').then((res) => { 
+                    this.$store.dispatch('setInitialdata', res)
+                    this.$emit('done')    
+                })
+                
+            }
         }
     }
 }

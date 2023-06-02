@@ -37,7 +37,7 @@ from main.views import (
     UploadStudents, MembershipView, ClassMembershipView, ClassTeacherView,
     StripeBuyMembershipView, MembershipByIdView, MembershipsListView, CompanyTeacherRequest, UpdateManagedStudent,
     StripeCancelMembershipView, CsvMembersExportView, TeacherCancelPrivateEnrollmentView,
-    VueEditorUploadFileView,
+    VueEditorUploadFileView, FacebookSignUp, GoogleSocialAuthView
 )
 from . import views
 from .sitemaps import (
@@ -82,6 +82,9 @@ sitemaps = {
 
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     path('admin/', admin.site.urls),
+    # path('social-auth/', include('social_django.urls', namespace='social')),
+    path('social/facebook/', csrf_exempt(FacebookSignUp.as_view()), name='facebook-auth'),
+    path('social/google/', csrf_exempt(GoogleSocialAuthView.as_view()), name='google-auth'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
     # Authentication
