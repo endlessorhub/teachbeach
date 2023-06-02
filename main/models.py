@@ -43,7 +43,7 @@ class User(AbstractUser):
     notes = models.TextField(null=True, blank=True)
     # text field requested for bulk upload
     notes2 = models.TextField(null=True, blank=True)
-
+    auth_provider = models.CharField(max_length=100, default='email')
     def __str__(self):
         name = ''
         if self.first_name:

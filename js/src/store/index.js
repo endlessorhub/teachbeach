@@ -8,6 +8,7 @@ import api from '@/lib/api'
 import viewingCompany from './modules/viewingCompany';
 import layout from './modules/layout'
 import companyService from '@/lib/services/company'
+import socialAuth from './modules/socialAuth'
 
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ export default new Vuex.Store({
         gapi,
         viewingCompany,
         layout,
+        socialAuth
     },
     state: {
         loginFormOpened: null, // object with login form params
@@ -363,5 +365,9 @@ export default new Vuex.Store({
         async logout() {
 
         },
+        async handShake() { 
+            const { data } = await axios.get('/api/handshake/')
+            return data.csrftoken
+        }
     }
 })
