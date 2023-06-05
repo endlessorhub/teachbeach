@@ -80,7 +80,7 @@ sitemaps = {
     'company': CompanySitemap,
 }
 
-urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
+urlpatterns = [
     path('admin/', admin.site.urls),
     # path('social-auth/', include('social_django.urls', namespace='social')),
     path('social/facebook/', csrf_exempt(FacebookSignUp.as_view()), name='facebook-auth'),
@@ -180,5 +180,8 @@ urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     url(r'^api/vue_editor_upload_file/', csrf_exempt(VueEditorUploadFileView.as_view())),
     url(r'^api/', include(router.urls)),
 
-    url(r'', views.AppView.as_view()),
+    path('', views.AppView.as_view()),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
