@@ -74,19 +74,38 @@
         <v-list-tile>
             <v-list-tile-title>Dashboard</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile to="/dashboard/learn/profile">
+        <v-list-tile
+          v-if="memberships && memberships.length > 1"
+        >
+          <v-select
+            :value="currentMembershipId"
+            :items="membershipOptions"
+            class="select__collab-design"
+            outline
+            @input="setCurrentMembershipId"
+          ></v-select>
+        </v-list-tile>
+        <v-list-tile
+          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
+          to="/dashboard/learn/profile"
+        >
             <v-list-tile-title>Profile</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile to="/dashboard/learn/classes">
+        <v-list-tile 
+          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
+          to="/dashboard/learn/classes"
+        >
             <v-list-tile-title>Activities</v-list-tile-title>
         </v-list-tile>
         
         <v-list-tile
+          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isChatEnabled"
           to="/dashboard/learn/chat-setup"
         >
           <v-list-tile-title>Chat Set-Up</v-list-tile-title>
         </v-list-tile>
         <v-list-tile
+        v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isDMEnabled"
           to="/dashboard/learn/chat-discussion"
         >
           <v-list-tile-title>Discussions</v-list-tile-title>
@@ -473,6 +492,9 @@ export default {
           'setIsLeftDrawerOpened',
           'setIsLeftDrawerMini',
         ]),
+        ...mapMutations('learnerMembership', [
+          'setCurrentMembershipId',
+        ]),
         ...mapActions('viewingCompany', [
             'sendCompanyTeacherRequest',
         ]),
@@ -750,6 +772,14 @@ export default {
             'isLeftDrawerOpened',
             'isLeftDrawerMini',
         ]),
+        ...mapGetters('learnerMembership', [
+            'currentMembership',
+            'currentMembershipSetting',
+        ]),
+        ...mapState('learnerMembership', [
+            'memberships',
+            'membershipSettings'
+        ]),
         ...mapState([
             'loginFormOpened',
             'isAuthChecked',
@@ -757,6 +787,12 @@ export default {
             'belongingCompanyProfile',
             'isLogoCompanyProfileChecked',
         ]),
+        membershipSettingsDict() {
+          return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({...acc, [v.id]: v}), {}) : {};
+        },
+        membershipOptions() {
+          return this.memberships ? this.memberships.map(v => ({value: v.id, text: this.membershipSettingsDict[v.membership].name})) : [];
+        },
         leftDrawerType() {
             if (this.$route.path.includes("/dashboard/teach")) return LEFT_DRAWER_TYPE.TEACH;
             return LEFT_DRAWER_TYPE.LEARN

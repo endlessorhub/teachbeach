@@ -14,6 +14,6 @@ export const initGoogleSDK = () => {
   })
 };
 
-export const GoogleClientId = () => { 
+export const GoogleClientId = () => {
   return process.env.GOOGLE_CLIENT_ID;
 }
