@@ -131,8 +131,9 @@ uploads
 _app.*
 screenshots
 videos
+*.txt
 *.csv
-work*
+
 public
 
 package-lock.json

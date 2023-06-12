@@ -54,8 +54,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'teachbeach',
     'main',
-
-    "corsheaders",
 ]
 
 AUTH_USER_MODEL = 'main.User'
@@ -63,7 +61,6 @@ AUTH_USER_MODEL = 'main.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -165,7 +162,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = 'static'
 
 
 REST_FRAMEWORK = {
@@ -192,15 +189,3 @@ TWILIO_SEND_FROM = '+14085836103'
 FULL_URL = os.environ.get('SITE_URL', 'http://localhost:8000')
 
 SITE_ID = 1
-
-SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get('SOCIAL_AUTH_FACEBOOK_KEY')
-SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get('SOCIAL_AUTH_FACEBOOK_SECRET')
-SOCIAL_AUTH_FACEBOOK_SCOPE = [ 'email' ]
-SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    "fields": "id, name, email"
-}
-
-GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRETS = os.environ.get('GOOGLE_CLIENT_SECRETS')
-
-CORS_ORIGIN_ALLOW_ALL = True

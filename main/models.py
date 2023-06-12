@@ -43,7 +43,7 @@ class User(AbstractUser):
     notes = models.TextField(null=True, blank=True)
     # text field requested for bulk upload
     notes2 = models.TextField(null=True, blank=True)
-    auth_provider = models.CharField(max_length=100, default='email')
+
     def __str__(self):
         name = ''
         if self.first_name:
@@ -661,15 +661,6 @@ class MembershipStudent(models.Model):
     is_active = models.BooleanField(default=True)
     invoices = JSONField(default=list)
     is_permanent = models.BooleanField(default=False)
-    title = models.TextField(null=True, blank=True)
-    city = models.TextField(null=True, blank=True)
-    document = models.TextField(null=True, blank=True)
-    social = models.TextField(null=True, blank=True)
-    website = models.TextField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-    level = models.TextField(null=True, blank=True)
-    skill = models.TextField(null=True, blank=True)
-    interest = models.TextField(null=True, blank=True)
 
     def update_subsciption_data(self):
         if self.is_permanent:

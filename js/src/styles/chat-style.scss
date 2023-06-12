@@ -7,11 +7,13 @@ body{
 .Discussion-divider{
 	// border: 1px solid red;
 	width: 1210px;
-	max-width: 80%;
+	// max-width: 80%;
 	padding: 1rem;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-evenly;
+	max-width: 100%;
+    margin: auto;
 }
 
 

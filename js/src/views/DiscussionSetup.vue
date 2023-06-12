@@ -175,7 +175,7 @@
 <script>
 
 export default {
-    name: 'TeacherChatSetup',
+    name: 'DiscsussionSetup',
     data() {
         return {
             activeItem: 'Community'
@@ -190,6 +190,7 @@ export default {
     }
 }
 </script>
+
 
 
 

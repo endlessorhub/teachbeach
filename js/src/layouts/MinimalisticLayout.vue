@@ -1,10 +1,8 @@
 <template>
   <v-app id="app">
     <v-navigation-drawer
-      v-if="isLoggedIn"
       :value="isLeftDrawerOpened"
       :mini-variant="isLeftDrawerMini"
-      :width="160"
       class="left-drawer"
       absolute
       clipped
@@ -13,105 +11,145 @@
       @update:mini-variant="(v) => setIsLeftDrawerMini(v)"
     >
       <v-list v-if="isTeacherLeftDrawer">
-        <v-list-tile>
+        <v-list-tile to="/dashboard/">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_dashboard</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Dashboard</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile to="/dashboard/teach/profile?main">
+        <v-list-tile to="/dashboard/teach/profile">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_collab</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Collab Set-up</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile to="/dashboard/teach/profile/teachers/">
-            <v-list-tile-title>Edit Hosts</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/membership-setup">
-            <v-list-tile-title>Memberships</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/membership-directory">
-            <v-list-tile-title>Directory</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/classes?activities">
+        <v-list-tile to="/dashboard/teach/classes">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_activities</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Activities</v-list-tile-title>
         </v-list-tile>
-        
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?events"
+        <v-list-group
+            prepend-icon="$vuetify.icons.cust_memberships"
+            value="true"
         >
-            <v-list-tile-title>Events</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?classes"
+            <template v-slot:activator>
+            <v-list-tile>
+                <v-list-tile-title>Memberships</v-list-tile-title>
+            </v-list-tile>
+            </template>
+            
+            <v-list-tile
+              to="/dashboard/teach/membership-setup"
+            >
+              <v-list-tile-title>Set-Up</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile
+              to="/dashboard/teach/membership-directory"
+            >
+              <v-list-tile-title>Directory</v-list-tile-title>
+            </v-list-tile>
+        </v-list-group>
+        <v-list-group
+            prepend-icon="$vuetify.icons.cust_chat"
+            value="true"
         >
-            <v-list-tile-title>Classes</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?groups"
-        >
-            <v-list-tile-title>Groups</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?services"
-        >
-            <v-list-tile-title>Services</v-list-tile-title>
-        </v-list-tile>
-    
-        <v-list-tile
-            to="/dashboard/teach/teacher-chat-discussion"
-        >
-            <v-list-tile-title >Discussions</v-list-tile-title>
+            <template v-slot:activator>
+            <v-list-tile>
+                <v-list-tile-title>chat</v-list-tile-title>
+            </v-list-tile>
+            </template>
+            
+            <v-list-tile
+              to="/dashboard/teach/teacher-discussion-setup"
+            >
+              <v-list-tile-title>Set-Up</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile
+              to="/dashboard/teach/DiscussionSetup"
+            >
+              <v-list-tile-title >Discussions</v-list-tile-title>
+            </v-list-tile>
+        </v-list-group>
+
+        <v-list-tile to="/dashboard/teach/hosts">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_edit</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>Edit Hosts</v-list-tile-title>
         </v-list-tile>
         <v-list-tile to="/dashboard/teach/new_crm">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_crm</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>CRM</v-list-tile-title>
         </v-list-tile>
         <v-list-tile to="/dashboard/teach/reports">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_history</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Reports</v-list-tile-title>
         </v-list-tile>
-
+        <v-list-tile @click="() => onAccountClick(isLoggedIn ? null : {section: 'login'})">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_logout</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{!isLoggedIn ? 'Log-in' : 'Logout'}}</v-list-tile-title>
+        </v-list-tile>
       </v-list>
       <v-list v-else>
-        <v-list-tile>
+        <v-list-tile to="/dashboard/learn/">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_dashboard</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Dashboard</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile
-          v-if="memberships && memberships.length > 1"
-        >
-          <v-select
-            :value="currentMembershipId"
-            :items="membershipOptions"
-            class="select__collab-design"
-            outline
-            @input="setCurrentMembershipId"
-          ></v-select>
-        </v-list-tile>
-        <v-list-tile
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
-          to="/dashboard/learn/profile"
-        >
+        <v-list-tile to="/dashboard/learn/profile">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_collab</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Profile</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile 
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
-          to="/dashboard/learn/classes"
-        >
+        <v-list-tile to="/dashboard/learn/classes">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_activities</v-icon>
+            </v-list-tile-action>
             <v-list-tile-title>Activities</v-list-tile-title>
         </v-list-tile>
-        
-        <v-list-tile
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isChatEnabled"
-          to="/dashboard/learn/chat-setup"
+        <v-list-group
+            prepend-icon="$vuetify.icons.cust_chat"
+            value="true"
         >
-          <v-list-tile-title>Chat Set-Up</v-list-tile-title>
+            <template v-slot:activator>
+            <v-list-tile>
+                <v-list-tile-title>Chat</v-list-tile-title>
+            </v-list-tile>
+            </template>
+            
+            <v-list-tile
+              to="/dashboard/learn/LearnerDiscussionSetup"
+            >
+              <v-list-tile-title>Set-Up</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile
+              to="/dashboard/learn/DiscussionViewLearner"
+            >
+              <v-list-tile-title>Discussions</v-list-tile-title>
+            </v-list-tile>
+        </v-list-group>
+        <v-list-tile @click="() => onAccountClick(isLoggedIn ? null : {section: 'login'})">
+            <v-list-tile-action>
+            <v-icon>$vuetify.icons.cust_logout</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{!isLoggedIn ? 'Log-in' : 'Logout'}}</v-list-tile-title>
         </v-list-tile>
-        <v-list-tile
-        v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isDMEnabled"
-          to="/dashboard/learn/chat-discussion"
-        >
-          <v-list-tile-title>Discussions</v-list-tile-title>
-        </v-list-tile>
-    
       </v-list>
+      <v-spacer></v-spacer>
+      <div class="collapse-drawer-container">
+        <v-btn icon flat @click="setIsLeftDrawerMini(!isLeftDrawerMini)">
+            <v-icon>format_indent_decrease</v-icon>
+        </v-btn>
+      </div>
     </v-navigation-drawer>
     <v-toolbar class="main-toolbar" absolute flat app>
       <v-toolbar-title class="logo-container">
@@ -492,9 +530,6 @@ export default {
           'setIsLeftDrawerOpened',
           'setIsLeftDrawerMini',
         ]),
-        ...mapMutations('learnerMembership', [
-          'setCurrentMembershipId',
-        ]),
         ...mapActions('viewingCompany', [
             'sendCompanyTeacherRequest',
         ]),
@@ -772,14 +807,6 @@ export default {
             'isLeftDrawerOpened',
             'isLeftDrawerMini',
         ]),
-        ...mapGetters('learnerMembership', [
-            'currentMembership',
-            'currentMembershipSetting',
-        ]),
-        ...mapState('learnerMembership', [
-            'memberships',
-            'membershipSettings'
-        ]),
         ...mapState([
             'loginFormOpened',
             'isAuthChecked',
@@ -787,12 +814,6 @@ export default {
             'belongingCompanyProfile',
             'isLogoCompanyProfileChecked',
         ]),
-        membershipSettingsDict() {
-          return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({...acc, [v.id]: v}), {}) : {};
-        },
-        membershipOptions() {
-          return this.memberships ? this.memberships.map(v => ({value: v.id, text: this.membershipSettingsDict[v.membership].name})) : [];
-        },
         leftDrawerType() {
             if (this.$route.path.includes("/dashboard/teach")) return LEFT_DRAWER_TYPE.TEACH;
             return LEFT_DRAWER_TYPE.LEARN
@@ -992,30 +1013,21 @@ export default {
         }
     }
     .left-drawer {
-        width: 156px;
+        width: 256px;
         display: flex;
         flex-flow: column;
-        background-color: #434343;
-        
-        .v-list__tile__title {
-            color: #ffffff;
-            font-size: 18px;
-        }
+        font-size: 16px;
         .collapse-drawer-container {
           text-align: end;
           padding-right: 15px;
         }
         .v-list__tile--active {
           background: #F5F5F5;
+          box-shadow: inset -6px 0px 0px rgba(0, 0, 0, 0.85);
           .v-list__tile__title {
             color: #262626;
             font-weight: bold;
           }
-        }
-        .list-subitem {
-            .v-list__tile__title {
-                padding-left: 2em;
-            }
         }
     }
     .logo-container {

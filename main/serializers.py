@@ -10,14 +10,10 @@ from .models import (
     Newsletter, BoostMembership, EmailBoost,
     Event, MetaTag, UserSettings, Membership, MembershipStudent,
 )
-from . import facebook
-from . import google
-from .register import register_social_user
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from drf_extra_fields.fields import Base64ImageField
 from django.db.models import Q
-from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -664,59 +660,3 @@ class MembershipUserSerializer(UserSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'teacher')
-
-
-class FacebookSocialAuthSerializer(serializers.Serializer):
-    """Handles serialization of facebook related data"""
-    auth_token = serializers.CharField()
-
-    def validate_auth_token(self, auth_token):
-        user_data = facebook.Facebook.validate(auth_token)
-        # user_data = { # TEST DATA
-        #     "id": 12334325,
-        #     "email": "test123@gmail.com",
-        #     "name": "hamza khan"
-        # }
-        user_data['email'] = "xyz@gmail.com"
-        print(user_data)
-        if isinstance(user_data, dict):
-            user_id = user_data['id']
-            email = user_data['email']
-            name = user_data['name']
-            provider = 'facebook'
-
-            return register_social_user(
-                provider=provider,
-                user_id=user_id,
-                email=email,
-                name=name
-            )
-        else:
-            raise serializers.ValidationError(
-                'The token is invalid or expired. Please login again.'
-            )
-
-
-class GoogleSocialAuthSerializer(serializers.Serializer):
-    auth_token = serializers.CharField()
-
-    def validate_auth_token(self, auth_token):
-        user_data = google.Google.validate(auth_token)
-        try:
-            user_data['sub']
-        except:
-            raise serializers.ValidationError(
-                'The token is invalid or expired. Please login again.'
-            )
-
-        if user_data['aud'] != settings.GOOGLE_CLIENT_ID:
-
-            raise serializers.ValidationError('oops, who are you?')
-        user_id = user_data['sub']
-        email = user_data['email']
-        name = user_data['name']
-        provider = 'google'
-
-        return register_social_user(
-            provider=provider, user_id=user_id, email=email, name=name
-        )

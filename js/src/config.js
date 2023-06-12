@@ -8,6 +8,6 @@ export default {
         CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
         CALENDAR_API_KEY: process.env.GOOGLE_CALENDAR_API_KEY,
     },
-    companySlug: match && !companySlugExceptions.some(v => v === match[1]) ? match[1].split(".dev").shift() : null,
+    companySlug: match && !companySlugExceptions.some(v => v === match[1]) ? match[1] : null,
     baseUrl: process.env.BASE_WEB_URL,
 }

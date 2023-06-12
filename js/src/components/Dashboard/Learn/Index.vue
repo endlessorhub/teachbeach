@@ -29,7 +29,6 @@
 <script>
 // @ is an alias to /src
 import _ from 'lodash'
-import { mapActions } from 'vuex';
 import axios from 'axios'
 
 export default {
@@ -44,15 +43,12 @@ export default {
     },
     created() {
         this.subnav = this.$route.path
-        this.loadMemberships();
     },
     computed: {
 
     },
     methods: {
-      ...mapActions('learnerMembership', [
-        'loadMemberships',
-      ]),
+
     },
 
     watch: {

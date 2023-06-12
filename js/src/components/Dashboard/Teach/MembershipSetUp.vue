@@ -84,6 +84,211 @@
                     item-value="id"
                 ></v-select>
             </v-flex>
+        </v-layout>
+        <div class="vert-divider"></div>
+        <v-layout class="membership-section-layout" align-start justify-start row wrap>
+            <v-flex xs12 class="text-xs-left" >
+                <div class="field-group-title">Upload options</div>
+                <div class="upload-options-container">
+                    <div class="upload-option">
+                        <upload-popup
+                            url="/api/upload_students/?type=members"
+                            accept="text/csv"
+                            popup-description="Existing members list. File in csv format (first name, last name, email, phone, source, notes, notes2)"
+                            @uploaded="onUploadSuccess"
+                        >
+                            <template v-slot:popup-open-btn="{on, loading}">
+                                <v-btn
+                                :loading="loading"
+                                :disabled="loading"
+                                class="button__collab-design--dark"
+                                v-on="on"
+                                >
+                                Upload existing members
+                                </v-btn>
+                            </template>
+                        </upload-popup>
+                    </div>
+                    <div class="upload-option">
+                        <upload-popup
+                            url="/api/upload_students/?type=contacts"
+                            accept="text/csv"
+                            popup-description="Contacts list. File in csv format (first name, last name, email, phone, source, notes, notes2)"
+                            @uploaded="onUploadSuccess"
+                        >
+                            <template v-slot:popup-open-btn="{on, loading}">
+                                <v-btn
+                                :loading="loading"
+                                :disabled="loading"
+                                class="button__collab-design--dark"
+                                v-on="on"
+                                >
+                                Upload contacts
+                                </v-btn>
+                            </template>
+                        </upload-popup>
+                    </div>
+                </div>
+            </v-flex>
+        </v-layout>
+        <div class="vert-divider"></div>
+        <v-layout class="membership-section-layout" align-start justify-start row wrap>
+            <v-flex xs12 class="text-xs-left" >
+                <div class="field-group-title">Enable</div>
+                <div class="enablement-container">
+                    <div class="switch-item">
+                        <div class="switch-label">Directory</div>
+                        <v-switch class="switch__collab-design" v-model="isDirectoryEnabled"></v-switch>
+                    </div>
+                    <div class="switch-item">
+                        <div class="switch-label">DM</div>
+                        <v-switch class="switch__collab-design" v-model="isDMEnabled"></v-switch>
+                    </div>
+                    <div class="switch-item">
+                        <div class="switch-label">Chat</div>
+                        <v-switch class="switch__collab-design" v-model="isChatEnabled"></v-switch>
+                    </div>
+                </div>
+            </v-flex>
+        </v-layout>
+        <div class="vert-divider"></div>
+        <v-layout class="membership-section-layout" align-start justify-start row wrap>
+            <v-flex xs12 class="text-xs-left" >
+                <div class="field-group-title">Member profile Set-up - Select what members can add to their profiel</div>
+            </v-flex>
+            <v-flex xs12 md6 class="text-xs-left" >
+                <div class="checkboxes-container">
+                    <div class="checkbox-row">
+                        <div class="add-cell">Add</div>
+                        <div class="require-cell">Require</div>
+                        <div class="label-cell"></div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isUploadAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isUploadRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Image upload</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isAboutAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isAboutRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">About yourself</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isTitleAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isTitleRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Title</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isCityAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isCityRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">City, Country</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isProjectsAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isProjectsRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Projects</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isSocialAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isSocialRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Social Media (With icons)</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isPhoneAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isPhoneRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Option to show phone number</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isEmailAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isEmailRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Option to show email</div>
+                    </div>
+                    <div class="checkbox-row">
+                        <div class="add-cell">
+                            <v-checkbox v-model="isDocumentAllowed" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="require-cell">
+                            <v-checkbox v-model="isDocumentRequired" color="success" hide-details ></v-checkbox>
+                        </div>
+                        <div class="label-cell">Document uploader</div>
+                    </div>
+                </div>
+            </v-flex>
+            <v-flex xs12 md6 class="text-xs-left" >
+                <div class="field-group-title">+ Custom fields</div>
+                <div class="field-title">Add one at a time and return to save</div>
+                <div class="custom-field-row">
+                    <div class="custom-field-name">
+                        <div class="custom-field-label"><div>+ Interests</div></div>
+                    </div>
+                    <div class="custom-field-value">
+                        <v-text-field
+                            v-model="customInterestsField"
+                            outline
+                            hide-details
+                            class="text__collab-design"
+                        ></v-text-field>
+                    </div>
+                </div>
+                <div class="custom-field-row">
+                    <div class="custom-field-name">
+                        <div class="custom-field-label"><div>+ Skills</div></div>
+                    </div>
+                    <div class="custom-field-value">
+                        <v-text-field
+                            v-model="customSkillsField"
+                            outline
+                            hide-details
+                            class="text__collab-design"
+                        ></v-text-field>
+                    </div>
+                </div>
+                <div class="custom-field-row">
+                    <div class="custom-field-name">
+                        <div class="custom-field-label"><div>+ Levels</div></div>
+                    </div>
+                    <div class="custom-field-value">
+                        <v-text-field
+                            v-model="customLevelsField"
+                            outline
+                            hide-details
+                            class="text__collab-design"
+                        ></v-text-field>
+                    </div>
+                </div>
+            </v-flex>
             <v-flex xs12 class="text-xs-center" >
                 <v-btn class="button__collab-design--dark" @click="submit" :loading="isLoadingTeacherMembership" :disabled="isLoadingTeacherMembership">Save</v-btn>
             </v-flex>

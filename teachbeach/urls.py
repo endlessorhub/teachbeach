@@ -37,7 +37,7 @@ from main.views import (
     UploadStudents, MembershipView, ClassMembershipView, ClassTeacherView,
     StripeBuyMembershipView, MembershipByIdView, MembershipsListView, CompanyTeacherRequest, UpdateManagedStudent,
     StripeCancelMembershipView, CsvMembersExportView, TeacherCancelPrivateEnrollmentView,
-    VueEditorUploadFileView, FacebookSignUp, GoogleSocialAuthView, StudentMembershipView,
+    VueEditorUploadFileView,
 )
 from . import views
 from .sitemaps import (
@@ -80,11 +80,8 @@ sitemaps = {
     'company': CompanySitemap,
 }
 
-urlpatterns = [
+urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + [
     path('admin/', admin.site.urls),
-    # path('social-auth/', include('social_django.urls', namespace='social')),
-    path('social/facebook/', csrf_exempt(FacebookSignUp.as_view()), name='facebook-auth'),
-    path('social/google/', csrf_exempt(GoogleSocialAuthView.as_view()), name='google-auth'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
         name='django.contrib.sitemaps.views.sitemap'),
     # Authentication
@@ -171,7 +168,6 @@ urlpatterns = [
     url(r'^api/memberships/', MembershipsListView.as_view()),
     url(r'^api/teacher_membership/(\d*)/', MembershipByIdView.as_view()),
     url(r'^api/teacher_membership/', MembershipView.as_view()),
-    url(r'^api/learner_memberships/', StudentMembershipView.as_view()),
     url(r'^api/class_teacher/(\d*)/', ClassTeacherView.as_view()),
     url(r'^api/class_membership/(\d*)/', ClassMembershipView.as_view()),
     url(r'^api/stripe/buy_membership', StripeBuyMembershipView.as_view()),
@@ -180,8 +176,6 @@ urlpatterns = [
     url(r'^api/company_instructors/', CompanyInstructorsView.as_view()),
     url(r'^api/vue_editor_upload_file/', csrf_exempt(VueEditorUploadFileView.as_view())),
     url(r'^api/', include(router.urls)),
-]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += url(r'', views.AppView.as_view()),
+    url(r'', views.AppView.as_view()),
+]

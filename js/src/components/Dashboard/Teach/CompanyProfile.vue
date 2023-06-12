@@ -193,7 +193,7 @@
                     <v-text-field
                         readonly
                         :value="instructorRegistrationUrl"
-                        label="To invite instructors to register, please send this link"
+                        label="Url to instructor registration"
                     >
                         <template v-slot:append>
                             <chip color="success" small v-if="instructorRegistrationUrlCopied">Copied!</chip>

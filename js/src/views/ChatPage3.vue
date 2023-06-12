@@ -253,7 +253,6 @@ select{
     align-items: flex-start;
     width: 37%;
 
-
 }
 
 .form-group-10 {
@@ -329,10 +328,17 @@ select{
     order: 1;
     flex-grow: 0;
 }
+
+label{
+    font-size: 14px;
+}
+
+
+
 </style>
 
 <script>
 export default {
-    name: 'chatpage3'
+    name: 'TeacherDashboard'
 }
 </script>

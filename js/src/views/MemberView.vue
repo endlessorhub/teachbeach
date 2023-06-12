@@ -2,7 +2,7 @@
     <div class="Discussion-divider">
         <div class="ChatContainer">
             <div class="header-selection">
-                <h3>Chat</h3>
+                <h3>Discussions</h3>
                 <div class="selector-options">
                     <ul>
                         <li :class="{ 'active': activeItem === 'Community' }" @click="show('Community')">Community</li>
@@ -488,7 +488,7 @@
 <script>
 
 export default {
-    name: 'TeacherChatDiscussion',
+    name: 'MemberView',
     data() {
         return {
             activeItem: 'Community'

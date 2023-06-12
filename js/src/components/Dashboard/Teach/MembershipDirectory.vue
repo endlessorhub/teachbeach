@@ -4,8 +4,90 @@
     <div class="membership-setup-container" >
         <v-layout class="membership-section-layout" align-start justify-start row wrap>
             <v-flex xs12 class="text-xs-center" >
-                <div class="title">Directory</div>
+                <div class="title">Membership Set-Up</div>
             </v-flex>
+            <v-flex xs12 md3 class="text-xs-left">
+                <div class="field-title">Main image</div>
+                <image-upload-crop
+                    :imageUrl="imageUrl"
+                    :imageName="imageName"
+                    :imageFile="imageFile"
+                    width="100%"
+                    :aspectRatio="1.25"
+                    @change="onFileChanged"
+                />
+            </v-flex>
+            <v-flex xs12 md9 class="text-xs-left" >
+                <div class="field-title">Headline</div>
+                <v-text-field
+                    v-model="name"
+                    class="text__collab-design"
+                    outline
+                    :error-messages="nameErrors"
+                    @input="$v.name.$touch()"
+                    @blur="$v.name.$touch()"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 class="text-xs-left" >
+                <div class="field-title">Description</div>
+                <v-textarea
+                    v-model.trim="description"
+                    class="text__collab-design"
+                    auto-grow
+                    outline
+                    rows="5"
+                ></v-textarea>
+            </v-flex>
+            <v-flex xs12 class="text-xs-left" >
+                <div class="field-group-title">Price</div>
+            </v-flex>
+            <v-flex xs12 md6 lg3 class="text-xs-left" >
+                <div class="field-title">Week</div>
+                <v-text-field
+                    v-model="weekly_rate"
+                    class="text__collab-design"
+                    outline
+                    :error-messages="weeklyRateErrors"
+                    @input="$v.weekly_rate.$touch()"
+                    @blur="$v.weekly_rate.$touch()"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 md6 lg3 class="text-xs-left" >
+                <div class="field-title">Month</div>
+                <v-text-field
+                    v-model="monthly_rate"
+                    class="text__collab-design"
+                    outline
+                    :error-messages="monthlyRateErrors"
+                    @input="$v.monthly_rate.$touch()"
+                    @blur="$v.monthly_rate.$touch()"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 md6 lg3 class="text-xs-left" >
+                <div class="field-title">Year</div>
+                <v-text-field
+                    v-model="yearly_rate"
+                    class="text__collab-design"
+                    outline
+                    :error-messages="yearlyRateErrors"
+                    @input="$v.yearly_rate.$touch()"
+                    @blur="$v.yearly_rate.$touch()"
+                ></v-text-field>
+            </v-flex>
+            <v-flex xs12 md6 lg3 class="text-xs-left" >
+                <div class="field-title">Currency</div>
+                <v-select
+                    v-model="currency"
+                    :items="currencies"
+                    class="select__collab-design"
+                    outline
+                    item-text="label"
+                    item-value="id"
+                ></v-select>
+            </v-flex>
+        </v-layout>
+        <div class="vert-divider"></div>
+        <v-layout class="membership-section-layout" align-start justify-start row wrap>
             <v-flex xs12 class="text-xs-left" >
                 <div class="field-group-title">Upload options</div>
                 <div class="upload-options-container">
@@ -87,7 +169,7 @@
                             <v-checkbox v-model="isUploadAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isUploadRequired" color="success" hide-details :disabled="!isUploadAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isUploadRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Image upload</div>
                     </div>
@@ -96,7 +178,7 @@
                             <v-checkbox v-model="isAboutAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isAboutRequired" color="success" hide-details :disabled="!isAboutAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isAboutRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">About yourself</div>
                     </div>
@@ -105,7 +187,7 @@
                             <v-checkbox v-model="isTitleAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isTitleRequired" color="success" hide-details :disabled="!isTitleAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isTitleRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Title</div>
                     </div>
@@ -114,7 +196,7 @@
                             <v-checkbox v-model="isCityAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isCityRequired" color="success" hide-details :disabled="!isCityAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isCityRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">City, Country</div>
                     </div>
@@ -123,7 +205,7 @@
                             <v-checkbox v-model="isProjectsAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isProjectsRequired" color="success" hide-details :disabled="!isProjectsAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isProjectsRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Projects</div>
                     </div>
@@ -132,7 +214,7 @@
                             <v-checkbox v-model="isSocialAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isSocialRequired" color="success" hide-details :disabled="!isSocialAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isSocialRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Social Media (With icons)</div>
                     </div>
@@ -141,7 +223,7 @@
                             <v-checkbox v-model="isPhoneAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isPhoneRequired" color="success" hide-details :disabled="!isPhoneAllowed" ></v-checkbox>
+                            <v-checkbox v-model="isPhoneRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Option to show phone number</div>
                     </div>
@@ -150,7 +232,7 @@
                             <v-checkbox v-model="isEmailAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isEmailRequired" color="success" hide-details :disabled="!isEmailAllowed"></v-checkbox>
+                            <v-checkbox v-model="isEmailRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Option to show email</div>
                     </div>
@@ -159,7 +241,7 @@
                             <v-checkbox v-model="isDocumentAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isDocumentRequired" color="success" hide-details :disabled="!isDocumentAllowed"></v-checkbox>
+                            <v-checkbox v-model="isDocumentRequired" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="label-cell">Document uploader</div>
                     </div>
@@ -173,14 +255,12 @@
                         <div class="custom-field-label"><div>+ Interests</div></div>
                     </div>
                     <div class="custom-field-value">
-                        <v-combobox
+                        <v-text-field
                             v-model="customInterestsField"
-                            :items="[]"
-                            multiple
-                            chips
+                            outline
                             hide-details
-                            class="combobox__collab-design"
-                        ></v-combobox>
+                            class="text__collab-design"
+                        ></v-text-field>
                     </div>
                 </div>
                 <div class="custom-field-row">
@@ -188,14 +268,12 @@
                         <div class="custom-field-label"><div>+ Skills</div></div>
                     </div>
                     <div class="custom-field-value">
-                        <v-combobox
+                        <v-text-field
                             v-model="customSkillsField"
-                            :items="[]"
-                            multiple
-                            chips
+                            outline
                             hide-details
-                            class="combobox__collab-design"
-                        ></v-combobox>
+                            class="text__collab-design"
+                        ></v-text-field>
                     </div>
                 </div>
                 <div class="custom-field-row">
@@ -203,14 +281,12 @@
                         <div class="custom-field-label"><div>+ Levels</div></div>
                     </div>
                     <div class="custom-field-value">
-                        <v-combobox
+                        <v-text-field
                             v-model="customLevelsField"
-                            :items="[]"
-                            multiple
-                            chips
+                            outline
                             hide-details
-                            class="combobox__collab-design"
-                        ></v-combobox>
+                            class="text__collab-design"
+                        ></v-text-field>
                     </div>
                 </div>
             </v-flex>
@@ -271,9 +347,9 @@ export default {
         isEmailRequired: false,
         isDocumentAllowed: false,
         isDocumentRequired: false,
-        customInterestsField: [],
-        customSkillsField: [],
-        customLevelsField: [],
+        customInterestsField: '',
+        customSkillsField: '',
+        customLevelsField: '',
         imageName: '',
         imageUrl: '',
 		imageFile: '',
@@ -346,9 +422,9 @@ export default {
                 this.isEmailRequired = this.teacherMembership.isEmailRequired
                 this.isDocumentAllowed = this.teacherMembership.isDocumentAllowed
                 this.isDocumentRequired = this.teacherMembership.isDocumentRequired
-                this.customInterestsField = this.teacherMembership.customInterestsField ? this.teacherMembership.customInterestsField.split(',') : [];
-                this.customSkillsField = this.teacherMembership.customSkillsField ? this.teacherMembership.customSkillsField.split(',') : [];
-                this.customLevelsField = this.teacherMembership.customLevelsField ? this.teacherMembership.customLevelsField.split(',') : [];
+                this.customInterestsField = this.teacherMembership.customInterestsField
+                this.customSkillsField = this.teacherMembership.customSkillsField
+                this.customLevelsField = this.teacherMembership.customLevelsField
             })
         },
         save() {
@@ -380,9 +456,9 @@ export default {
                 isEmailRequired: this.isEmailRequired,
                 isDocumentAllowed: this.isDocumentAllowed,
                 isDocumentRequired: this.isDocumentRequired,
-                customInterestsField: this.customInterestsField.join(','),
-                customSkillsField: this.customSkillsField.join(','),
-                customLevelsField: this.customLevelsField.join(','),
+                customInterestsField: this.customInterestsField,
+                customSkillsField: this.customSkillsField,
+                customLevelsField: this.customLevelsField,
             }
             if (this.crop.canvas) {
                 data.picture = {

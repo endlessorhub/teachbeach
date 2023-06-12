@@ -54,15 +54,20 @@ import LearnerBuyMembership from '@/components/Learner/BuyMembership'
 import BuyMembership from '@/views/BuyMembership'
 import CompanyMembership from '@/views/CompanyMembership'
 import DashboardLearnHistory from '@/components/Dashboard/Learn/History.vue'
-import ChatDiscussion from '@/views/ChatDiscussion.vue'
-import TeacherChatDiscussion from '@/views/TeacherChatDiscussion.vue'
-import SetUp from '@/views/SetUp.vue'
-import TeacherChatSetup from '@/views/TeacherChatSetup'
-import TeacherDashboard from '@/views/ChatPage3'
+import LearnerDiscussionSetup from '@/views/LearnerDiscussionSetup.vue'
+import ChatViewAdmin from '@/views/ChatViewAdmin.vue'
+import DiscussionViewLearner from '@/views/DiscussionViewLearner.vue'
+// import SetUp from '@/views/SetUp.vue'
+import DiscussionSetup from '@/views/DiscussionSetup'
 
+// import chatpage3 from '@/views/chatpage3'
 import Lreg1 from '@/components/Teacher/LReg1.vue'
 import Lreg2 from '@/components/Teacher/LReg2.vue'
 import Tprofile from '@/components/Teacher/Profile.vue'
+import TeacherDashboard from '@/views/TeacherDashboard.vue'
+import MemberView from '@/views/MemberView.vue'
+// import DiscussionChatSetup from '@/views/LearnerChatSetup.vue'
+
 
 import config from '@/config.js'
 // import { component } from 'vue/types/umd'
@@ -213,7 +218,7 @@ export default [
     {
         path: '/dashboard',
         name: 'dashboard',
-        // redirect: '/dashboard/teach',
+        redirect: '/dashboard/teach',
         component: Dashboard,
         meta: { requiresAuth: true },
         children: [
@@ -290,11 +295,11 @@ export default [
                         name: 'dashboard_teach_membership',
                         component: DashboardTeachMembership,
                     },
-                    {
-                        path: 'membership-setup',
-                        name: 'dashboard_teach_membership_setup',
-                        component: DashboardTeachMembershipSetUp,
-                    },
+                    // {
+                    //     path: 'membership-setup',
+                    //     name: 'dashboard_teach_membership_setup',
+                    //     component: DashboardTeachMembershipSetUp,
+                    // },
                     {
                         path: 'membership-directory',
                         name: 'dashboard_teach_membership_directory',
@@ -310,11 +315,11 @@ export default [
             },
 
             {
-                path: 'learn',
+                path: '/learn',
                 name: 'dashboard_learn',
                 // component: Dashboard,
-                component: DashboardLearn,
                 redirect: '/dashboard/learn/classes',
+                component: MemberView,
                 children: [
                     
                     {
@@ -374,7 +379,7 @@ export default [
             //     //     name:'ChatDiscussion',
             //     //     component: ChatDiscussion
             //     // },
-            // },
+            // }
 
             {
                 path: 'venue',
@@ -389,31 +394,51 @@ export default [
         ]
 
     },
+    // {
+    //     path:'/dashboard/teach',
+    //     name:TeacherDashboard,
+    //     component: TeacherDashboard
+    // },
     {
-        path:'/teacher-dashboard/teach',
-        name:TeacherDashboard,
-        component: TeacherDashboard
+        path: '/dashboard/teach/ChatView-Admin',
+        name: 'ChatViewAdmin',
+        component: ChatViewAdmin,
     },
     {
-        path: '/dashboard/teach/teacher-chat-discussion',
-        name: 'TeacherChatDiscussion',
-        component: TeacherChatDiscussion,
+        path:'/dashboard/teach/DiscussionSetup',
+        name: 'DiscussionSetup',
+        component: DiscussionSetup
+    },
+    // {
+    //     path: '/dashboard/learn/LearnerDiscussionSetup',
+    //     name: 'LearnerDiscussionSetup',
+    //     component: LearnerDiscussionSetup,
+    // },
+    // {
+    //     path: '/dashboard/learn/DiscussionSetup',
+    //     name: 'DiscussionSetup',
+    //     component: DiscussionSetup,
+    // },
+    // {
+    //     path: '/dashboard/learn/chat-setup',
+    //     name: 'SetUp',
+    //     component: SetUp
+    // },
+    {
+        path: '/dashboard/learn/',
+        name: 'MemberView',
+        component: MemberView
     },
     {
-        path: '/dashboard/learn/chat-discussion',
-        name: 'ChatDiscussion',
-        component: ChatDiscussion,
+        path:'/dashboard/learn/DiscussionViewLearner',
+        name:'DiscussionViewLearner',
+        component: DiscussionViewLearner
     },
-    {
-        path: '/dashboard/teach/teacher-chat-setup',
-        name: 'TeacherChatSetup',
-        component: TeacherChatSetup,
-    },
-    {
-        path: '/dashboard/learn/chat-setup',
-        name: 'SetUp',
-        component: SetUp,
-    },
+    // {
+    //     path: '/dashboard/learn/DiscussionChatSetup',
+    //     name: 'DiscussionChatSetup',
+    //     component: DiscussionChatSetup
+    // },
 
     // {
     //     path: '/dashboard/teach/membership-directory',
@@ -531,4 +556,6 @@ export default [
         meta: { requiresAuth: true },
         props: function (route) {return { id: Number(route.params.id) }}
     },
+
+
 ]

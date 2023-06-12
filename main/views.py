@@ -59,7 +59,6 @@ from .serializers import (
     ShortOrderSerializer, ClassLearnerNoDataClassSerializer,
     CompanyProfileWithClassesSerializer, UserSettingsSerializer,
     ManagedUserSerializer, MembershipSerializer, MembershipStudentSerializer,
-    FacebookSocialAuthSerializer, GoogleSocialAuthSerializer
 )
 from .filters import MessageUserFilter, UserFilter
 
@@ -73,7 +72,6 @@ from random import randrange
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
 from rest_framework import permissions, status
 from django.middleware import csrf
 from django.core.files.base import ContentFile
@@ -4651,92 +4649,7 @@ class MembershipByIdView(generics.RetrieveAPIView):
 
 class StudentMembershipView(APIView):
     def get(self, request):
-        memberships = MembershipStudent.objects.filter(student__pk=request.user.pk, is_active=True)
-        membershipSettings = Membership.objects.filter(pk__in=[m.membership.pk for m in memberships])
-        return Response({
-            'success': True, 
-            'memberships': MembershipStudentSerializer(memberships, many=True).data,
-            'membershipSettings': MembershipSerializer(membershipSettings, many=True).data,
-        })
-
-    def post(self, request):
-        membership = MembershipStudent.objects.get(student__pk=request.user.pk, pk=request.data.get('student_membership_id'))
-        membershipSetting = Membership.objects.get(pk=membership.membership.pk)
-        if membershipSetting.isAboutRequired and not request.data.get('description'):
-            return Response({
-                'success': False,
-                'field': 'description',
-                'error': 'Description is required field',
-            })
-        if membershipSetting.isTitleRequired and not request.data.get('title'):
-            return Response({
-                'success': False,
-                'field': 'title',
-                'error': 'Title is required field',
-            })
-        if membershipSetting.isCityRequired and not request.data.get('city'):
-            return Response({
-                'success': False,
-                'field': 'city',
-                'error': 'City is required field',
-            })
-        if membershipSetting.isProjectsRequired and not request.data.get('website'):
-            return Response({
-                'success': False,
-                'field': 'website',
-                'error': 'Website is required field',
-            })
-        if membershipSetting.isSocialRequired and not request.data.get('social'):
-            return Response({
-                'success': False,
-                'field': 'social',
-                'error': 'Social is required field',
-            })
-        if membershipSetting.isPhoneRequired and not request.data.get('phone'):
-            return Response({
-                'success': False,
-                'field': 'phone',
-                'error': 'Phone is required field',
-            })
-        if membershipSetting.isEmailRequired and not request.data.get('email'):
-            return Response({
-                'success': False,
-                'field': 'email',
-                'error': 'Email is required field',
-            })
-        if membershipSetting.isDocumentRequired and not request.data.get('document'):
-            return Response({
-                'success': False,
-                'field': 'document',
-                'error': 'Document is required field',
-            })
-        request.user.first_name = request.data.get('firstName')
-        request.user.last_name = request.data.get('lastName')
-        if membershipSetting.isEmailAllowed:
-            request.user.email = request.data.get('email')
-        if membershipSetting.isPhoneAllowed:
-            request.user.phone = request.data.get('phone')
-        request.user.save()
-        if membershipSetting.isAboutAllowed:
-            membership.description = request.data.get('description')
-        if membershipSetting.isTitleAllowed:
-            membership.title = request.data.get('title')
-        if membershipSetting.isCityAllowed:
-            membership.city = request.data.get('city')
-        if membershipSetting.isProjectsAllowed:
-            membership.website = request.data.get('website')
-        if membershipSetting.isSocialAllowed:
-            membership.social = request.data.get('social')
-        if membershipSetting.isDocumentAllowed:
-            membership.document = request.data.get('document')
-        membership.level = request.data.get('level')
-        membership.skill = request.data.get('skill')
-        membership.interest = request.data.get('interest')
-        membership.save()
-        return Response({
-            'success': True,
-            'data': MembershipStudentSerializer(membership).data,
-        })
+        return Response({'success': True})
 
     def delete(self, request):
         membership = Membership.objects.get(pk=request.data.get('id'))
@@ -4846,42 +4759,3 @@ class VueEditorUploadFileView(View):
             return HttpResponse('https://' + bucket + '.s3.amazonaws.com/' + final_filename)
         except ClientError as e:
             return HttpResponse('upload error')
-
-
-class FacebookSignUp(GenericAPIView):
-    serializer_class = FacebookSocialAuthSerializer
-
-    def post(self, request):
-        """
-
-        POST with "auth_token"
-
-        Send an access token as from facebook to get user information
-
-        """
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = ((serializer.validated_data)['auth_token'])
-        print('////')
-        login(request, User.objects.get(username=data['username']))
-        return Response(data, status=status.HTTP_200_OK)
-
-
-class GoogleSocialAuthView(GenericAPIView):
-
-    serializer_class = GoogleSocialAuthSerializer
-
-    def post(self, request):
-        """
-
-        POST with "auth_token"
-
-        Send an idtoken as from google to get user information
-
-        """
-
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = ((serializer.validated_data)['auth_token'])
-        login(request, User.objects.get(username=data['username']))
-        return Response(data, status=status.HTTP_200_OK)
