@@ -132,7 +132,7 @@ _app.*
 screenshots
 videos
 *.csv
-
+work*
 public
 
 package-lock.json

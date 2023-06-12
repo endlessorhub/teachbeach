@@ -2,7 +2,7 @@ export const initFbsdk = () => {
   return new Promise((resolve) => {
     window.fbAsyncInit = function() {
       FB.init({
-        appId: "790743762462782",
+        appId: process.env.SOCIAL_AUTH_FACEBOOK_KEY,
         cookie: true,
         xfbml: true, // parse social plugins on this page
         version: "v2.8", // use graph api version 2.8

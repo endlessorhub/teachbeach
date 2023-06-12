@@ -87,7 +87,7 @@
                             <v-checkbox v-model="isUploadAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isUploadRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isUploadRequired" color="success" hide-details :disabled="!isUploadAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">Image upload</div>
                     </div>
@@ -96,7 +96,7 @@
                             <v-checkbox v-model="isAboutAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isAboutRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isAboutRequired" color="success" hide-details :disabled="!isAboutAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">About yourself</div>
                     </div>
@@ -105,7 +105,7 @@
                             <v-checkbox v-model="isTitleAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isTitleRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isTitleRequired" color="success" hide-details :disabled="!isTitleAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">Title</div>
                     </div>
@@ -114,7 +114,7 @@
                             <v-checkbox v-model="isCityAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isCityRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isCityRequired" color="success" hide-details :disabled="!isCityAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">City, Country</div>
                     </div>
@@ -123,7 +123,7 @@
                             <v-checkbox v-model="isProjectsAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isProjectsRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isProjectsRequired" color="success" hide-details :disabled="!isProjectsAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">Projects</div>
                     </div>
@@ -132,7 +132,7 @@
                             <v-checkbox v-model="isSocialAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isSocialRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isSocialRequired" color="success" hide-details :disabled="!isSocialAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">Social Media (With icons)</div>
                     </div>
@@ -141,7 +141,7 @@
                             <v-checkbox v-model="isPhoneAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isPhoneRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isPhoneRequired" color="success" hide-details :disabled="!isPhoneAllowed" ></v-checkbox>
                         </div>
                         <div class="label-cell">Option to show phone number</div>
                     </div>
@@ -150,7 +150,7 @@
                             <v-checkbox v-model="isEmailAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isEmailRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isEmailRequired" color="success" hide-details :disabled="!isEmailAllowed"></v-checkbox>
                         </div>
                         <div class="label-cell">Option to show email</div>
                     </div>
@@ -159,7 +159,7 @@
                             <v-checkbox v-model="isDocumentAllowed" color="success" hide-details ></v-checkbox>
                         </div>
                         <div class="require-cell">
-                            <v-checkbox v-model="isDocumentRequired" color="success" hide-details ></v-checkbox>
+                            <v-checkbox v-model="isDocumentRequired" color="success" hide-details :disabled="!isDocumentAllowed"></v-checkbox>
                         </div>
                         <div class="label-cell">Document uploader</div>
                     </div>

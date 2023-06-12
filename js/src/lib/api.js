@@ -46,4 +46,10 @@ export default {
             message,
         });
     },
+    async getLearnerMemberships() {
+        return axios.get(`/api/learner_memberships/`).then(res => res.data)
+    },
+    async saveLearnerMembership(data) {
+        return axios.post(`/api/learner_memberships/`, data).then(res => res.data)
+    },
 }

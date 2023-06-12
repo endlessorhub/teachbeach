@@ -6,6 +6,7 @@ import axios from 'axios'
 import gapi from './modules/gapi'
 import api from '@/lib/api'
 import viewingCompany from './modules/viewingCompany';
+import learnerMembership from './modules/learnerMembership';
 import layout from './modules/layout'
 import companyService from '@/lib/services/company'
 import socialAuth from './modules/socialAuth'
@@ -20,7 +21,8 @@ export default new Vuex.Store({
         gapi,
         viewingCompany,
         layout,
-        socialAuth
+        learnerMembership,
+        socialAuth,
     },
     state: {
         loginFormOpened: null, // object with login form params
