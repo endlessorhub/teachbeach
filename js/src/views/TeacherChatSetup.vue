@@ -1,22 +1,15 @@
 <template>
     <div class="chat-setup-main">
         <div class="header-selection">
-            <h2>Chat Setup</h2>
-            <div class="selector-options">
-                <ul>
-                    <li :class="{ 'active': activeItem === 'Community' }" @click="show('Community')">Community</li>
-                    <li :class="{ 'active': activeItem === 'By event' }" @click="show('By event')">By event</li>
-                    <li :class="{ 'active': activeItem === 'By Topic' }" @click="show('By Topic')">By Topic</li>
-                </ul>
-            </div>
+            <h2>Discussion Setup</h2>
         </div>
 
         <div class="chat-setup-select-option">
             <label for="switchA1" class="switch-item">
-                <input type="checkbox" name="" id="switchA1" class="control" checked>
+                <input v-model="chatSetupOptions.is_community" type="checkbox" name="" id="switchA1" class="control">
                 <span class="label"></span>
             </label>
-            <h2>Community Chat</h2>
+            <h2>Community Discussion</h2>
         </div>
         <div class="setup-intro">
             <div class="eventchat-para">
@@ -27,11 +20,11 @@
         <div class="setupfield1"
             style="flex-direction: row; gap: 1rem; align-items: center; justify-content: space-between;">
             <div class="setupfield1-member">
-                <input type="radio" id="html" name="fav_language" value="HTML">
+                <input v-model="chatSetupOptions.community.participants" type="radio" id="html" name="community" value="members">
                   <label for="html" style="margin-left: 5px;">Members Only Access</label>
             </div>
             <div class="setupfield1-contact">
-                  <input type="radio" id="css" name="fav_language" value="CSS">
+                  <input v-model="chatSetupOptions.community.participants" type="radio" id="css" name="community" value="contacts" >
                   <label for="css" style="margin-left: 5px;">All Contact Access</label>
             </div>
         </div>
@@ -40,11 +33,17 @@
             <div class="setup-image-label">
                 <label for="">Main images</label>
                 <div class="image-box">
-                    <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <input type="file" id="community_thumbnail" accept="image/png, image/gif, image/jpeg"  class="hidden"  @change="fileInput($event,'community_thumbnail')" />
+                        <label for="community_thumbnail">
+                        <svg v-if="!community_thumbnail" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M5.99996 0.166504L4.47496 1.83317H1.83329C0.916626 1.83317 0.166626 2.58317 0.166626 3.49984V13.4998C0.166626 14.4165 0.916626 15.1665 1.83329 15.1665H15.1666C16.0833 15.1665 16.8333 14.4165 16.8333 13.4998V3.49984C16.8333 2.58317 16.0833 1.83317 15.1666 1.83317H12.525L11 0.166504H5.99996ZM8.49996 12.6665C6.19996 12.6665 4.33329 10.7998 4.33329 8.49984C4.33329 6.19984 6.19996 4.33317 8.49996 4.33317C10.8 4.33317 12.6666 6.19984 12.6666 8.49984C12.6666 10.7998 10.8 12.6665 8.49996 12.6665Z"
                             fill="black" fill-opacity="0.45" />
-                    </svg>
+                        </svg>
+                        <img :src="community_thumbnail" width="100%"/>
+                    </label>
+
+                    
 
                 </div>
 
@@ -53,26 +52,27 @@
             <div class="setup-image-desc">
                 <label for="">Description</label>
                 <div class="image-desc">
-                    <textarea name="" id="" cols="55" rows="3" placeholder="Add Description"
+                    <textarea v-model="chatSetupOptions.community.description" name="" id="" cols="55" rows="3" placeholder="Add Description"
                         style="height: 100%;"></textarea>
                 </div>
 
             </div>
+
         </div>
 
         <div class="breaker"></div>
 
         <div class="eventchat-container">
-
+<!-- Event  -->
             <div class="eventchat-selector">
                 <label for="switchA1" class="switch-item">
-                    <input type="checkbox" name="" id="switchA1" class="control" checked>
+                    <input v-model="chatSetupOptions.is_event" type="checkbox" name="" id="switchA1" class="control">
                     <span class="label"></span>
                 </label>
             </div>
 
             <div class="eventchat-content">
-                <h2>Event Chat</h2>
+                <h2>Event Discussion</h2>
                 <div class="eventchat-para">
                     <p>This forum will activate whenever an event is posted</p>
                 </div>
@@ -80,14 +80,15 @@
             </div>
 
         </div>
+
         <div class="setupfield1"
             style="flex-direction: row; gap: 1rem; align-items: center; justify-content: space-between;">
             <div class="setupfield1-member">
-                <input type="radio" id="html" name="fav_language" value="HTML">
+                <input v-model="chatSetupOptions.event.participants" type="radio" id="html" name="event" value="participants">
                   <label for="html" style="margin-left: 5px;">Participants-only access</label>
             </div>
             <div class="setupfield1-contact">
-                  <input type="radio" id="css" name="fav_language" value="CSS">
+                  <input v-model="chatSetupOptions.event.participants" type="radio" id="css" name="event" value="members">
                   <label for="css" style="margin-left: 5px;">All Members Access</label>
             </div>
         </div>
@@ -98,7 +99,7 @@
         <div class="eventchat-container">
             <div class="eventchat-selector">
                 <label for="switchA1" class="switch-item">
-                    <input type="checkbox" name="" id="switchA1" class="control" checked>
+                    <input v-model="chatSetupOptions.is_topic" type="checkbox" name="" id="switchA1" class="control">
                     <span class="label"></span>
                 </label>
             </div>
@@ -117,11 +118,11 @@
         <div class="setupfield1"
             style="flex-direction: row; gap: 1rem; align-items: center; justify-content: space-between;">
             <div class="setupfield1-member">
-                <input type="radio" id="html" name="fav_language" value="HTML">
+                <input v-model="chatSetupOptions.topic.participants" type="radio" id="html" name="topic" value="members">
                   <label for="html" style="margin-left: 5px;">Members-only access</label>
             </div>
             <div class="setupfield1-contact">
-                  <input type="radio" id="css" name="fav_language" value="CSS">
+                  <input v-model="chatSetupOptions.topic.participants" type="radio" id="css" name="topic" value="contacts">
                   <label for="css" style="margin-left: 5px;">All Contacts Access</label>
             </div>
         </div>
@@ -143,12 +144,15 @@
             <div class="setup-image-label">
                 <label for="">Main images</label>
                 <div class="image-box">
-                    <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <input type="file" id="topic_thumbnail" accept="image/png, image/gif, image/jpeg"  class="hidden"  @change="fileInput($event, 'topic_thumbnail')" />
+                    <label for="topic_thumbnail">
+                    <svg v-if="!topic_thumbnail" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M5.99996 0.166504L4.47496 1.83317H1.83329C0.916626 1.83317 0.166626 2.58317 0.166626 3.49984V13.4998C0.166626 14.4165 0.916626 15.1665 1.83329 15.1665H15.1666C16.0833 15.1665 16.8333 14.4165 16.8333 13.4998V3.49984C16.8333 2.58317 16.0833 1.83317 15.1666 1.83317H12.525L11 0.166504H5.99996ZM8.49996 12.6665C6.19996 12.6665 4.33329 10.7998 4.33329 8.49984C4.33329 6.19984 6.19996 4.33317 8.49996 4.33317C10.8 4.33317 12.6666 6.19984 12.6666 8.49984C12.6666 10.7998 10.8 12.6665 8.49996 12.6665Z"
                             fill="black" fill-opacity="0.45" />
                     </svg>
-
+                    <img :src="topic_thumbnail" width="100%"/>
+                    </label>
                 </div>
 
             </div>
@@ -156,7 +160,7 @@
             <div class="setup-image-desc">
                 <label for="">Description</label>
                 <div class="image-desc">
-                    <textarea name="" id="" cols="55" rows="3" placeholder="Add Description"
+                    <textarea v-model="chatSetupOptions.topic.description" name="" id="" cols="55" rows="3" placeholder="Add Description"
                         style="height: 100%;"></textarea>
                 </div>
 
@@ -167,24 +171,107 @@
 
         <div class="setup-buttons">
             <button class="setup-buttons-1">Preview</button>
-            <button class="setup-buttons-2">Save</button>
+            <button @click="setupDiscussion()" class="setup-buttons-2">Save</button>
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 
 export default {
     name: 'TeacherChatSetup',
     data() {
         return {
-            activeItem: 'Community'
+            activeItem: 'Community',
+            chatSetupOptions: {
+                'is_community':false,
+                'is_event': false,
+                'is_topic': false,
+                'community': {},
+                'topic': {},
+                'event': {}
+            },
+            community_thumbnail: null,
+            topic_thumbnail: null,
         };
     },
     methods: {
+        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId']),
         show(val) {
             this.activeItem = val;
-        }
+        },
+        async setupDiscussion() {
+            //initializing form data
+            let setupOptions = new FormData()
+
+            //setting values with in formData
+            setupOptions.append('is_community', this.chatSetupOptions.is_community)
+            setupOptions.append('is_event', this.chatSetupOptions.is_event)
+            setupOptions.append('is_topic', this.chatSetupOptions.is_topic)
+
+            if (this.chatSetupOptions.is_community) {
+                setupOptions.append('community_post', JSON.stringify(this.chatSetupOptions.community))
+                if(this.chatSetupOptions.community_thumbnail)
+                setupOptions.append('community_thumbnail',this.chatSetupOptions.community_thumbnail['0'])
+            }
+            else if (this.chatSetupOptions.is_event) {
+                setupOptions.append('event_discussion', JSON.stringify(this.chatSetupOptions.event))
+            }
+            else if (this.chatSetupOptions.is_topic) {
+                setupOptions.append('topic_post', JSON.stringify(this.chatSetupOptions.topic))
+                if (this.chatSetupOptions.topic_thumbnail)
+                setupOptions.append('topic_thumbnail', this.chatSetupOptions.topic_thumbnail['0'])
+            }
+
+            // requesting backend
+            this.discussionSetup(setupOptions).then(async(res) => {
+                if (res.status === 201) {
+                    
+                    //setting discussion Id
+                    await this.setDiscussionId(res.data.discussionId)
+
+                    //clear all fields
+                    this.clearInputs()
+
+                    //  initializing chats 
+                     await this.initiateChat(res.data.discussionId)
+                    
+                     //redirect discussion when request is successfull 
+                     this.$router.push({name:'TeacherChatDiscussion'})
+                }
+            })
+            
+        },
+        clearInputs() {
+            this.chatSetupOptions.is_community = false
+            this.chatSetupOptions.community = {}
+            this.chatSetupOptions.is_event = false
+            this.chatSetupOptions.event = {}
+            this.chatSetupOptions.is_topic = false
+            this.chatSetupOptions.topic = {}
+            this.chatSetupOptions.community_thumbnail = null
+            this.chatSetupOptions.topic_thumbnail = null
+            this.community_thumbnail = null
+            this.topic_thumbnail= null
+
+            
+        },
+
+        fileInput(e, type) { 
+            if (e.target.files.length>0) {
+                this.chatSetupOptions[type] = e.target.files
+                switch (type) {
+                    case 'community_thumbnail':
+                        this.community_thumbnail = window.URL.createObjectURL(this.chatSetupOptions[type]['0'])
+                        break;
+                    case 'topic_thumbnail':
+                        this.topic_thumbnail = window.URL.createObjectURL(this.chatSetupOptions[type]['0'])
+                        break;
+                }
+            }
+         }
 
 
     }
@@ -544,4 +631,12 @@ li.active {
 li:hover {
     cursor: pointer;
 }
+
+::file-selector-button,.hidden {
+  display: none;
+}
+
+/* .file-input{
+    background: url('data:image/svg+xml,<svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M5.99996 0.166504L4.47496 1.83317H1.83329C0.916626 1.83317 0.166626 2.58317 0.166626 3.49984V13.4998C0.166626 14.4165 0.916626 15.1665 1.83329 15.1665H15.1666C16.0833 15.1665 16.8333 14.4165 16.8333 13.4998V3.49984C16.8333 2.58317 16.0833 1.83317 15.1666 1.83317H12.525L11 0.166504H5.99996ZM8.49996 12.6665C6.19996 12.6665 4.33329 10.7998 4.33329 8.49984C4.33329 6.19984 6.19996 4.33317 8.49996 4.33317C10.8 4.33317 12.6666 6.19984 12.6666 8.49984C12.6666 10.7998 10.8 12.6665 8.49996 12.6665Z" fill="black" fill-opacity="0.45" /> </svg>') no-repeat;
+} */
 </style>

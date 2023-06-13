@@ -710,3 +710,37 @@ class MembershipStudent(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['student', 'membership', 'created_at'], name='user_membership'),
         ]
+
+
+# class Community(models.Model):
+#     pass
+
+
+class Discussion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    title = models.CharField(max_length=255)
+    thumbnail = models.ImageField(upload_to='uploads/discussions/', null=True, blank=True)
+    type= models.CharField(max_length=100, choices=(
+        ("C", "COMMUNITY"),
+        ("E", "EVENT"),
+        ("T", "TOPIC"),
+    ), default="C")
+    users = models.ManyToManyField(User, blank=True, related_name="members")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class Comment(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, null=True, blank=True)
+    content = models.TextField()
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_reply = models.BooleanField(default=False)
+    top_comment = models.BooleanField(default=False) # FOR THE TOP COMMENT HANDLED AS DESCRIPTION
+
+    def __str__(self):
+        return f"{self.content[0:7]}... By {self.user}"
