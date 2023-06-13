@@ -21,3 +21,6 @@ google-auth==1.21.2
 google-auth-httplib2==0.0.4
 googleapis-common-protos==1.52.0
 django-cors-headers
+daphne
+channels
+channels_redis

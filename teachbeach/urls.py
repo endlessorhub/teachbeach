@@ -11,7 +11,7 @@ from main.views import (
     InitView, ClassMediaViewSet, TeacherProfileView,
     CityView, SearchClassView, LearnerView,
     ClassDetailsView, ZipView,
-    OrderView, PrivateEnrollView, GroupEnrollView,
+    OrderView, PrivateEnrollView, GroupEnrollView,  
     LearnerClassesView, TeacherStudentsView,
     TeacherClassesView, SelectedTeacherClassesView,
     TeacherStripeAccountView, StripeAddCardView,
@@ -38,6 +38,8 @@ from main.views import (
     StripeBuyMembershipView, MembershipByIdView, MembershipsListView, CompanyTeacherRequest, UpdateManagedStudent,
     StripeCancelMembershipView, CsvMembersExportView, TeacherCancelPrivateEnrollmentView,
     VueEditorUploadFileView, FacebookSignUp, GoogleSocialAuthView, StudentMembershipView,
+    DiscussionSetupView, DiscussionDetailView, DiscussionCommentView,
+    DiscussionAllListView
 )
 from . import views
 from .sitemaps import (
@@ -82,6 +84,7 @@ sitemaps = {
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("socket/", include("web_socket.urls")),
     # path('social-auth/', include('social_django.urls', namespace='social')),
     path('social/facebook/', csrf_exempt(FacebookSignUp.as_view()), name='facebook-auth'),
     path('social/google/', csrf_exempt(GoogleSocialAuthView.as_view()), name='google-auth'),
@@ -179,6 +182,14 @@ urlpatterns = [
     url(r'^api/company_teacher_request/', CompanyTeacherRequest.as_view()),
     url(r'^api/company_instructors/', CompanyInstructorsView.as_view()),
     url(r'^api/vue_editor_upload_file/', csrf_exempt(VueEditorUploadFileView.as_view())),
+
+    # DISCUSSION
+    url(r'^api/discussion-setup/', DiscussionSetupView.as_view()), # SETUP DISc.
+    url(r'^api/discussion/all/$', DiscussionAllListView.as_view()), # FETCH ALL DISc.
+    url(r'^api/discussion/(\d*)/$', DiscussionDetailView.as_view()), # LATEST DISc.
+    url(r'^api/discussion/$', DiscussionDetailView.as_view()), # SPECIFIC DISc.
+    url(r'^api/comments/(\d*)/$', DiscussionCommentView.as_view()), # DISc. Comments
+
     url(r'^api/', include(router.urls)),
 ]
 
