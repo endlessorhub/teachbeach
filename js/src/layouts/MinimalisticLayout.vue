@@ -58,7 +58,7 @@
         </v-list-tile>
     
         <v-list-tile
-            to="/dashboard/teach/teacher-chat-discussion"
+            @click="redirectToDiscussionPage()"
         >
             <v-list-tile-title >Discussions</v-list-tile-title>
         </v-list-tile>
@@ -501,6 +501,7 @@ export default {
         ...mapActions([
             'loadBelongingCompanyProfile',
         ]),
+        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat']),
         resetPasswordFormOpen(open) {
             if (open) {
                 this.passwordResetForm = true;
@@ -754,6 +755,15 @@ export default {
         switchLeftDrawerType() {
           this.$router.push(this.isTeacherLeftDrawer ? '/dashboard/learn' : '/dashboard/teach' );
         },
+        redirectToDiscussionPage() { 
+            this.loadRecentDiscussion().then(async(res) => { 
+                if (res.status === 200) { 
+                    await this.setDiscussionId(res.data.id)
+                    await this.initiateChat(res.data.id)
+                    this.$router.push({path:'/dashboard/teach/teacher-chat-discussion'})
+                }
+            })
+        }
     },
     computed: {
         ...mapGetters([

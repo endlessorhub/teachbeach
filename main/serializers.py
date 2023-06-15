@@ -9,6 +9,7 @@ from .models import (
     Message, DraftClass, CompanyProfile,
     Newsletter, BoostMembership, EmailBoost,
     Event, MetaTag, UserSettings, Membership, MembershipStudent,
+    Discussion, Comment
 )
 from . import facebook
 from . import google
@@ -720,3 +721,85 @@ class GoogleSocialAuthSerializer(serializers.Serializer):
         return register_social_user(
             provider=provider, user_id=user_id, email=email, name=name
         )
+
+
+# RECURSIVE FUNCTION TO CONVERT REDUCE REPLIES IN NESTED
+def get_all_comments(comment_lst, comment):
+    comment = Comment.objects.filter(reply=comment)
+    for c in comment:
+        comment_lst.append(c)
+        print(c)
+        get_all_comments(comment_lst, c)
+    return comment_lst
+
+
+class ReplyCommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    parent_comment_id = serializers.SerializerMethodField()
+
+    def get_parent_comment_id(self, instance):
+        return instance.reply.id
+    class Meta:
+        model = Comment
+        fields = [
+            "id", "created_at", "content", "user", 
+            "parent_comment_id" 
+        ]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField()
+    user = UserSerializer()
+
+    def get_replies(self, instance):
+        serializer = ReplyCommentSerializer(
+            get_all_comments([], instance), 
+            many=True
+        )
+        return serializer.data
+
+    class Meta:
+        model = Comment
+        fields = [
+            "id", "created_at", "content", "user", 
+            "replies"
+        ]
+
+
+class DiscussionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Discussion
+        fields = ['id', 'title', 'type']
+
+
+class DiscussionSetupserializer(serializers.Serializer):
+    is_community = serializers.BooleanField(default=False)
+    community_post = serializers.JSONField(required=False)
+    community_thumbnail = serializers.ImageField(required=False)
+    is_topic = serializers.BooleanField(default=False)
+    topic_post = serializers.JSONField(required=False)
+    topic_thumbnail = serializers.ImageField(required=False)
+    is_event = serializers.BooleanField(default=False)
+    event_post = serializers.JSONField(required=False)
+    event_thumbnail = serializers.ImageField(required=False)
+
+
+class DiscussionDetailSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    type = serializers.CharField(source='get_type_display')
+    top_comment = serializers.SerializerMethodField()
+
+    def get_top_comment(self, instance):
+        return CommentSerializer(
+            Comment.objects.filter(
+                top_comment=True, discussion=instance
+            ).first()
+        ).data
+
+    class Meta:
+        model = Discussion
+        fields = [
+            "id", "thumbnail", "title", "user",
+            "type", "created_at", "top_comment"
+        ]

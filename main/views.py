@@ -42,6 +42,7 @@ from .models import (
     Event, MetaTag, TeacherMessage, ChargeLog,
     AddStudent, CardError, UserSettings, DeletedStudent,
     ExternalCalendar, Membership, MembershipStudent,
+    Discussion, Comment
 )
 from .serializers import (
     TeacherSerializer, TeacherFullSerializer, VenueSerializer,
@@ -59,7 +60,9 @@ from .serializers import (
     ShortOrderSerializer, ClassLearnerNoDataClassSerializer,
     CompanyProfileWithClassesSerializer, UserSettingsSerializer,
     ManagedUserSerializer, MembershipSerializer, MembershipStudentSerializer,
-    FacebookSocialAuthSerializer, GoogleSocialAuthSerializer
+    FacebookSocialAuthSerializer, GoogleSocialAuthSerializer,
+    DiscussionSetupserializer, DiscussionDetailSerializer,
+    CommentSerializer, DiscussionListSerializer
 )
 from .filters import MessageUserFilter, UserFilter
 
@@ -4885,3 +4888,88 @@ class GoogleSocialAuthView(GenericAPIView):
         data = ((serializer.validated_data)['auth_token'])
         login(request, User.objects.get(username=data['username']))
         return Response(data, status=status.HTTP_200_OK)
+
+
+class DiscussionSetupView(APIView):
+    serializer_class = DiscussionSetupserializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        if data['is_community']:
+            post = data['community_post']
+            d = Discussion()
+            d.type = "C"
+            d.user = request.user
+            d.title = post['description']
+            if request.FILES.get("community_thumbnail", None):
+                d.thumbnail = request.FILES['community_thumbnail']
+            d.save()
+            d.users.add(request.user)
+            # COMMENT
+            c = Comment.objects.create(
+                user=request.user, 
+                discussion=d,
+                top_comment=True,
+                content=post['description']   
+            )
+
+        elif data['is_topic']:
+            pass
+        elif data['is_event']:
+            pass
+
+        return Response({
+            "detail": "Discussion Created.",
+            "discussion_id": d.id
+        }, status=status.HTTP_201_CREATED)
+
+
+class DiscussionAllListView(APIView):
+    serializer_class = DiscussionListSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        return Response(
+            self.serializer_class(
+                Discussion.objects.all(),
+                many=True
+            ).data,
+            status=status.HTTP_200_OK
+        )
+
+
+class DiscussionDetailView(APIView):
+    serializer_class = DiscussionDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk=None):
+        serializer = self.serializer_class(
+            Discussion.objects.get(id=pk)
+            if pk else 
+            Discussion.objects.last()
+        )
+        return Response(
+            serializer.data, 
+            status.HTTP_200_OK
+        )
+
+
+class DiscussionCommentView(APIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get(self, request, pk):
+        serializer = self.serializer_class(
+            Comment.objects.filter(
+                discussion__id=pk, 
+                top_comment=False,
+                is_reply=False
+            ), many=True
+        )
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
