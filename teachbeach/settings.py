@@ -42,6 +42,8 @@ ALLOWED_HOSTS = ['localhost', 'teachbeach.com', 'www.teachbeach.com', 'dev.teach
 # Application definition
 
 INSTALLED_APPS = [
+    'web_socket',
+    "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
     'main',
 
     "corsheaders",
+    "channels",
 ]
 
 AUTH_USER_MODEL = 'main.User'
@@ -204,3 +207,13 @@ GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRETS = os.environ.get('GOOGLE_CLIENT_SECRETS')
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+ASGI_APPLICATION = "teachbeach.asgi.application" #routing.py will be created later
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

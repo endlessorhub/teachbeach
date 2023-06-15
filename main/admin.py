@@ -13,7 +13,7 @@ from .models import (
     GlobalPackage, DraftClass, CompanyProfile, PrivateEnroll,
     TeacherProfileLog, UserCard, GroupEnroll, Newsletter,
     BoostMembership, Event, Payment, MetaTag, TeacherMessage,
-    PaymentByTeacher, EmailBoost, CardError,
+    PaymentByTeacher, EmailBoost, CardError, Discussion, Comment
 )
 from .forms import MetatagForm
 from teachbeach.forms import AdminUserChangeForm
@@ -230,4 +230,6 @@ admin.site.register(MetaTag, MetatagAdmin)
 admin.site.register(ClassLearner, ClassLearnerAdmin)
 admin.site.register(BoostMembership, BoostMembershipAdmin)
 admin.site.register(Class, ClassAdmin)
+admin.site.register(Discussion)
+admin.site.register(Comment)
 
