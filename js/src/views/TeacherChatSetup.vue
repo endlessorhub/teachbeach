@@ -198,7 +198,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId']),
+        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId','emptyChats']),
         show(val) {
             this.activeItem = val;
         },
@@ -230,13 +230,13 @@ export default {
                 if (res.status === 201) {
                     
                     //setting discussion Id
-                    await this.setDiscussionId(res.data.discussionId)
+                    await this.setDiscussionId(res.data.discussion_id)
 
                     //clear all fields
                     this.clearInputs()
 
-                    //  initializing chats 
-                     await this.initiateChat(res.data.discussionId)
+                    //clear all the chats
+                    this.emptyChats()
                     
                      //redirect discussion when request is successfull 
                      this.$router.push({name:'TeacherChatDiscussion'})
