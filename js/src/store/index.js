@@ -98,6 +98,9 @@ export default new Vuex.Store({
     haveMembership(state) {
       return state.user && state.user.membership;
     },
+    isCompanyAdmin(state) { 
+      return state.user.is_company_owner && state.user.is_company_owner;
+    }
   },
   mutations: {
     setLogoDimensions(state, { width, height }) {
@@ -193,6 +196,10 @@ export default new Vuex.Store({
       state.teacherGroupClass = null;
       state.teacherCreateMembership = false;
       state.lastLesson = null;
+      state.chatDiscussion.chat = []
+      state.chatDiscussion.webSocketConnection= null,
+      state.chatDiscussion.discussionI= null,
+      state.chatDiscussion.discussionPermission='not allowed'
     },
     setTeacherLessonType(state, teacherLessonType) {
       state.teacherLessonType = teacherLessonType;
