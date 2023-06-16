@@ -58,10 +58,18 @@
         </v-list-tile>
     
         <v-list-tile
+                to="/dashboard/teach/teacher-chat-setup"
+            >
+                <v-list-tile-title >Chat Setup</v-list-tile-title>
+            </v-list-tile>
+            
+        <v-list-tile
             @click="redirectToDiscussionPage()"
+
         >
             <v-list-tile-title >Discussions</v-list-tile-title>
         </v-list-tile>
+
         <v-list-tile to="/dashboard/teach/new_crm">
             <v-list-tile-title>CRM</v-list-tile-title>
         </v-list-tile>
@@ -475,6 +483,13 @@ export default {
             this.subcategory = Number(this.$route.params.subcategory)
         }
         this.restoreUser()
+
+        //load the most recent discussion of the user
+        this.loadRecentDiscussion().then(async (res) => {
+            if (res.status === 200) {
+                await this.setDiscussionId(res.data.id)
+            }
+        })
     },
     mounted() {
 
@@ -755,15 +770,10 @@ export default {
         switchLeftDrawerType() {
           this.$router.push(this.isTeacherLeftDrawer ? '/dashboard/learn' : '/dashboard/teach' );
         },
-        redirectToDiscussionPage() { 
-            this.loadRecentDiscussion().then(async(res) => { 
-                if (res.status === 200) { 
-                    await this.setDiscussionId(res.data.id)
-                    await this.initiateChat(res.data.id)
-                    this.$router.push({path:'/dashboard/teach/teacher-chat-discussion'})
-                }
-            })
+        async redirectToDiscussionPage() { 
+            this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
         }
+
     },
     computed: {
         ...mapGetters([
@@ -797,6 +807,7 @@ export default {
             'belongingCompanyProfile',
             'isLogoCompanyProfileChecked',
         ]),
+        ...mapGetters('chatDiscussion',['discussionId']),
         membershipSettingsDict() {
           return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({...acc, [v.id]: v}), {}) : {};
         },

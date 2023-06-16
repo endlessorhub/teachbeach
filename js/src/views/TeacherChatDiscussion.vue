@@ -249,8 +249,11 @@ export default {
 
         //loading previous discussions on this post
         await this.loadPreviousChats(this.discussionId)
+        // join web socket
+        await this.initiateChat(this.discussionId)
         
     },
+
     mounted() {
         // Get all the toggle buttons and related questions elements
         const toggleButtons = document.querySelectorAll('.related-questions');
@@ -272,8 +275,12 @@ export default {
         }
 
     },
+    beforeDestroy() { 
+        this.closeSocket()
+    },
     methods: {
-        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats"]),
+
+        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket']),
         show(val) {
             this.activeItem = val;
         },
