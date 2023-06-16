@@ -74,65 +74,70 @@ const mutations = {
     
     // sort the discussion array in descending order according to created_at(time) attribute 
     state.chat = state.chat.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    console.log(state.chat)
+
 
   },
   setWSConnection(state, connection) {
-    state.webSocketConnection = connection
+    state.webSocketConnection = connection;
   },
-  setDiscussionId(state, discussionId) { 
-    state.discussionId = discussionId
+  setDiscussionId(state, discussionId) {
+    state.discussionId = discussionId;
   },
-  loadPreviousChat(state, previousChats) { 
-    state.chat = [...previousChats]
-    
+  loadPreviousChat(state, previousChats) {
+    state.chat = [...previousChats];
+
     // sort the discussion array in descending order according to created_at(time) attribute
     state.chat = state.chat.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
-  }
+  },
 };
 
 const actions = {
-  initiateChat({ commit }, discussionId) { 
+  initiateChat({ commit }, discussionId) {
     const connection = new WebSocket(
       `${process.env.BASE_WEB_SOCKET_URL}/${discussionId}/`
     );
-    connection.onopen=() => { 
-      commit('setWSConnection', connection);
-      connection.onmessage=(message) => {
-        commit("pushMessage", JSON.parse(message.data)); 
-    }
-    }
+    connection.onopen = () => {
+      commit("setWSConnection", connection);
+      connection.onmessage = (message) => {
+        commit("pushMessage", JSON.parse(message.data));
+      };
+    };
   },
   receiveMessage(commit, message) {
-    commit('pushMessage',message)  
+    commit("pushMessage", message);
   },
-  sendMessage({ state}, payload) {
-    if (state.webSocketConnection) { 
-        state.webSocketConnection.send(JSON.stringify(payload))
+  sendMessage({ state }, payload) {
+    if (state.webSocketConnection) {
+      state.webSocketConnection.send(JSON.stringify(payload));
     }
-   },
-  async loadPreviousChats({ commit }, discussionId) { 
-    const response = await axios.get(`api/comments/${discussionId}/`);
-    if (response.status === 200)
-      commit('loadPreviousChat',response.data)
   },
-  discussionSetup(_, setupOption) { 
+  async loadPreviousChats({ commit }, discussionId) {
+    const response = await axios.get(`/api/comments/${discussionId}/`);
+    if (response.status === 200) commit("loadPreviousChat", response.data);
+  },
+  discussionSetup(_, setupOption) {
     return axios.post("/api/discussion-setup/", setupOption);
   },
-  setDiscussionId({ commit }, discussionId) { 
-    commit('setDiscussionId',discussionId)
+  setDiscussionId({ commit }, discussionId) {
+    commit("setDiscussionId", discussionId);
   },
-  loadDicussionDetails(_, discussionId) { 
-    return axios.get(`api/discussion/${discussionId}/`);
+  loadDicussionDetails(_, discussionId) {
+    return axios.get(`/api/discussion/${discussionId}/`);
   },
-  loadAllDiscussionTitles(_, payload=null) { 
-    return axios.get('api/discussion/all')
+  loadAllDiscussionTitles(_, payload = null) {
+    return axios.get("/api/discussion/all/");
   },
-  loadRecentDiscussion(_, payload=null) { 
-    return axios.get('api/discussion')  
-  }
+  loadRecentDiscussion(_, payload = null) {
+    return axios.get("/api/discussion/");
+  },
+  closeSocket({ state }) {
+    if (state.webSocketConnection) state.webSocketConnection.close();
+  },
+  emptyChats({ commit }) {
+    commit("emptyChat");
+  },
 };
 
 const getters = {
