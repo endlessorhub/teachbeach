@@ -4915,6 +4915,15 @@ class DiscussionSetupView(APIView):
                 top_comment=True,
                 content=post['description']   
             )
+            # ADD PARTICIPANT
+            if post['participants'] == 'members':
+                d.users.add(
+                    *MembershipStudent.objects.filter(
+                        membership__owner_user=request.user,
+                        status='active'
+                    ).values('student')
+                )
+                print(d.users.all())
 
         elif data['is_topic']:
             pass
@@ -4946,15 +4955,26 @@ class DiscussionDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk=None):
-        serializer = self.serializer_class(
-            Discussion.objects.get(id=pk)
-            if pk else 
-            Discussion.objects.last()
-        )
-        return Response(
-            serializer.data, 
-            status.HTTP_200_OK
-        )
+        if pk:
+            d = Discussion.objects.get(id=pk)
+            allowed = request.user in d.users.all()
+        else:
+            d_filter =  Discussion.objects.filter(
+                users__in=[request.user]
+            )
+            d = d_filter.last() if d_filter.exists() else ""
+            allowed = True if d_filter.exists() else False
+
+        if allowed:
+            return Response(
+                self.serializer_class(d).data,
+                status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"message": "No Description available for you."}, 
+                status.HTTP_204_NO_CONTENT
+            )
 
 
 class DiscussionCommentView(APIView):

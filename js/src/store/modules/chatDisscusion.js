@@ -1,15 +1,16 @@
 import axios from "axios";
 const state = () => ({
-  chat:[],
+  chat: [],
   webSocketConnection: null,
-  discussionId:null
+  discussionId: null,
+  discussionPermission:'not allowed'
 });
 
 const mutations = {
 
   pushMessage(state, discussionMessage) {
     let replyPushed = false;
-    let parentIdentified = false
+    let parentIdentified = false;
 
     // adding child if reply is for the main comment
     if (state.chat.length > 0) {
@@ -22,60 +23,53 @@ const mutations = {
             replyPushed = true;
             parentIdentified = true;
             chat.replies.push(discussionMessage);
-            return chat
-          }
-          else {
+            return chat;
+          } else {
             replyPushed = true;
             parentIdentified = true;
             chat.replies = [];
             chat.replies.push(discussionMessage);
-            return chat
+            return chat;
           }
-        }
-        else {
-          return chat
+        } else {
+          return chat;
         }
       });
-      
+
       // adding child if it is the reply to a reply
-      if (!parentIdentified) { 
+      if (!parentIdentified) {
         if (discussionMessage.parent_comment_id)
-          //loop through all the main comments 
-          state.chat = state.chat.map(parent => {
+          //loop through all the main comments
+          state.chat = state.chat.map((parent) => {
             // check for replies array
-            if (Object.hasOwn(parent, "replies")) { 
+            if (Object.hasOwn(parent, "replies")) {
+              // find index of the parent reply whose id matches the id of child reply
+              const index = parent.replies.findIndex(
+                (reply) => reply.id === discussionMessage.parent_comment_id
+              );
 
-            // find index of the parent reply whose id matches the id of child reply
-            const index = parent.replies.findIndex(
-              (reply) => reply.id === discussionMessage.parent_comment_id
-            );
-              
-            // if found add the child reply next to preant reply with in the array
-            if (index >= 0) {
-              parent.replies.splice(index + 1, 0, discussionMessage)
-              parentIdentified = true
-              replyPushed = true
-            
+              // if found add the child reply next to preant reply with in the array
+              if (index >= 0) {
+                parent.replies.splice(index + 1, 0, discussionMessage);
+                parentIdentified = true;
+                replyPushed = true;
+              }
             }
-          }
-          return parent
-
-        })
+            return parent;
+          });
       }
 
       // if the message is neither the reply of main comment nor the child reply of a reply
-      if (!replyPushed)
-        state.chat.push(discussionMessage);
+      if (!replyPushed) state.chat.push(discussionMessage);
     }
 
     // if it is the first comment of the discussion
-    else
-      state.chat.push(discussionMessage)
-    
-    // sort the discussion array in descending order according to created_at(time) attribute 
-    state.chat = state.chat.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    else state.chat.push(discussionMessage);
 
-
+    // sort the discussion array in descending order according to created_at(time) attribute
+    state.chat = state.chat.sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
   },
   setWSConnection(state, connection) {
     state.webSocketConnection = connection;
@@ -91,6 +85,9 @@ const mutations = {
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
   },
+  setDiscussionPermission(state, permission) { 
+    state.discussionPermission = permission
+  }
 };
 
 const actions = {
@@ -138,11 +135,15 @@ const actions = {
   emptyChats({ commit }) {
     commit("emptyChat");
   },
+  setDiscussionPermission({ commit }, permission) { 
+    commit('setDiscussionPermission',permission)
+  }
 };
 
 const getters = {
   chatMessages: (state) => state.chat,
-  discussionId: (state) => state.discussionId
+  discussionId: (state) => state.discussionId,
+  discussionPermission: (state) => state.discussionPermission
 }
 
 export default {

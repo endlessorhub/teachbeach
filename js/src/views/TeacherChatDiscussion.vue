@@ -1,6 +1,6 @@
 <template>
-    <div class="Discussion-divider">
-        <div class="ChatContainer">
+    <div class="Discussion-divider" >
+        <div class="ChatContainer" v-if="discussionPermission==='allowed'">
             <div class="header-selection">
                 <h3>Discussions</h3>
                 <div class="selector-options">
@@ -37,6 +37,13 @@
 
         </div>
 
+        <div class="ChatContainer" v-else>
+            <div class="ChatContainer-ChatGroup">
+                <div class="ChatContainer-WelcomeTab">
+                    <h4 class="WelcomeTab-h2">No Discussion</h4>
+                </div>
+                </div>
+        </div>
 
         <div class="ModuleContainer">
             <div class="related-questions">
@@ -235,22 +242,26 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages','discussionId'])
+        ...mapGetters('chatDiscussion', ['chatMessages','discussionId','discussionPermission'])
     },
     async created() { 
 
-         // load the description of the post
-        const res = await this.loadDicussionDetails(this.discussionId)
-        if (res.status === 200) {
-            this.descriptionDetails = res.data.top_comment
-            this.thumbnail = res.data.thumbnail
+        if (this.discussionPermission === 'allowed') {
+            // load the description of the post
+            const res = await this.loadDicussionDetails(this.discussionId)
+            if (res.status === 200) {
+                this.descriptionDetails = res.data.top_comment
+                this.thumbnail = res.data.thumbnail
+            }
+
+
+            //loading previous discussions on this post
+            await this.loadPreviousChats(this.discussionId)
+
+            // join web socket
+            await this.initiateChat(this.discussionId)
         }
-
-
-        //loading previous discussions on this post
-        await this.loadPreviousChats(this.discussionId)
-        // join web socket
-        await this.initiateChat(this.discussionId)
+        
         
     },
 
