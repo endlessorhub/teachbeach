@@ -198,7 +198,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId','emptyChats']),
+        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId','emptyChats','setDiscussionPermission']),
         show(val) {
             this.activeItem = val;
         },
@@ -237,7 +237,10 @@ export default {
 
                     //clear all the chats
                     this.emptyChats()
-                    
+
+                    // set discussion permission 
+                    this.setDiscussionPermission('allowed')
+
                      //redirect discussion when request is successfull 
                      this.$router.push({name:'TeacherChatDiscussion'})
                 }

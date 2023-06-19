@@ -25,6 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
     company_profile = serializers.SerializerMethodField()
     memberships = serializers.SerializerMethodField()
     membership = serializers.SerializerMethodField(required=False)
+    is_company_owner = serializers.SerializerMethodField()
 
     def validate_email(self, value):
         try:
@@ -33,9 +34,15 @@ class UserSerializer(serializers.ModelSerializer):
             return value.lower()
         raise serializers.ValidationError("User with this email already exists")
 
+    def get_is_company_owner(self, instance):
+        return True if CompanyProfile.objects.filter(
+            user=instance
+        ).exists() else False
+
     def get_company_profile(self, instance):
-        if instance.belongs_to:
-            company = CompanyProfile.objects.get(pk=instance.belongs_to)
+        cp = CompanyProfile.objects.filter(user=instance)
+        if cp.exists():
+            company = cp.first()
             try:
                 return CompanyProfileSerializer(company).data
             except ObjectDoesNotExist:
@@ -82,7 +89,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'password', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'timezone', 'lat', 'lng', 'tz_address', 'class_id', 'memberships', 'membership', 'belongs_to', 'source', 'notes')
+        fields = ('id', 'password', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'timezone', 'lat', 'lng', 'tz_address', 'class_id', 'memberships', 'membership', 'belongs_to', 'source', 'notes',
+                  "is_company_owner"
+                )
 
 
 class ManagedUserSerializer(UserSerializer):

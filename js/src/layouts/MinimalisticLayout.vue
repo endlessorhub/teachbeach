@@ -57,12 +57,13 @@
             <v-list-tile-title>Services</v-list-tile-title>
         </v-list-tile>
     
-        <v-list-tile
+        <v-list-tile 
+        v-if="isCompanyAdmin"
                 to="/dashboard/teach/teacher-chat-setup"
             >
                 <v-list-tile-title >Chat Setup</v-list-tile-title>
             </v-list-tile>
-            
+             
         <v-list-tile
             @click="redirectToDiscussionPage()"
 
@@ -492,7 +493,16 @@ export default {
         })
     },
     mounted() {
-
+         //load the most recent discussion of the user
+        this.loadRecentDiscussion().then(async (res) => {
+            if (res.status === 200) {
+                await this.setDiscussionId(res.data.id)
+                await this.setDiscussionPermission('allowed')
+            }
+            else if (res.status === 204) {
+                await this.setDiscussionPermission('not allowed')
+            }
+        })
     },
     methods: {
         ...mapMutations([
@@ -516,7 +526,7 @@ export default {
         ...mapActions([
             'loadBelongingCompanyProfile',
         ]),
-        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat']),
+        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat','setDiscussionPermission']),
         resetPasswordFormOpen(open) {
             if (open) {
                 this.passwordResetForm = true;
@@ -770,8 +780,20 @@ export default {
         switchLeftDrawerType() {
           this.$router.push(this.isTeacherLeftDrawer ? '/dashboard/learn' : '/dashboard/teach' );
         },
-        async redirectToDiscussionPage() { 
-            this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
+        async redirectToDiscussionPage() {
+             //load the most recent discussion of the user
+            this.loadRecentDiscussion().then(async (res) => {
+                if (res.status === 200) {
+                    await this.setDiscussionId(res.data.id)
+                    await this.setDiscussionPermission('allowed')
+                    this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
+                }
+                else if (res.status === 204) {
+                    await this.setDiscussionPermission('not allowed')
+                    this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
+                }
+            })
+            
         }
 
     },
@@ -782,6 +804,7 @@ export default {
             'isTeacher',
             'isLearner',
             'isTeacherOfCompany',
+            'isCompanyAdmin'
         ]),
         ...mapState('viewingCompany', [
             'company',
@@ -807,7 +830,7 @@ export default {
             'belongingCompanyProfile',
             'isLogoCompanyProfileChecked',
         ]),
-        ...mapGetters('chatDiscussion',['discussionId']),
+        ...mapGetters('chatDiscussion',['discussionId','discussionPermission']),
         membershipSettingsDict() {
           return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({...acc, [v.id]: v}), {}) : {};
         },
