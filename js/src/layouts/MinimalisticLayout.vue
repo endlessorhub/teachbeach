@@ -485,6 +485,7 @@ export default {
         }
         this.restoreUser()
 
+        if(this.isLoggedIn)
         //load the most recent discussion of the user
         this.loadRecentDiscussion().then(async (res) => {
             if (res.status === 200) {
@@ -493,6 +494,7 @@ export default {
         })
     },
     mounted() {
+        if (this.isLoggedIn)
          //load the most recent discussion of the user
         this.loadRecentDiscussion().then(async (res) => {
             if (res.status === 200) {
