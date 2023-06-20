@@ -135,13 +135,14 @@
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="search-bar">
+      <div v-if="false" class="search-bar">
         <input type="text" placeholder="search">
         <img src="../../../image/searchicon.png" alt="">
       </div>
      
       <v-toolbar-items class="hidden-md-and-down">
         <a
+          v-if="isLoggedIn"
           class="switch-dashboard-link"
           @click="switchLeftDrawerType"
         >{{ isTeacherLeftDrawer ? "Switch to member" : "Switch to admin" }}</a>
@@ -840,7 +841,7 @@ export default {
           return this.memberships ? this.memberships.map(v => ({value: v.id, text: this.membershipSettingsDict[v.membership].name})) : [];
         },
         leftDrawerType() {
-            if (this.$route.path.includes("/dashboard/teach")) return LEFT_DRAWER_TYPE.TEACH;
+            if (this.$route.path.includes("/dashboard/teach") || this.$route.path.includes("/teachers")) return LEFT_DRAWER_TYPE.TEACH;
             return LEFT_DRAWER_TYPE.LEARN
         },
         isTeacherLeftDrawer() {
