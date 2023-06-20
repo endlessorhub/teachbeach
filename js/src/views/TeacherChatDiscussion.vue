@@ -14,7 +14,7 @@
 
             <div class="ChatContainer-ChatGroup">
             <div class="ChatContainer-WelcomeTab">
-                <img :src="thumbnail" alt="">
+                <img :src="thumbnail" alt=""  class="upload-image">
                 <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
                 <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
                 <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
