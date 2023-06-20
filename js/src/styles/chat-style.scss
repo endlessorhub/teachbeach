@@ -108,6 +108,15 @@ body{
 	border-radius: 10px;
 	background: white;
 	padding-bottom: 0.3rem;
+	.upload-image {
+		width: 833px;
+		height: auto;
+		background-color: rgb(243, 241, 241);
+		max-height: 400px;
+		object-fit: contain;
+		display: block;
+		margin: 0 auto;
+	}
 }
 .WelcomeTab-h2 {
 	font-size: 36px;
