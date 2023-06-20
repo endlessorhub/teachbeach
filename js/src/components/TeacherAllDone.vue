@@ -158,7 +158,7 @@ export default {
             //this.$emit('update:step', 1, {isEditMode: false})
         },
         preview() {
-            this.$emit('update:step', 16)
+            this.$emit('update:step', 17)
         },
         back() {
             this.$emit('prev:step')
