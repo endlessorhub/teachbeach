@@ -3,7 +3,7 @@ const state = () => ({
   chat: [],
   webSocketConnection: null,
   discussionId: null,
-  discussionPermission:'not allowed'
+  discussionPermission:'allowed'
 });
 
 const mutations = {
