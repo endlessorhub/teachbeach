@@ -66,6 +66,28 @@ const mutations = {
     // if it is the first comment of the discussion
     else state.chat.push(discussionMessage);
 
+    //if an image is uploaded in a comment
+    if(Object.hasOwn(discussionMessage, "image_url")){
+      state.chat = state.chat.map(chat=>{
+        if(chat.id=discussionMessage.comment_id){
+          chat.image = discussionMessage.image_url
+          return chat
+        }
+        else if(Object.hasOwn(chat, "replies")){
+          chat  = chat.map(replies=>{
+            if(replies.id===discussionMessage.comment_id){
+              replies.image = discussionMessage.image_url
+              return replies
+            }
+          })
+          return chat
+        }
+        else{
+          return chat
+        }
+      })
+    }
+
     // sort the discussion array in descending order according to created_at(time) attribute
     state.chat = state.chat.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
