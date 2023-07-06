@@ -1,5 +1,9 @@
 import json
 from time import time
+from datetime import datetime
+import base64
+
+from django.core.files.base import ContentFile
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -46,6 +50,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             comment_data = await self.create_comment_obj(text_data_json)
         if type == 'REPLY':
             comment_data = await self.create_comment_reply_obj(text_data_json)
+        if type == 'IMAGE':
+            comment_data = await self.create_comment_image_obj(text_data_json)
 
         await self.channel_layer.group_send(
             self.discussion, {
@@ -100,5 +106,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "user": UserSerializer(c.user).data,
             "content": c.content,
             "parent_comment_id": c.reply.id,
-            "created_at": str(c.created_at)
+            "created_at": str(c.created_at),
+        }
+
+    @database_sync_to_async
+    def create_comment_image_obj(self, data):
+        print('ATTACHING IMAGE')
+        c = Comment.objects.get(id=data['comment_id'])
+
+        format, imgstr = data['image_data'].split(';base64,')
+        file_name = datetime.now().strftime('%Y%m-%d%H-%M%S') + "." + format.split('/')[-1]
+        image = ContentFile(base64.b64decode(imgstr))
+
+        c.image.save(file_name, image, save=True)
+        return {
+            "comment_id": c.id,
+            "image_url": c.image.url
         }
