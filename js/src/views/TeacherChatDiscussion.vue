@@ -34,9 +34,9 @@
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion"/>
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage"/>
                 <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"/>
+                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage"/>
                 <div class="ChatContainer-Divider"></div>
             </div>
             <!-- chat container where all the text messages displayed =========== -->
@@ -323,6 +323,10 @@ export default {
                 this.isReply = false
             }
         },
+        uploadImage(payload){
+            console.log(payload)
+            this.sendMessage(payload)
+        }
     },
 }
 

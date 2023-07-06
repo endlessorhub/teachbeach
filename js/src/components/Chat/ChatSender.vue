@@ -39,7 +39,7 @@
                             </span>
 
                             <span>
-                                <input type="file" id="comment_image_upload" accept="image/png, image/gif, image/jpeg"  class="hidden"  @change="fileInput($event, 'community_thumbnail')" />
+                                <input type="file" id="comment_image_upload" accept="image/png, image/gif, image/jpeg"  class="hidden"  @change="fileInput($event, message.id)" />
                                     <label for="comment_image_upload">
                                     <svg width="10" height="16" viewBox="0 0 10 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -132,19 +132,25 @@ export default {
             this.$emit('sendReply',message)
         },
 
-        // fileInput(e, type) {
-        //     if (e.target.files.length > 0) {
-        //         this.chatSetupOptions[type] = e.target.files
-        //         switch (type) {
-        //             case 'community_thumbnail':
-        //                 this.community_thumbnail = window.URL.createObjectURL(this.chatSetupOptions[type]['0'])
-        //                 break;
-        //             case 'topic_thumbnail':
-        //                 this.topic_thumbnail = window.URL.createObjectURL(this.chatSetupOptions[type]['0'])
-        //                 break;
-        //         }
-        //     }
-        // }
+        fileInput(e, chatId) {
+            let base64Image = undefined
+            let payload = {
+                comment_id:chatId,
+                type:'IMAGE',
+            }
+            
+            if (e.target.files.length > 0) {
+                console.log(e.target.files[0])
+                const  uploadedImage = e.target.files['0']
+                const reader = new FileReader();
+                reader.onload = () => {
+        base64Image = reader.result;
+        payload.image_data =base64Image
+        this.$emit('uploadImage',payload)
+      };
+      reader.readAsDataURL(uploadedImage);
+            }
+        }
     }
 }
 </script>
