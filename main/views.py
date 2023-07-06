@@ -1042,10 +1042,14 @@ class InitView(APIView):
         learner_needs = None
         has_order = False
         last_lesson = None
+        view_discussion_tab = False
         if request.user.is_authenticated:
             user_data = UserSerializer(request.user).data
             teachers = Teacher.objects.filter(user=request.user)
             cl = ClassLearner.objects.filter(user=request.user).last()
+            view_discussion_tab = True if Discussion.objects.filter(
+                users__in=[request.user]
+            ).exists() else False
             if cl:
                 learner_needs = cl.learnerNeeds
                 has_order = True
@@ -1064,6 +1068,7 @@ class InitView(APIView):
             'learner_needs': learner_needs,
             'has_order': has_order,
             'last_lesson': last_lesson,
+            "view_discussion_tab": view_discussion_tab
         }
         return Response(data)
 
