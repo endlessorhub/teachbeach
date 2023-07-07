@@ -25,7 +25,7 @@
                     <div class="ChatContainer-Divider"></div>         
                 </div>
                 <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
+                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" @uploadImage="uploadImage" />
             </div>
             </div>
 
@@ -34,9 +34,9 @@
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage"/>
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage"/>
+                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 <div class="ChatContainer-Divider"></div>
             </div>
             <!-- chat container where all the text messages displayed =========== -->

@@ -65,7 +65,6 @@
             </v-list-tile>
              
         <v-list-tile
-            v-if="discussionPermission"
             @click="redirectToDiscussionPage()"
 
         >
@@ -824,7 +823,8 @@ export default {
             'isTeacher',
             'isLearner',
             'isTeacherOfCompany',
-            'isCompanyAdmin'
+            'isCompanyAdmin',
+            'showDiscussionTab',
         ]),
         ...mapState('viewingCompany', [
             'company',
