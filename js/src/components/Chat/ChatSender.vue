@@ -149,7 +149,8 @@ export default {
                 base64Image = reader.result;
                 payload.image_data = base64Image
 
-        this.$emit('uploadImage',payload)
+                    this.$emit('uploadImage', payload)
+                    
       };
       reader.readAsDataURL(uploadedImage);
             }

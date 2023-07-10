@@ -33,10 +33,11 @@
             <PostMessage @onEnter="sendDiscussion" />
 
             <!-- chat container where all the text messages displayed =========== -->
-            <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
-                <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+            <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" />
+                <div v-for="reply in message.replies" :key="reply.id">
+                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                </div>
                 <div class="ChatContainer-Divider"></div>
             </div>
             <!-- chat container where all the text messages displayed =========== -->
@@ -238,7 +239,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages','discussionId','discussionPermission'])
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission']),
+        chat: {
+            get() {
+                return this.chatMessages
+            },
+            deep:true
+             
+         }
     },
     async created() { 
 
@@ -287,7 +295,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket']),
+        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket',"setReplyParentId"]),
         show(val) {
             this.activeItem = val;
         },
@@ -323,10 +331,9 @@ export default {
                 this.isReply = false
             }
         },
-        uploadImage(payload){
-            console.log(payload)
-            this.sendMessage(payload)
-        }
+        async uploadImage(payload){
+            await this.sendMessage(payload)
+        },
     },
 }
 
