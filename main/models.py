@@ -738,6 +738,7 @@ class Comment(models.Model):
     discussion = models.ForeignKey(Discussion, on_delete=models.CASCADE, null=True, blank=True)
     content = models.TextField()
     reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to='uploads/chat/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_reply = models.BooleanField(default=False)
     top_comment = models.BooleanField(default=False) # FOR THE TOP COMMENT HANDLED AS DESCRIPTION

@@ -107,12 +107,12 @@
             <v-list-tile-title>Activities</v-list-tile-title>
         </v-list-tile>
         
-        <v-list-tile
+        <!-- <v-list-tile
           v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isChatEnabled"
           to="/dashboard/learn/chat-setup"
         >
           <v-list-tile-title>Chat Set-Up</v-list-tile-title>
-        </v-list-tile>
+        </v-list-tile> -->
         <v-list-tile
         v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isDMEnabled"
           to="/dashboard/learn/chat-discussion"
@@ -446,6 +446,7 @@ export default {
             minRegFormMode: 'register',
             drawer: true,
             mini: false,
+            // showDiscussion:true
         }
     },
     created() {
@@ -485,16 +486,9 @@ export default {
             this.subcategory = Number(this.$route.params.subcategory)
         }
         this.restoreUser()
-
-        if(this.isLoggedIn)
-        //load the most recent discussion of the user
-        this.loadRecentDiscussion().then(async (res) => {
-            if (res.status === 200) {
-                await this.setDiscussionId(res.data.id)
-            }
-        })
+        
     },
-    mounted() {
+    async mounted() {
         if (this.isLoggedIn)
          //load the most recent discussion of the user
         this.loadRecentDiscussion().then(async (res) => {
@@ -649,6 +643,16 @@ export default {
                     // load company profile and set it's logo
                     await this.loadBelongingCompanyProfile(init.data.user.belongs_to);
                 }
+                //load discussion id 
+                this.loadRecentDiscussion().then(async (res) => {
+                    if (res.status === 200) {
+                        await this.setDiscussionId(res.data.id)
+                        await this.setDiscussionPermission('allowed')
+                    }
+                    else if (res.status === 204) {
+                        await this.setDiscussionPermission('not allowed')
+                    }
+                })
             }
             if(this.isLoggedIn && this.loginFormOpened) {
                 // close login since already logged in
@@ -791,12 +795,24 @@ export default {
                     await this.setDiscussionPermission('allowed')
                     this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
                 }
-                else if (res.status === 204) {
+                else if (res.status === 204 && this.isCompanyAdmin) {
                     await this.setDiscussionPermission('not allowed')
-                    this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
+                    this.$router.push({ path: '/dashboard/teach/teacher-chat-setup' })
                 }
             })
             
+        },
+        showDiscussion() {
+            console.log(this.isCompanyAdmin)
+            if (this.isCompanyAdmin) {
+                return true
+            }
+            else if (this.discussionPermission === 'not allowed') {
+                return false
+            }
+            else if (this.discussionPermission === 'allowed') {
+                return true
+            }
         }
 
     },
@@ -807,7 +823,8 @@ export default {
             'isTeacher',
             'isLearner',
             'isTeacherOfCompany',
-            'isCompanyAdmin'
+            'isCompanyAdmin',
+            'showDiscussionTab',
         ]),
         ...mapState('viewingCompany', [
             'company',
@@ -988,7 +1005,7 @@ export default {
         companySlug() {
             if (this.$route.name === 'classpage') return this.company && this.company.id;
             return this.$route.params.slug || this.$route.params.id;
-        },
+        }
     },
     watch: {
         city(newCity) {
