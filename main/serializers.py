@@ -752,7 +752,7 @@ class ReplyCommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             "id", "created_at", "content", "user", 
-            "parent_comment_id" 
+            "parent_comment_id", "image" 
         ]
 
 
@@ -771,7 +771,7 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = [
             "id", "created_at", "content", "user", 
-            "replies"
+            "replies", "image"
         ]
 
 

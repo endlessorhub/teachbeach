@@ -100,7 +100,10 @@ export default new Vuex.Store({
     },
     isCompanyAdmin(state) { 
       return state.user.is_company_owner && state.user.is_company_owner;
-    }
+    },
+    showDiscussionTab(state) {
+      return state.view_discussion_tab
+     }
   },
   mutations: {
     setLogoDimensions(state, { width, height }) {

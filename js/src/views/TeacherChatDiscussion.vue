@@ -15,9 +15,17 @@
             <div class="ChatContainer-ChatGroup">
             <div class="ChatContainer-WelcomeTab">
                 <img :src="thumbnail" alt="" class="upload-image">
-                <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
+                <div class="WelcomeTab-AdminModule">
+
+                    <div class="AdminModule-Person">
+                        <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
+                        <span>14 MARCH, 2023</span>
+                    </div>
+                    <p>You’re in The Business Expansion Event!</p>
+                    <div class="ChatContainer-Divider"></div>         
+                </div>
                 <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
+                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" @uploadImage="uploadImage" />
             </div>
             </div>
 
@@ -25,10 +33,11 @@
             <PostMessage @onEnter="sendDiscussion" />
 
             <!-- chat container where all the text messages displayed =========== -->
-            <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion"/>
-                <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                    :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"/>
+            <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" />
+                <div v-for="reply in message.replies" :key="reply.id">
+                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                </div>
                 <div class="ChatContainer-Divider"></div>
             </div>
             <!-- chat container where all the text messages displayed =========== -->
@@ -37,16 +46,8 @@
 
         </div>
 
-        <div class="ChatContainer" v-else>
-            <div class="ChatContainer-ChatGroup">
-                <div class="ChatContainer-WelcomeTab">
-                    <h4 class="WelcomeTab-h2">No Discussion</h4>
-                </div>
-                </div>
-        </div>
-
         <div class="ModuleContainer">
-            <div class="related-questions">
+            <!-- <div class="related-questions">
                 <div class="toggle">
                     <div class="toggle-module">
                         <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,19 +63,15 @@
 
                 </div>
                 <ul>
-                    <!-- side arrow -->
-                    <!-- <svg class="toggle-side-arrow" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.5 0.5V14.5H15.5" stroke="#E6E6E6" />
-                    </svg> -->
                     <li><a href="#">24 MAR - Activity Name</a></li>
 
                     <li><a href="#">14 APR - Activity Name</a></li>
                 </ul>
             </div>
-            <div class="small-divider"></div>
+            <div class="small-divider"></div> -->
 
             <div class="related-questions">
-                <div class="toggle">
+              <!--   <div class="toggle">
                     <div class="toggle-module">
                         <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -86,7 +83,7 @@
                     <button class="toggle-button">
                         <img class="arrow-img" src="../../../image/drop arrow.png" alt="Down arrow icon">
                     </button>
-                </div>
+                </div> -->
                 <ul>
                     <!-- <svg class="toggle-side-arrow" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0.5 0.5V14.5H15.5" stroke="#E6E6E6" />
@@ -106,11 +103,11 @@
                     </li> -->
                 </ul>
             </div>
-            <div class="small-divider"></div>
+            <!-- <div class="small-divider"></div> -->
 
 
             <div class="related-questions">
-                <div class="toggle">
+                <!-- <div class="toggle">
                     <div class="toggle-module">
                         <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -123,7 +120,7 @@
                     <button class="toggle-button">
                         <img class="arrow-img" src="../../../image/drop arrow.png" alt="Down arrow icon">
                     </button>
-                </div>
+                </div> -->
                 <ul>
                     <!-- <svg class="toggle-side-arrow" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0.5 0.5V14.5H15.5" stroke="#E6E6E6" />
@@ -137,10 +134,10 @@
                 </ul>
             </div>
 
-            <div class="small-divider"></div>
+            <!-- <div class="small-divider"></div> -->
 
             <div class="related-questions">
-                <div class="toggle">
+                <!-- <div class="toggle">
                     <div class="toggle-module">
                         <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -153,7 +150,7 @@
                     <button class="toggle-button">
                         <img class="arrow-img" src="../../../image/drop arrow.png" alt="Down arrow icon">
                     </button>
-                </div>
+                </div> -->
                 <ul>
                     <!-- <svg class="toggle-side-arrow" width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M0.5 0.5V14.5H15.5" stroke="#E6E6E6" />
@@ -176,9 +173,9 @@
                 </ul>
             </div>
 
-            <div class="small-divider"></div>
+            <!-- <div class="small-divider"></div> -->
 
-            <div class="related-questions">
+            <!-- <div class="related-questions">
                 <div class="toggle">
                     <div class="toggle-module">
                         <svg width="22" height="21" viewBox="0 0 22 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -198,7 +195,7 @@
                     <li style="margin-left: 0px; justify-content: flex-start; background: #ffff;"><a href="#" style="font-weight: 500; color: #000000;">Business Consultation<br><span style="font-size: 10px; font-weight: 500; color: #757575; margin-right: 45px;">by James Mason</span></a></li>
                     <li style="margin-left: 0px; justify-content: flex-start; background: #ffff;"><a href="#" style="font-weight: 500; color: #000000;">Marketing Workshop<br><span style="font-size: 10px; font-weight: 500; color: #757575; margin-right: 40px;">by James Mason</span></a></li>
                 </ul>
-            </div>
+            </div> -->
 
 
         </div>
@@ -242,7 +239,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages','discussionId','discussionPermission'])
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission']),
+        chat: {
+            get() {
+                return this.chatMessages
+            },
+            deep:true
+             
+         }
     },
     async created() { 
 
@@ -291,7 +295,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket']),
+        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket',"setReplyParentId"]),
         show(val) {
             this.activeItem = val;
         },
@@ -326,6 +330,9 @@ export default {
             } else { 
                 this.isReply = false
             }
+        },
+        async uploadImage(payload){
+            await this.sendMessage(payload)
         },
     },
 }
@@ -467,6 +474,38 @@ li.active {
 li:hover{
     cursor: pointer;
 }
+
+    .WelcomeTab-AdminModule{
+        display: flex;
+        flex-direction: column;
+    }
+    .WelcomeTab-AdminModule p{
+        align-self: flex-start;
+        padding: 0 2rem;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        color: #2D9CDB;
+        margin-bottom: 30px;
+        margin-top: -15px;
+    }
+    .AdminModule-Person{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+    }
+    .AdminModule-Person span{
+        font-size: 12px;
+        line-height: 18px;
+        font-weight: 400;
+        color:#4F4F4F;
+    }
+    .AdminModule-Person span:hover{
+        cursor:default;
+       color:#4F4F4F;
+    }
 </style>
 
 

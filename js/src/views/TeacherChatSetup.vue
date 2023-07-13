@@ -173,6 +173,24 @@
             <button class="setup-buttons-1">Preview</button>
             <button @click="setupDiscussion()" class="setup-buttons-2">Save</button>
         </div>
+        <v-dialog
+          v-model="saveDiscussionLoader"
+          width="300"
+        >
+            <v-card
+            color="primary"
+            dark
+          >
+            <v-card-text>
+              Saving discussion
+              <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+              ></v-progress-linear>
+            </v-card-text>
+          </v-card>
+    </v-dialog>
     </div>
 </template>
 
@@ -180,8 +198,12 @@
 import { mapActions } from 'vuex';
 
 
+
 export default {
     name: 'TeacherChatSetup',
+    components: {
+
+},
     data() {
         return {
             activeItem: 'Community',
@@ -195,6 +217,7 @@ export default {
             },
             community_thumbnail: null,
             topic_thumbnail: null,
+            saveDiscussionLoader:false
         };
     },
     methods: {
@@ -224,7 +247,7 @@ export default {
                 if (this.chatSetupOptions.topic_thumbnail)
                 setupOptions.append('topic_thumbnail', this.chatSetupOptions.topic_thumbnail['0'])
             }
-
+            this.saveDiscussionLoader = true
             // requesting backend
             this.discussionSetup(setupOptions).then(async(res) => {
                 if (res.status === 201) {
@@ -241,6 +264,7 @@ export default {
                     // set discussion permission 
                     this.setDiscussionPermission('allowed')
 
+                    this.saveDiscussionLoader=false
                      //redirect discussion when request is successfull 
                      this.$router.push({name:'TeacherChatDiscussion'})
                 }
