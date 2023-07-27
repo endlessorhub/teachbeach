@@ -2,6 +2,7 @@
     <div class="chat-setup-main">
         <div class="header-selection">
             <h2>Discussion Setup</h2>
+            <button @click="setupDiscussion()" class="setup-buttons-2">{{ saveButtonText }}</button>
         </div>
 
         <div class="chat-setup-select-option">
@@ -40,7 +41,9 @@
                             d="M5.99996 0.166504L4.47496 1.83317H1.83329C0.916626 1.83317 0.166626 2.58317 0.166626 3.49984V13.4998C0.166626 14.4165 0.916626 15.1665 1.83329 15.1665H15.1666C16.0833 15.1665 16.8333 14.4165 16.8333 13.4998V3.49984C16.8333 2.58317 16.0833 1.83317 15.1666 1.83317H12.525L11 0.166504H5.99996ZM8.49996 12.6665C6.19996 12.6665 4.33329 10.7998 4.33329 8.49984C4.33329 6.19984 6.19996 4.33317 8.49996 4.33317C10.8 4.33317 12.6666 6.19984 12.6666 8.49984C12.6666 10.7998 10.8 12.6665 8.49996 12.6665Z"
                             fill="black" fill-opacity="0.45" />
                         </svg>
-                        <img :src="community_thumbnail" width="100%"/>
+                        <div>
+                        <img :src="community_thumbnail" width="70%" style="text-align:start;" />
+                        </div>
                     </label>
 
                     
@@ -171,7 +174,7 @@
 
         <div class="setup-buttons">
             <button class="setup-buttons-1">Preview</button>
-            <button @click="setupDiscussion()" class="setup-buttons-2">Save</button>
+            <button @click="setupDiscussion()" class="setup-buttons-2">{{ saveButtonText }}</button>
         </div>
         <v-dialog
           v-model="saveDiscussionLoader"
@@ -208,16 +211,19 @@ export default {
         return {
             activeItem: 'Community',
             chatSetupOptions: {
-                'is_community':false,
+                'is_community':true,
                 'is_event': false,
                 'is_topic': false,
-                'community': {},
+                'community': {
+                    participants:"members"
+                },
                 'topic': {},
                 'event': {}
             },
             community_thumbnail: null,
             topic_thumbnail: null,
-            saveDiscussionLoader:false
+            saveDiscussionLoader:false,
+            saveButtonText:"Save"
         };
     },
     methods: {
@@ -254,6 +260,8 @@ export default {
                     
                     //setting discussion Id
                     await this.setDiscussionId(res.data.discussion_id)
+
+                    this.saveButtonText = 'Completed'
 
                     //clear all fields
                     this.clearInputs()
