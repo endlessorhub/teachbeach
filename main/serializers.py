@@ -812,3 +812,18 @@ class DiscussionDetailSerializer(serializers.ModelSerializer):
             "id", "thumbnail", "title", "user",
             "type", "created_at", "top_comment"
         ]
+
+
+class DiscussionBlockSerializer(serializers.Serializer):
+    discussion_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+
+    class Meta:
+        fields = [
+            'discussion_id',
+            'user_id'
+        ]
+
+    def validate(self, attrs):
+        print(attrs)
+        return super().validate(attrs)
