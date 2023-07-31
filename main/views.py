@@ -62,7 +62,7 @@ from .serializers import (
     ManagedUserSerializer, MembershipSerializer, MembershipStudentSerializer,
     FacebookSocialAuthSerializer, GoogleSocialAuthSerializer,
     DiscussionSetupserializer, DiscussionDetailSerializer,
-    CommentSerializer, DiscussionListSerializer
+    CommentSerializer, DiscussionListSerializer, DiscussionBlockSerializer
 )
 from .filters import MessageUserFilter, UserFilter
 
@@ -4998,3 +4998,32 @@ class DiscussionCommentView(APIView):
             serializer.data,
             status=status.HTTP_200_OK
         )
+
+
+class DiscussionBlockUserView(APIView):
+    serializer_class = DiscussionBlockSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(serializer.data)
+        discussion = Discussion.objects.get(id=serializer.data['discussion_id'])
+        user = User.objects.get(id=serializer.data['user_id'])
+        discussion.blocked_users.add(user)
+
+        return Response ({
+            "message": "User added to discussion blocked list"
+        }, status=status.HTTP_200_OK)
+
+
+class DiscussionChatAllowView(APIView):
+
+    def get(self, request, pk):
+        d = Discussion.objects.get(id=pk)
+        if request.user in d.blocked_users.all():
+            is_allowed = False # Not allowed to chat
+        else:
+            is_allowed = True # Allowed to chat
+        return Response({
+            "is_allowed_to_chat": is_allowed
+        }, status=status.HTTP_200_OK)

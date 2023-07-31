@@ -726,6 +726,7 @@ class Discussion(models.Model):
         ("T", "TOPIC"),
     ), default="C")
     users = models.ManyToManyField(User, blank=True, related_name="members")
+    blocked_users = models.ManyToManyField(User, blank=True, related_name='block_users')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
