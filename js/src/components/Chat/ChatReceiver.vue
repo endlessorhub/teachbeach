@@ -2,12 +2,13 @@
     <div>
     <div v-if="message" class="ChatGroup-RecieverContent">
                     <div class="RecieverContent-image">
-                        <img src="../../../../image/profile.png" alt="">
+                        <img v-if="message.user.is_company_owner" src="../../../../image/profile.png" alt="">
+                        <v-icon v-else class="material-icons" style="font-size: 43px;">account_circle</v-icon>
                     </div>
                     <div class="RecieverContent-about">
                         <div class="RecieverContent-about-bio">
-                            <!-- <span class="AboutBio-Person">{{ message.user.first_name+" "+ message.user.last_name }}</span>
-                            <span class="AboutBio-MessageDate">{{ datePipe(message.created_at) }}</span> -->
+                            <span class="AboutBio-Person">{{ message.user.first_name+" "+ message.user.last_name }}</span>
+                            <span class="AboutBio-MessageDate">{{ datePipe(message.created_at) }}</span>
                         </div>
                         <p>{{ message.content }}</p>
                         <img v-if="message.image" :src="message.image" class="upload-image"/>

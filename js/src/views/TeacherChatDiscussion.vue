@@ -18,14 +18,14 @@
                 <div class="WelcomeTab-AdminModule">
 
                     <div class="AdminModule-Person">
-                        <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
+                        <h2 class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
                         <span>14 MARCH, 2023</span>
                     </div>
                     <p>You’re in The Business Expansion Event!</p>
                     <div class="ChatContainer-Divider"></div>         
                 </div>
                 <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" @uploadImage="uploadImage" />
+                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
             </div>
             </div>
 
@@ -34,7 +34,7 @@
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" />
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 <div v-for="reply in message.replies" :key="reply.id">
                 <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 </div>
@@ -240,6 +240,7 @@ export default {
     },
     computed: {
         ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission']),
+        ...mapGetters(['userInfo']),
         chat: {
             get() {
                 return this.chatMessages

@@ -103,7 +103,10 @@ export default new Vuex.Store({
     },
     showDiscussionTab(state) {
       return state.view_discussion_tab
-     }
+    },
+    userInfo(state) { 
+      return state.user
+    }
   },
   mutations: {
     setLogoDimensions(state, { width, height }) {

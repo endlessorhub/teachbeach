@@ -35,14 +35,14 @@
                 <label for="">Main images</label>
                 <div class="image-box">
                         <input type="file" id="community_thumbnail" accept="image/png, image/gif, image/jpeg"  class="hidden"  @change="fileInput($event,'community_thumbnail')" />
-                        <label for="community_thumbnail">
+                        <label for="community_thumbnail" style="width:90%;">
                         <svg v-if="!community_thumbnail" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M5.99996 0.166504L4.47496 1.83317H1.83329C0.916626 1.83317 0.166626 2.58317 0.166626 3.49984V13.4998C0.166626 14.4165 0.916626 15.1665 1.83329 15.1665H15.1666C16.0833 15.1665 16.8333 14.4165 16.8333 13.4998V3.49984C16.8333 2.58317 16.0833 1.83317 15.1666 1.83317H12.525L11 0.166504H5.99996ZM8.49996 12.6665C6.19996 12.6665 4.33329 10.7998 4.33329 8.49984C4.33329 6.19984 6.19996 4.33317 8.49996 4.33317C10.8 4.33317 12.6666 6.19984 12.6666 8.49984C12.6666 10.7998 10.8 12.6665 8.49996 12.6665Z"
                             fill="black" fill-opacity="0.45" />
                         </svg>
                         <div>
-                        <img :src="community_thumbnail" width="70%" style="text-align:start;" />
+                        <img :src="community_thumbnail" width="100%"  />
                         </div>
                     </label>
 
@@ -257,11 +257,11 @@ export default {
             // requesting backend
             this.discussionSetup(setupOptions).then(async(res) => {
                 if (res.status === 201) {
-                    
-                    //setting discussion Id
-                    await this.setDiscussionId(res.data.discussion_id)
 
                     this.saveButtonText = 'Completed'
+
+                    //setting discussion Id
+                    await this.setDiscussionId(res.data.discussion_id)
 
                     //clear all fields
                     this.clearInputs()
@@ -548,8 +548,9 @@ label {
     background: #FFFFFF;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     border: 1px solid #D9D9D9;
+    
 }
 
 svg:hover {

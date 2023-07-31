@@ -10,12 +10,13 @@
                     </div>
 
                     <div class="SenderContent-image">
-                        <img src="../../../../image/profile.png" alt="">
+                        <img v-if="reply.user.is_company_owner" src="../../../../image/profile.png" alt="">
+                        <v-icon v-else class="material-icons" style="font-size: 43px;">account_circle</v-icon>
                     </div>
                     <div class="SenderContent-about">
                         <div class="SenderContent-about-bio">
-                            <!-- <span class="AboutBio-Person">{{ reply.user.first_name + " " +reply.user.last_name }}</span>
-                            <span class="AboutBio-MessageDate">{{ datePipe(reply.created_at) }}</span> -->
+                            <span class="AboutBio-Person">{{ reply.user.first_name + " " +reply.user.last_name }}</span>
+                            <span class="AboutBio-MessageDate">{{ datePipe(reply.created_at) }}</span>
                         </div>
                         <p>{{ reply.content }}</p>
                         <img v-if="reply.image" :src="reply.image" class="upload-image"/>
