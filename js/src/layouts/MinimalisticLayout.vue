@@ -523,7 +523,7 @@ export default {
         ...mapActions([
             'loadBelongingCompanyProfile',
         ]),
-        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat','setDiscussionPermission']),
+        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat','setDiscussionPermission','checkBlockUser']),
         resetPasswordFormOpen(open) {
             if (open) {
                 this.passwordResetForm = true;
@@ -636,23 +636,24 @@ export default {
         },
         async restoreUser() {
             const hs = await axios.get('/api/handshake/')
-            if(hs.data.is_authenticated) {
+            if (hs.data.is_authenticated) {
+                //load discussion id 
+                this.loadRecentDiscussion().then(async (res) => {
+                    if (res.status === 200) {
+                        await this.setDiscussionId(res.data.id)
+                        // await this.checkBlockUser()
+                        // await this.setDiscussionPermission('allowed')
+                    }
+                    else if (res.status === 204) {
+                        await this.setDiscussionPermission('not allowed')
+                    }
+                })
                 const init = await axios.get('/api/init/')
                 await this.$store.dispatch('setInitialdata', init)
                 if (init.data.user.belongs_to) {
                     // load company profile and set it's logo
                     await this.loadBelongingCompanyProfile(init.data.user.belongs_to);
                 }
-                //load discussion id 
-                this.loadRecentDiscussion().then(async (res) => {
-                    if (res.status === 200) {
-                        await this.setDiscussionId(res.data.id)
-                        await this.setDiscussionPermission('allowed')
-                    }
-                    else if (res.status === 204) {
-                        await this.setDiscussionPermission('not allowed')
-                    }
-                })
             }
             if(this.isLoggedIn && this.loginFormOpened) {
                 // close login since already logged in
@@ -792,6 +793,7 @@ export default {
             this.loadRecentDiscussion().then(async (res) => {
                 if (res.status === 200) {
                     await this.setDiscussionId(res.data.id)
+                    await this.checkBlockUser()
                     await this.setDiscussionPermission('allowed')
                     this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
                 }
@@ -802,18 +804,18 @@ export default {
             })
             
         },
-        showDiscussion() {
-            console.log(this.isCompanyAdmin)
-            if (this.isCompanyAdmin) {
-                return true
-            }
-            else if (this.discussionPermission === 'not allowed') {
-                return false
-            }
-            else if (this.discussionPermission === 'allowed') {
-                return true
-            }
-        }
+        // showDiscussion() {
+        //     console.log(this.isCompanyAdmin)
+        //     if (this.isCompanyAdmin) {
+        //         return true
+        //     }
+        //     else if (this.discussionPermission === 'not allowed') {
+        //         return false
+        //     }
+        //     else if (this.discussionPermission === 'allowed') {
+        //         return true
+        //     }
+        // }
 
     },
     computed: {

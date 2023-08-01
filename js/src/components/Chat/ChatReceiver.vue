@@ -7,7 +7,7 @@
                     </div>
                     <div class="RecieverContent-about">
                         <div class="RecieverContent-about-bio">
-                            <span class="AboutBio-Person">{{ message.user.first_name+" "+ message.user.last_name }}</span>
+                            <span class="AboutBio-Person" @click="showBlockUserDialog()">{{ message.user.first_name+" "+ message.user.last_name }}</span>
                             <span class="AboutBio-MessageDate">{{ datePipe(message.created_at) }}</span>
                         </div>
                         <p>{{ message.content }}</p>
@@ -48,14 +48,44 @@
                     </div>
     </div>
     <div v-if="showPostMessage" class="ChatGroup-ReceiverMessage">
-    <PostMessage @onEnter="sendDiscussion" />
+    <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
     </div>
+             <v-dialog
+                v-model="blockUserDialog"
+                  width="290"
+                >
+                    <v-card
+                  >
+                    <v-card-text>
+                      Do you want to block {{ message.user.first_name }} ?
+                    </v-card-text>
+                    <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="red darken-1"
+                    depressed
+                    outlined
+                    @click="blockSelectedUser(message.user.id)"
+                  >
+                    Block
+                  </v-btn>
+                  <v-btn
+                    depressed
+                    outlined
+                    @click="blockUserDialog = !blockUserDialog"
+                  >
+                    Cancel
+                  </v-btn>
+                </v-card-actions>
+                  </v-card>
+            </v-dialog>
     </div>
 </template>
 
 <script>
 import moment from 'moment'
 import PostMessage from './PostMessage.vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     components: {
         PostMessage
@@ -81,9 +111,15 @@ export default {
     },
     data: () => ({
         showPostMessage: false,
+        blockUserDialog:false
 
     }),
+    computed: {
+        ...mapGetters(['userInfo']),
+        ...mapGetters('chatDiscussion', ['discussionId']),
+    },
     methods: {
+        ...mapActions('chatDiscussion',['blockUser']),
         /**
          * This function takes date:String and converts it to appropriate format 
          * e.g.  5d , 17 hrs ago etc ...
@@ -148,6 +184,20 @@ export default {
       };
       reader.readAsDataURL(uploadedImage);
             }
+        },
+        showBlockUserDialog() {
+            if (this.userInfo.is_company_owner) {
+                this.blockUserDialog = true
+            }
+        },
+        async blockSelectedUser(userId) { 
+            const payload = {
+                user_id: userId,
+                discussion_id:this.discussionId
+            }
+            const status = await this.blockUser(payload)
+            this.blockUserDialog=false
+
         }
     }
 }
