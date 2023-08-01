@@ -191,7 +191,7 @@ urlpatterns = [
     url(r'^api/comments/(\d*)/$', DiscussionCommentView.as_view()), # DISc. Comments
     
     url(r'^api/discussion/block/$', DiscussionBlockUserView.as_view()), # DISc. User Block
-    url(r'^api/discussion/chat-allowed/$', DiscussionChatAllowView.as_view()), # DISc. User Block
+    url(r'^api/discussion/chat-allowed/(\d*)/$', DiscussionChatAllowView.as_view()), # DISc. User Block
 
     url(r'^api/', include(router.urls)),
 ]

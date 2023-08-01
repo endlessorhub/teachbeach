@@ -1,6 +1,6 @@
 <template>
     <div class="Discussion-divider" >
-        <div class="ChatContainer" v-if="discussionPermission==='allowed'">
+        <div class="ChatContainer" v-if="discussionPermission==='allowed' && chatPermission===true">
             <div class="header-selection">
                 <h3>Discussions</h3>
                 <div class="selector-options">
@@ -30,7 +30,7 @@
             </div>
 
             <div class="ChatContainer-Divider"></div>
-            <PostMessage @onEnter="sendDiscussion" />
+            <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
@@ -46,7 +46,7 @@
 
         </div>
 
-        <div class="ModuleContainer">
+        <div class="ModuleContainer" v-if="discussionPermission === 'allowed' && chatPermission === true">
             <!-- <div class="related-questions">
                 <div class="toggle">
                     <div class="toggle-module">
@@ -239,7 +239,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission']),
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission']),
         ...mapGetters(['userInfo']),
         chat: {
             get() {
