@@ -171,7 +171,7 @@ class UserViewSet(viewsets.ModelViewSet):
             else:
                 user_data['last_name'] = ''
         serializer = UserSerializer(data=user_data)
-        serializer.is_valid(True)
+        serializer.is_valid(raise_exception=True)
         user_data = serializer.validated_data
         user = get_user_model().objects.create_user(user_data['email'].lower(), **user_data)
         # notify admin
@@ -2517,7 +2517,7 @@ class TeacherStudentsView(generics.RetrieveAPIView):
         is_unregistered = [x.pk for x in User.objects.filter(managed_by__contains=[request.user.pk])]
         is_prospects = [x.pk for x in User.objects.filter(Q(managed_by__contains=[request.user.pk]) | Q(class_id__in=teacher_classes))]
 
-        a = User.objects.filter(Q(pk__in=all_users)|Q(class_id__in=teacher_classes)|Q(managed_by__contains=[request.user.pk]))
+        a = User.objects.filter(Q(pk__in=all_users)|Q(class_id__in=teacher_classes)|Q(managed_by__contains=[request.user.pk])|Q(pk__in=[s.student_id for s in students]))
         try:
             membership = MembershipSerializer(Membership.objects.get(owner_user=request.user)).data
         except Membership.DoesNotExist:
@@ -2536,6 +2536,7 @@ class TeacherStudentsView(generics.RetrieveAPIView):
             'classes': ClassShortSerializer(teacher_classes, many=True).data,
             'deleted': [x['student_id'] for x in request.user.deleted_students.values('student_id')],
             'membership': membership,
+            'members': MembershipStudentSerializer(students, many=True).data
         }
         return Response(res)
 
@@ -4500,7 +4501,7 @@ class AddManagedStudent(APIView):
             'timezone': request.user.timezone,
         }
         serializer = ManagedUserSerializer(data=user_data)
-        serializer.is_valid(True)
+        serializer.is_valid(raise_exception=True)
         user_data = serializer.validated_data
         user = get_user_model().objects.create_user(user_data['email'].lower(), **user_data)
         return Response({'success': True, 'student': UserShortSerializer(user).data})
@@ -4562,7 +4563,7 @@ class UploadStudents(APIView):
                     'timezone': request.user.timezone,
                 }
                 serializer = ManagedUserSerializer(data=user_data)
-                serializer.is_valid(True)
+                serializer.is_valid(raise_exception=True)
                 user_data = serializer.validated_data
                 user = get_user_model().objects.create_user(user_data['email'].lower(), **user_data)
                 success = success + 1
@@ -4802,7 +4803,7 @@ class CompanyTeacherRequest(APIView):
             'timezone': request.data.get('timezone'),
         }
         serializer = ManagedUserSerializer(data=user_data)
-        serializer.is_valid(True)
+        serializer.is_valid(raise_exception=True)
         user_data = serializer.validated_data
         user = get_user_model().objects.create_user(user_data['email'].lower(), **user_data)
         send_mail_reply_to(
@@ -4898,11 +4899,13 @@ class GoogleSocialAuthView(GenericAPIView):
 class DiscussionSetupView(APIView):
     serializer_class = DiscussionSetupserializer
     permission_classes = [permissions.IsAuthenticated]
-
+    
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.data
+        d_id = None
+
         if data['is_community']:
             post = data['community_post']
             d = Discussion()
@@ -4929,7 +4932,7 @@ class DiscussionSetupView(APIView):
                     ).values('student')
                 )
                 print(d.users.all())
-
+            d_id=d.id
         elif data['is_topic']:
             pass
         elif data['is_event']:
@@ -4937,7 +4940,7 @@ class DiscussionSetupView(APIView):
 
         return Response({
             "detail": "Discussion Created.",
-            "discussion_id": d.id
+            "discussion_id": d_id
         }, status=status.HTTP_201_CREATED)
 
 
