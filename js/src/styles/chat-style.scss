@@ -109,13 +109,13 @@ body{
 	background: white;
 	padding-bottom: 0.3rem;
 	.upload-image {
-		width: 833px;
+		float: left;
+		width:715px;
 		height: auto;
-		background-color: rgb(243, 241, 241);
 		max-height: 400px;
 		object-fit: contain;
 		display: block;
-		margin: 0 auto;
+		// margin: 0 auto;
 	}
 }
 .WelcomeTab-h2 {
