@@ -1,6 +1,6 @@
 <template>
     <div class="Discussion-divider" >
-        <div class="ChatContainer" v-if="discussionPermission==='allowed'">
+        <div class="ChatContainer" v-if="discussionPermission==='allowed' && chatPermission===true">
             <div class="header-selection">
                 <h3>Discussions</h3>
                 <div class="selector-options">
@@ -18,23 +18,23 @@
                 <div class="WelcomeTab-AdminModule">
 
                     <div class="AdminModule-Person">
-                        <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
+                        <h2 class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
                         <span>14 MARCH, 2023</span>
                     </div>
                     <p>You’re in The Business Expansion Event!</p>
                     <div class="ChatContainer-Divider"></div>         
                 </div>
                 <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" @uploadImage="uploadImage" />
+                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
             </div>
             </div>
 
             <div class="ChatContainer-Divider"></div>
-            <PostMessage @onEnter="sendDiscussion" />
+            <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" />
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 <div v-for="reply in message.replies" :key="reply.id">
                 <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
                 </div>
@@ -46,7 +46,7 @@
 
         </div>
 
-        <div class="ModuleContainer">
+        <div class="ModuleContainer" v-if="discussionPermission === 'allowed' && chatPermission === true">
             <!-- <div class="related-questions">
                 <div class="toggle">
                     <div class="toggle-module">
@@ -239,7 +239,8 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission']),
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission']),
+        ...mapGetters(['userInfo']),
         chat: {
             get() {
                 return this.chatMessages
