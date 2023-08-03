@@ -206,6 +206,10 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRETS = os.environ.get('GOOGLE_CLIENT_SECRETS')
 
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT')
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 ASGI_APPLICATION = "teachbeach.asgi.application" #routing.py will be created later
@@ -213,7 +217,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [("redis://:"+REDIS_PASSWORD+"@"+REDIS_HOST+":"+REDIS_PORT)],
         },
     },
 }
