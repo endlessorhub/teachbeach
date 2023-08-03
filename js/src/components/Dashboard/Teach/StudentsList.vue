@@ -1,8 +1,13 @@
 <template>
     <v-layout align-center justify-center row wrap>
         <v-flex xs12 md10 v-if="studentList && studentList.length" class="inline-content">
+            <div class="title">Membership Directory</div>
             <div class="radio-container">
                 <v-radio-group v-model="studentFilter" row>
+                    <v-radio
+                        label="Members"
+                        value="members"
+                    ></v-radio>
                     <v-radio
                         label="Prospects"
                         value="prospects"
@@ -24,82 +29,9 @@
         <v-flex xs12 md10 v-if="studentList && studentList.length">
             <v-list two-line class="full-height-list">
                 <template v-for="(item, index) in studentList">
-                    <v-list-group
-                        :key="item.id"
-                        v-model="expandedStudents[item.id]"
-                    >
-                        <template v-slot:activator>
-                          <v-list-tile
-                            :key="item.key"
-                            avatar
-                          >
-                            <v-list-tile-avatar :tile="true">
-                              <v-avatar>
-                                  <v-icon color="primary">account_circle</v-icon>
-                              </v-avatar>
-                            </v-list-tile-avatar>
-
-                            <v-list-tile-content>
-                                <v-list-tile-title>
-                                    {{item.first_name}}
-                                    {{item.last_name}}
-                                    <a :href="'tel:'+item.phone">{{item.phone}}</a>,
-                                    <a :href="'mailto:'+item.email">{{item.email}}</a>
-                                </v-list-tile-title>
-                                <v-list-tile-sub-title v-if="item.classTitles && item.cost">
-                                    <span>{{item.classTitles}}</span>,&nbsp;
-                                    <b>{{item.cost}}</b>&nbsp;
-                                </v-list-tile-sub-title>
-                            </v-list-tile-content>
-
-                            <v-list-tile-action>
-
-                            </v-list-tile-action>
-                          </v-list-tile>
-                        </template>
-                        <v-list-tile
-                            v-for="order in item.orders"
-                            :key="order.id"
-                          >
-                            <v-list-tile-avatar :tile="true">
-                                <v-tooltip top content-class="teachbeach-tooltip">
-                                  <template v-slot:activator="{ on }">
-                                      <v-chip small v-on="on" :color="order.chipColor" :dark="!!order.chipColor">
-                                         {{order.reserved_lessons}}/{{order.num_lessons}}
-                                      </v-chip>
-                                  </template>
-                                    <span>Signed in to {{order.reserved_lessons}} lesson{{order.reserved_lessons === 1 ? '' : 's'}} out of {{order.num_lessons}} available</span>
-                                </v-tooltip>
-                            </v-list-tile-avatar>
-                            <v-list-tile-content>
-                                <v-list-tile-title>
-                                    {{order.data.name}}
-                                </v-list-tile-title>
-                                <v-list-tile-sub-title >
-                                    <span v-if="order.plannedEnroll">
-                                        Sign in: {{order.plannedEnroll}}
-                                        <ActionableOnClick
-                                            :action="() => submitPlannedEnroll(order)"
-                                            @success="reloadData"
-                                            v-slot="{loading, click}"
-                                        >
-                                            <v-btn color="platform-green" :loading="loading" @click="click">
-                                              Save
-                                            </v-btn>
-                                        </ActionableOnClick>
-                                        <v-btn icon @click="removePlannedEnroll(order)">
-                                          <v-icon color="error">cancel</v-icon>
-                                        </v-btn>
-                                    </span>
-                                </v-list-tile-sub-title>
-                            </v-list-tile-content>
-
-                            <v-list-tile-action v-if="!order.plannedEnroll">
-                                <v-btn v-if="order.isEnrollAavailable" class="platform-green" @click="openDateSelect(order)">Sign in</v-btn>
-                            </v-list-tile-action>
-                          </v-list-tile>
-
-                    </v-list-group>
+                    <StudentListItem
+                        v-bind="item"
+                    ></StudentListItem>
                   <v-divider
                       v-if="index + 1 < studentList.length"
                   ></v-divider>
@@ -138,6 +70,7 @@
 import _ from 'lodash'
 import axios from 'axios'
 import SendEmailsToStudents from './Components/SendEmailsToStudents'
+import StudentListItem from './Components/StudentListItem'
 import ActionableOnClick from '@/components/basic/ActionableOnClick'
 import utils from '@/lib/utils.js'
 
@@ -148,6 +81,7 @@ export default {
         all: [],
         orders: [],
         classes: [],
+        members: [],
         confirmRefundForm: false,
         refundStudent: '',
         refundClass: '',
@@ -159,12 +93,13 @@ export default {
         enrollOrderDialog: false,
         enrollOrderDialogOrder: null,
         enrollOrderDialogAllowed: new Map(),
-        studentFilter: 'students',
+        studentFilter: 'members',
     }),
     props: [],
     components: {
         SendEmailsToStudents,
         ActionableOnClick,
+        StudentListItem,
     },
     created() {
         this.reloadData()
@@ -189,22 +124,37 @@ export default {
         classDict() {
             return new Map(this.classes.map(c => [c.pk, c]))
         },
+        memberDict() {
+            return new Map(this.members.map(c => [c.student, c]))
+        },
         first_name() {
             //console.log(this.$store.state)
             return this.$store.state.user.first_name
         },
         studentList() {
             let ordersDict = _.groupBy(this.orders, 'user')
-            let filterFunc = v => this.studentFilter === 'all'
-                ? true
-                : this.studentFilter === 'students' ? ordersDict[v.id] : !ordersDict[v.id]
-            return _.map(_.sortBy(this.all.filter(filterFunc), v => `${v.first_name} ${v.last_name}`), v => ({
+            let filterFunc = v => {
+                if (this.studentFilter === 'students') return ordersDict[v.id];
+                if (this.studentFilter === 'prospects') return !ordersDict[v.id];
+                if (this.studentFilter === 'members') return v.isMember;
+                return true;
+            };
+            const res = _.map(_.sortBy(this.all.filter(filterFunc), v => `${v.first_name} ${v.last_name}`), v => ({
                 key: v.id,
                 id: v.id,
                 email: v.email,
                 first_name: v.first_name,
                 last_name: v.last_name,
                 phone: v.phone,
+                title: (this.memberDict.get(v.id) || {}).title,
+                city: (this.memberDict.get(v.id)  || {}).city,
+                document: (this.memberDict.get(v.id)  || {}).document,
+                social: (this.memberDict.get(v.id)  || {}).social,
+                website: (this.memberDict.get(v.id)  || {}).website,
+                description: (this.memberDict.get(v.id)  || {}).description,
+                level: (this.memberDict.get(v.id)  || {}).level,
+                skill: (this.memberDict.get(v.id)  || {}).skill,
+                interest: (this.memberDict.get(v.id)  || {}).interest,
                 expanded: this.expandedStudents[v.id],
                 cost: ordersDict[v.id] ?
                     utils.formatPrice(_.sumBy(ordersDict[v.id], o => Number(o.status !== 'refund' ? o.amount : 0)), ordersDict[v.id][0].data.package ? ordersDict[v.id][0].data.package.currency : 'usd').replace('Free', '$0') :
@@ -216,7 +166,9 @@ export default {
                     chipColor: o.reserved_lessons === o.num_lessons ? 'success' : '',
                     isEnrollAavailable: o.reserved_lessons < o.num_lessons && (this.classDict.has(o.klass) && !this.classDict.get(o.klass).is_private)
                 }, o)) : [],
-            }))
+            }));
+            console.log(res);
+            return res;
         }
     },
     methods: {
@@ -227,6 +179,7 @@ export default {
                 this.all = res.data.all || []
                 this.orders = res.data.orders || []
                 this.classes = res.data.classes || []
+                this.members = res.data.members || []
             }).catch(e => console.log(e)).then(() => {
                 this.isLoading = false
             })

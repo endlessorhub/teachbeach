@@ -19,7 +19,9 @@ import DashboardLearnCalendar from '@/components/Dashboard/Learn/Calendar.vue'
 import DashboardLearnAccount from '@/components/Dashboard/Learn/Account.vue'
 import DashboardTeach from '@/components/Dashboard/Teach/Index.vue'
 import DashboardVenue from '@/components/Dashboard/Venue/Index.vue'
+import DashboardTeachHome from '@/components/Dashboard/Teach/Home.vue'
 import DashboardTeachProfile from '@/components/Dashboard/Teach/Profile.vue'
+import DashboardTeachDirectory from '@/components/Dashboard/Teach/Directory.vue'
 import DashboardTeachClasses from '@/components/Dashboard/Teach/Classes.vue'
 import DashboardTeachStudentsList from '@/components/Dashboard/Teach/StudentsList.vue'
 import DashboardTeachStudentsRefund from '@/components/Dashboard/Teach/StudentsRefund.vue'
@@ -59,6 +61,8 @@ import TeacherChatDiscussion from '@/views/TeacherChatDiscussion.vue'
 import SetUp from '@/views/SetUp.vue'
 import TeacherChatSetup from '@/views/TeacherChatSetup'
 import TeacherDashboard from '@/views/ChatPage3'
+import SaasRegister from '@/views/SaasRegister'
+import SaasNameCollab from '@/views/SaasNameCollab'
 
 import Lreg1 from '@/components/Teacher/LReg1.vue'
 import Lreg2 from '@/components/Teacher/LReg2.vue'
@@ -220,14 +224,24 @@ export default [
             {
                 path: 'teach',
                 name: 'dashboard_teach',
-                // component: TeacherDashboard,
+                // component: TeacherDashboardHome,
                 component: DashboardTeach,
-                redirect: '/dashboard/teach/classes',
+                // redirect: '/dashboard/teach/classes',
                 children: [
+                    {
+                        path: '',
+                        name: 'dashboard_teach_home',
+                        component: DashboardTeachHome,
+                    },
                     {
                         path: 'profile',
                         name: 'dashboard_teach_profile',
                         component: DashboardTeachProfile,
+                    },
+                    {
+                        path: 'directory',
+                        name: 'dashboard_teach_directory',
+                        component: DashboardTeachDirectory,
                     },
                     {
                         path: 'schedule_calendar',
@@ -530,5 +544,17 @@ export default [
         component: BuyMembership,
         meta: { requiresAuth: true },
         props: function (route) {return { id: Number(route.params.id) }}
+    },
+    {
+        path: '/min-reg',
+        name: 'min-reg',
+        component: SaasRegister,
+        meta: { hideNav: true },
+    },
+    {
+        path: '/min-name-collab',
+        name: 'min-name-collab',
+        component: SaasNameCollab,
+        meta: { hideNav: true },
     },
 ]
