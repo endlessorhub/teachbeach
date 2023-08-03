@@ -6,6 +6,7 @@ services:
         restart: unless-stopped
         links:
             - postgres
+            - redis
         ports:
             - "8000:8000"
         command: "python ./manage.py runserver 0.0.0.0:8000"
@@ -32,3 +33,15 @@ services:
             - POSTGRES_PASS=dTHkivbzLLmqjvqin7A
             - POSTGRES_DB=teachbeach
         container_name: teachbeach_postgres
+
+    redis:
+        image: redis:alpine
+        ports:
+        - "6379:6379"
+        command: redis-server --save 20 1 --loglevel warning --requirepass Ygd445dklI_nVs45gbsqeeju7Tf
+        volumes:
+        - 'redisdata:/data'
+        container_name: teachbeach_redis
+
+volumes:
+    redisdata:

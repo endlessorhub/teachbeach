@@ -1,359 +1,313 @@
 <template>
-  <v-app id="app">
-    <v-navigation-drawer
-      v-if="isLoggedIn"
-      :value="isLeftDrawerOpened"
-      :mini-variant="isLeftDrawerMini"
-      :width="160"
-      class="left-drawer"
-      absolute
-      clipped
-      app
-      @input="(v) => setIsLeftDrawerOpened(v)"
-      @update:mini-variant="(v) => setIsLeftDrawerMini(v)"
-    >
-      <v-list v-if="isTeacherLeftDrawer">
-        <v-list-tile>
-            <v-list-tile-title>Dashboard</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/profile?main">
-            <v-list-tile-title>Collab Set-up</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/profile/teachers/">
-            <v-list-tile-title>Edit Hosts</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/membership-setup">
-            <v-list-tile-title>Memberships</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/membership-directory">
-            <v-list-tile-title>Directory</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/classes?activities">
-            <v-list-tile-title>Activities</v-list-tile-title>
-        </v-list-tile>
-        
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?events"
-        >
-            <v-list-tile-title>Events</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?classes"
-        >
-            <v-list-tile-title>Classes</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?groups"
-        >
-            <v-list-tile-title>Groups</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-            class="list-subitem"
-            to="/dashboard/teach/classes?services"
-        >
-            <v-list-tile-title>Services</v-list-tile-title>
-        </v-list-tile>
-    
-        <v-list-tile 
-        v-if="isCompanyAdmin"
-                to="/dashboard/teach/teacher-chat-setup"
-            >
-                <v-list-tile-title >Chat Setup</v-list-tile-title>
-            </v-list-tile>
-             
-        <v-list-tile
-            @click="redirectToDiscussionPage()"
+    <v-app id="app">
+        <v-navigation-drawer v-if="isLoggedIn && !hideNav" :value="isLeftDrawerOpened" :mini-variant="isLeftDrawerMini"
+            :width="160" class="left-drawer" absolute clipped app @input="(v) => setIsLeftDrawerOpened(v)"
+            @update:mini-variant="(v) => setIsLeftDrawerMini(v)">
+            <v-list v-if="isTeacherLeftDrawer">
+                <v-list-tile>
+                    <v-list-tile-title>Dashboard</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/profile?main">
+                    <v-list-tile-title>Collab Set-up</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/profile/teachers/">
+                    <v-list-tile-title>Edit Hosts</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/membership-setup">
+                    <v-list-tile-title>Memberships</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/students_list">
+                    <v-list-tile-title>Directory</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile class="list-subitem" to="/dashboard/teach/membership-directory">
+                    <v-list-tile-title>Set-up</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/classes?activities">
+                    <v-list-tile-title>Activities</v-list-tile-title>
+                </v-list-tile>
 
-        >
-            <v-list-tile-title >Discussions</v-list-tile-title>
-        </v-list-tile>
+                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?events">
+                    <v-list-tile-title>Events</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?classes">
+                    <v-list-tile-title>Classes</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?groups">
+                    <v-list-tile-title>Groups</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?services">
+                    <v-list-tile-title>Services</v-list-tile-title>
+                </v-list-tile>
 
-        <v-list-tile to="/dashboard/teach/new_crm">
-            <v-list-tile-title>CRM</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile to="/dashboard/teach/reports">
-            <v-list-tile-title>Reports</v-list-tile-title>
-        </v-list-tile>
+                <v-list-tile v-if="isCompanyAdmin" to="/dashboard/teach/teacher-chat-setup">
+                    <v-list-tile-title>Chat Setup</v-list-tile-title>
+                </v-list-tile>
 
-      </v-list>
-      <v-list v-else>
-        <v-list-tile>
-            <v-list-tile-title>Dashboard</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile
-          v-if="memberships && memberships.length > 1"
-        >
-          <v-select
-            :value="currentMembershipId"
-            :items="membershipOptions"
-            class="select__collab-design"
-            outline
-            @input="setCurrentMembershipId"
-          ></v-select>
-        </v-list-tile>
-        <v-list-tile
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
-          to="/dashboard/learn/profile"
-        >
-            <v-list-tile-title>Profile</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile 
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
-          to="/dashboard/learn/classes"
-        >
-            <v-list-tile-title>Activities</v-list-tile-title>
-        </v-list-tile>
-        
-        <!-- <v-list-tile
-          v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isChatEnabled"
-          to="/dashboard/learn/chat-setup"
-        >
-          <v-list-tile-title>Chat Set-Up</v-list-tile-title>
-        </v-list-tile> -->
-        <v-list-tile
-        v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isDMEnabled"
-          to="/dashboard/learn/chat-discussion"
-        >
-          <v-list-tile-title>Discussions</v-list-tile-title>
-        </v-list-tile>
-    
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar class="main-toolbar" absolute flat app>
-      <v-toolbar-title class="logo-container">
-        <router-link v-if="isLearnerDashboard" to="/dashboard/learn" style="text-decoration: none; color: black;font-size: 1.2em;">
-        Learning dashboard
-        </router-link>
-        <a v-else-if="actualLogo.homeUrl" :href="actualLogo.homeUrl">
-        <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc" style="height:48px;max-width: 100%;" @load="onLoadLogoImg"/>
-        </a>
-        <router-link v-else-if="actualLogo.logoLink" :to="actualLogo.logoLink" style="text-decoration: none; color: black;">
-        <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc" style="height:48px;max-width: 100%;" @load="onLoadLogoImg"/>
-        </router-link>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <div v-if="false" class="search-bar">
-        <input type="text" placeholder="search">
-        <img src="../../../image/searchicon.png" alt="">
-      </div>
-     
-      <v-toolbar-items class="hidden-md-and-down">
-        <a
-          v-if="isLoggedIn"
-          class="switch-dashboard-link"
-          @click="switchLeftDrawerType"
-        >{{ isTeacherLeftDrawer ? "Switch to member" : "Switch to admin" }}</a>
-        <v-btn
-          v-if="isTeacherLeftDrawer"
-          key="addClassBtn"
-          dark
-          class="add-class-top-btn"
-          data-desktop-nav-addclass
-          @click="onClickPlusClass"
-        >+ Activity</v-btn>
-        <v-btn icon flat key="calendar" data-desktop-nav-calendar to="/dashboard/teach/schedule_list">
-          <v-icon>calendar_today</v-icon>
-        </v-btn>
-        <v-btn icon flat key="notifications" data-desktop-nav-notifications to="/dashboard/teach/classes">
-          <v-icon>notifications_none</v-icon>
-        </v-btn>
-        <v-btn icon flat key="settings" data-desktop-nav-settings @click="setIsLeftDrawerOpened(!isLeftDrawerOpened)">
-          <v-icon>settings</v-icon>
-        </v-btn>
-      </v-toolbar-items>
-      <v-menu class="hidden-lg-and-up">
-        <v-toolbar-side-icon slot="activator" data-mobile-nav-menu-icon></v-toolbar-side-icon>
-        <v-list>
-          <v-list-tile v-if="actualLogo.homeUrl" @click="openExternalLink(actualLogo.homeUrl)">
-          <v-list-tile-content>
-              <v-list-tile-title>Home</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile v-else :to="'/'">
-          <v-list-tile-content>
-              <v-list-tile-title>Home</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile @click="onClickPlusClass">
-          <v-list-tile-content>
-              <v-list-tile-title>Become an instructor</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile v-if="isLoggedIn && (!hideTeachAndLearn || isTeacher)" to="/dashboard/teach">
-          <v-list-tile-content>
-              <v-list-tile-title>Instruct</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile v-if="isLoggedIn && (!hideTeachAndLearn || isLearner) && !isTeacherOfCompany" to="/dashboard/learn">
-          <v-list-tile-content>
-              <v-list-tile-title>Learn</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-          <v-list-tile @click="() => onAccountClick(isLoggedIn ? null : {section: 'login'})">
-          <v-list-tile-content>
-              <v-list-tile-title>{{!isLoggedIn ? 'Log-in' : 'Logout'}}</v-list-tile-title>
-          </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
-      <v-btn icon flat key="login" v-if="!isLoggedIn" @click="() => onAccountClick({section: 'login'})" data-desktop-nav-login>
-        <v-icon>person_add</v-icon>
-      </v-btn>
-      <v-btn icon flat key="logout" v-if="isLoggedIn" @click="onAccountClick" data-desktop-nav-logout>
-        <v-icon>account_circle</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-content app>
-      <v-container fluid fill-height>
-        <v-layout
-          justify-center
-          align-start
-        >
-        <router-view
-                v-if="isAuthChecked"
-                :city="city"
-                :selectedCategory="selectedCategory"
-                :category="category"
-                :subcategory="subcategory"
-                :classesLoaded="classesLoaded"
-                v-on:openLoginForm="onAccountClick"
-                v-on:register:done="registerDone"
-                style="align-items: start;"
-        />
-        </v-layout>
-      </v-container>
-    </v-content>
+                <v-list-tile @click="redirectToDiscussionPage()">
+                    <v-list-tile-title>Discussions</v-list-tile-title>
+                </v-list-tile>
+
+                <v-list-tile to="/dashboard/teach/new_crm">
+                    <v-list-tile-title>CRM</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile to="/dashboard/teach/reports">
+                    <v-list-tile-title>Reports</v-list-tile-title>
+                </v-list-tile>
+
+            </v-list>
+            <v-list v-else>
+                <v-list-tile>
+                    <v-list-tile-title>Dashboard</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile v-if="memberships && memberships.length > 1">
+                    <v-select :value="currentMembershipId" :items="membershipOptions" class="select__collab-design" outline
+                        @input="setCurrentMembershipId"></v-select>
+                </v-list-tile>
+                <v-list-tile v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
+                    to="/dashboard/learn/profile">
+                    <v-list-tile-title>Profile</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled"
+                    to="/dashboard/learn/classes">
+                    <v-list-tile-title>Activities</v-list-tile-title>
+                </v-list-tile>
+
+                <!-- <v-list-tile
+            v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isChatEnabled"
+            to="/dashboard/learn/chat-setup"
+          >
+            <v-list-tile-title>Chat Set-Up</v-list-tile-title>
+          </v-list-tile> -->
+                <v-list-tile
+                    v-if="currentMembershipSetting && currentMembershipSetting.isDirectoryEnabled && currentMembershipSetting.isDMEnabled"
+                    to="/dashboard/learn/chat-discussion">
+                    <v-list-tile-title>Discussions</v-list-tile-title>
+                </v-list-tile>
+
+            </v-list>
+        </v-navigation-drawer>
+        <v-toolbar v-if="!hideNav" class="main-toolbar" absolute flat app>
+            <v-toolbar-title class="logo-container">
+                <router-link v-if="isLearnerDashboard" to="/dashboard/learn"
+                    style="text-decoration: none; color: black;font-size: 1.2em;">
+                    Learning dashboard
+                </router-link>
+                <a v-else-if="actualLogo.homeUrl" :href="actualLogo.homeUrl">
+                    <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc"
+                        style="height:48px;max-width: 100%;" @load="onLoadLogoImg" />
+                </a>
+                <router-link v-else-if="actualLogo.logoLink" :to="actualLogo.logoLink"
+                    style="text-decoration: none; color: black;">
+                    <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc"
+                        style="height:48px;max-width: 100%;" @load="onLoadLogoImg" />
+                </router-link>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <div v-if="false" class="search-bar">
+                <input type="text" placeholder="search">
+                <img src="../../../image/searchicon.png" alt="">
+            </div>
+
+            <v-toolbar-items class="hidden-md-and-down">
+                <a v-if="isLoggedIn" class="switch-dashboard-link" @click="switchLeftDrawerType">{{ isTeacherLeftDrawer ?
+                    "Switch to member" : "Switch to admin" }}</a>
+                <v-btn v-if="isTeacherLeftDrawer" key="addClassBtn" dark class="add-class-top-btn" data-desktop-nav-addclass
+                    @click="onClickPlusClass">+ Activity</v-btn>
+                <v-btn icon flat key="calendar" data-desktop-nav-calendar to="/dashboard/teach/schedule_list">
+                    <v-icon>calendar_today</v-icon>
+                </v-btn>
+                <v-btn icon flat key="notifications" data-desktop-nav-notifications to="/dashboard/teach/classes">
+                    <v-icon>notifications_none</v-icon>
+                </v-btn>
+                <v-btn icon flat key="settings" data-desktop-nav-settings
+                    @click="setIsLeftDrawerOpened(!isLeftDrawerOpened)">
+                    <v-icon>settings</v-icon>
+                </v-btn>
+            </v-toolbar-items>
+            <v-menu class="hidden-lg-and-up">
+                <v-toolbar-side-icon slot="activator" data-mobile-nav-menu-icon></v-toolbar-side-icon>
+                <v-list>
+                    <v-list-tile v-if="actualLogo.homeUrl" @click="openExternalLink(actualLogo.homeUrl)">
+                        <v-list-tile-content>
+                            <v-list-tile-title>Home</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-else :to="'/'">
+                        <v-list-tile-content>
+                            <v-list-tile-title>Home</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="onClickPlusClass">
+                        <v-list-tile-content>
+                            <v-list-tile-title>Become an instructor</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="isLoggedIn && (!hideTeachAndLearn || isTeacher)" to="/dashboard/teach">
+                        <v-list-tile-content>
+                            <v-list-tile-title>Instruct</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="isLoggedIn && (!hideTeachAndLearn || isLearner) && !isTeacherOfCompany"
+                        to="/dashboard/learn">
+                        <v-list-tile-content>
+                            <v-list-tile-title>Learn</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile @click="() => onAccountClick(isLoggedIn ? null : { section: 'login' })">
+                        <v-list-tile-content>
+                            <v-list-tile-title>{{ !isLoggedIn ? 'Log-in' : 'Logout' }}</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
+            <v-btn icon flat key="login" v-if="!isLoggedIn" @click="() => onAccountClick({ section: 'login' })"
+                data-desktop-nav-login>
+                <v-icon>person_add</v-icon>
+            </v-btn>
+            <v-btn icon flat key="logout" v-if="isLoggedIn" @click="onAccountClick" data-desktop-nav-logout>
+                <v-icon>account_circle</v-icon>
+            </v-btn>
+        </v-toolbar>
+        <v-content app>
+            <v-container fluid fill-height>
+                <v-layout justify-center align-start>
+                    <router-view v-if="isAuthChecked" :city="city" :selectedCategory="selectedCategory" :category="category"
+                        :subcategory="subcategory" :classesLoaded="classesLoaded" v-on:openLoginForm="onAccountClick"
+                        v-on:register:done="registerDone" style="align-items: start;" />
+                </v-layout>
+            </v-container>
+        </v-content>
 
         <v-dialog v-model="loginFormOpened" width="400" persistent>
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title>
-              {{ minRegTitle }}
-                <v-spacer></v-spacer>
-                <v-btn icon dark @click="() => setLoginFormOpened(null)">
-                  <v-icon>close</v-icon>
-                </v-btn>
-            </v-card-title>
-            <v-card-text>
-              <reg-min
-                v-show="!passwordResetForm"
-                :initial-view="minRegFormMode"
-                :belongs-to="company && company.id"
-                @done="onUserAuth"
-                @change="onMinRegChange"
-              />
-              <div><a v-if="!passwordResetForm" href="javascript:void(0)" @click="() => resetPasswordFormOpen(true)">forgot password?</a></div>
-                <div v-if="passwordResetForm">
-                  <form>
-                    <div v-if="passwordResetSuccess === true">Reset link was sent to your email</div>
-                    <div v-else-if="passwordResetSuccess === false">Something went wrong try again</div>
-                    <v-text-field
-                      v-else
-                      v-model.trim="passwordResetEmail"
-                      :error-messages="resetPasswordEmailErrors"
-                      required
-                      @input="$v.passwordResetEmail.$touch()"
-                      @blur="$v.passwordResetEmail.$touch()"
-                      label="Enter email"
-                    ></v-text-field>
-                  </form>
-                </div>
-    
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                v-if="passwordResetForm"
-                color="primary"
-                flat
-                @click="onResetPasswordClick" :disabled="isLoading || passwordResetSuccess">
-                Reset password
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    {{ minRegTitle }}
+                    <v-spacer></v-spacer>
+                    <v-btn icon dark @click="() => setLoginFormOpened(null)">
+                        <v-icon>close</v-icon>
+                    </v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <reg-min v-show="!passwordResetForm" :initial-view="minRegFormMode" :belongs-to="company && company.id"
+                        @done="onUserAuth" @change="onMinRegChange" />
+                    <div><a v-if="!passwordResetForm" href="javascript:void(0)"
+                            @click="() => resetPasswordFormOpen(true)">forgot password?</a></div>
+                    <div v-if="passwordResetForm">
+                        <form>
+                            <div v-if="passwordResetSuccess === true">Reset link was sent to your email</div>
+                            <div v-else-if="passwordResetSuccess === false">Something went wrong try again</div>
+                            <v-text-field v-else v-model.trim="passwordResetEmail"
+                                :error-messages="resetPasswordEmailErrors" required @input="$v.passwordResetEmail.$touch()"
+                                @blur="$v.passwordResetEmail.$touch()" label="Enter email"></v-text-field>
+                        </form>
+                    </div>
+
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn v-if="passwordResetForm" color="primary" flat @click="onResetPasswordClick"
+                        :disabled="isLoading || passwordResetSuccess">
+                        Reset password
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
         <v-dialog v-model="logoutForm" width="400">
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title>
-              Account Info
-            </v-card-title>
-            <v-card-text>
-              <form>
-                <div>{{full_name}}</div>
-                <div>{{currentEmail}}</div>
-    
-              </form>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                flat
-                @click="onLogoutClick" :disabled="isLoading">
-                Logout
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    Account Info
+                </v-card-title>
+                <v-card-text>
+                    <form>
+                        <div>{{ full_name }}</div>
+                        <div>{{ currentEmail }}</div>
+
+                    </form>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" flat @click="onLogoutClick" :disabled="isLoading">
+                        Logout
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
         <v-dialog v-model="isOpenedCompanyTeacherRequestForm" max-width="600">
-          <v-card>
-            <v-card-title class="headline grey lighten-2" primary-title>
-              Apply to Instruct at {{ currentPageCompanyName }}
-            </v-card-title>
-            <v-card-text>
-              <form>
-                <v-text-field
-                    v-model.trim="teacherRequestName"
-                    :error-messages="teacherRequestNameErrors"
-                    label="Name"
-                    required
-                    @input="$v.teacherRequestName.$touch()"
-                    @blur="$v.teacherRequestName.$touch()"
-                ></v-text-field>
-                <v-text-field
-                    v-model.trim="teacherRequestAreas"
-                    label="Areas of expertise"
-                    required
-                ></v-text-field>
-                <v-text-field
-                    v-model.trim="teacherRequestBackground"
-                    label="Background"
-                    required
-                ></v-text-field>
-                <v-text-field
-                    v-model.trim="teacherRequestEmail"
-                    :error-messages="teacherRequestEmailErrors"
-                    label="Email"
-                    required
-                    @input="onTeacherRequestEamailChange"
-                    @blur="onTeacherRequestEamailChange"
-                ></v-text-field>
-                <v-text-field
-                    v-model.trim="teacherRequestPhone"
-                    :error-messages="teacherRequestPhoneErrors"
-                    label="Phone"
-                    required
-                    @input="$v.teacherRequestPhone.$touch()"
-                    @blur="$v.teacherRequestPhone.$touch()"
-                ></v-text-field>
-              </form>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                flat
-                :loading="isLoadingCompanyProfile"
-                @click="sendTeacherRequest" :disabled="isLoadingCompanyProfile">
-                {{ teacherRequestBtnLabel }}
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    Apply to Instruct at {{ currentPageCompanyName }}
+                </v-card-title>
+                <v-card-text>
+                    <form>
+                        <v-text-field v-model.trim="teacherRequestName" :error-messages="teacherRequestNameErrors"
+                            label="Name" required @input="$v.passwordResetEmail.$touch()"
+                            @blur="$v.passwordResetEmail.$touch()" label="Enter email"></v-text-field>
+                    </form>
+                    </div>
+
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn v-if="passwordResetForm" color="primary" flat @click="onResetPasswordClick"
+                        :disabled="isLoading || passwordResetSuccess">
+                        Reset password
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="logoutForm" width="400">
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    Account Info
+                </v-card-title>
+                <v-card-text>
+                    <form>
+                        <div>{{ full_name }}</div>
+                        <div>{{ currentEmail }}</div>
+
+                    </form>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" flat @click="onLogoutClick" :disabled="isLoading">
+                        Logout
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="isOpenedCompanyTeacherRequestForm" max-width="600">
+            <v-card>
+                <v-card-title class="headline grey lighten-2" primary-title>
+                    Apply to Instruct at {{ currentPageCompanyName }}
+                </v-card-title>
+                <v-card-text>
+                    <form>
+                        <v-text-field v-model.trim="teacherRequestName" :error-messages="teacherRequestNameErrors"
+                            label="Name" required @input="$v.teacherRequestName.$touch()"
+                            @blur="$v.teacherRequestName.$touch()"></v-text-field>
+                        <v-text-field v-model.trim="teacherRequestAreas" label="Areas of expertise" required></v-text-field>
+                        <v-text-field v-model.trim="teacherRequestBackground" label="Background" required></v-text-field>
+                        <v-text-field v-model.trim="teacherRequestEmail" :error-messages="teacherRequestEmailErrors"
+                            label="Email" required @input="onTeacherRequestEamailChange"
+                            @blur="onTeacherRequestEamailChange"></v-text-field>
+                        <v-text-field v-model.trim="teacherRequestPhone" :error-messages="teacherRequestPhoneErrors"
+                            label="Phone" required @input="$v.teacherRequestPhone.$touch()"
+                            @blur="$v.teacherRequestPhone.$touch()"></v-text-field>
+                    </form>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" flat :loading="isLoadingCompanyProfile" @click="sendTeacherRequest"
+                        :disabled="isLoadingCompanyProfile">
+                        {{ teacherRequestBtnLabel }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
         </v-dialog>
     </v-app>
 </template>
@@ -379,7 +333,7 @@ export default {
     validations: {
         email: { required, email },
         passwordResetEmail: { required, email },
-        password: { required},
+        password: { required },
         teacherRequestName: { required },
         teacherRequestEmail: { required },
         teacherRequestPhone: { required: requiredIf((model) => !model.teacherRequestEmail) },
@@ -426,10 +380,10 @@ export default {
             //isLoggedIn: false,
             savedRedirect: null,
             autocompleteMenuProps: {
-                "closeOnClick":false,
-                "closeOnContentClick":false,
-                "openOnClick":false,
-                "maxHeight":200,
+                "closeOnClick": false,
+                "closeOnContentClick": false,
+                "openOnClick": false,
+                "maxHeight": 200,
                 "top": true,
                 "attach": '.type-autocomplete'
             },
@@ -455,51 +409,51 @@ export default {
             return response
         }, (error) => {
             console.log('intercepted', error)
-            if([400].includes(error.response.status)) {
+            if ([400].includes(error.response.status)) {
                 // ignore this headers used in custom errors processing
                 return Promise.reject(error)
             }
-            if(error.response.status === 401) {
+            if (error.response.status === 401) {
                 this.$store.commit('setUser', null)
-                this.$router.push('/?login&from='+this.$route.fullPath)
+                this.$router.push('/?login&from=' + this.$route.fullPath)
                 return Promise.reject(error)
             }
-            if(error.response.status >= 500) {
+            if (error.response.status >= 500) {
                 this.globalError = 'Server error, try again later'
-            } else if(error.response.status >= 400) {
+            } else if (error.response.status >= 400) {
                 this.globalError = 'Something went wrong, try again later'
             }
             return Promise.reject(error)
         })
         //console.log(this.$route)
         this.processOpenLoginRoute(this.$route)
-        if('city' in this.$route.params) {
+        if ('city' in this.$route.params) {
             this.city = {
                 address_city: this.$route.params.city,
                 address_state: this.$route.params.state
             }
         }
-        if('category' in this.$route.params && Number(this.$route.params.category)) {
+        if ('category' in this.$route.params && Number(this.$route.params.category)) {
             this.category = Number(this.$route.params.category)
         }
-        if('subcategory' in this.$route.params && Number(this.$route.params.subcategory)) {
+        if ('subcategory' in this.$route.params && Number(this.$route.params.subcategory)) {
             this.subcategory = Number(this.$route.params.subcategory)
         }
         this.restoreUser()
-        
+
     },
     async mounted() {
         if (this.isLoggedIn)
-         //load the most recent discussion of the user
-        this.loadRecentDiscussion().then(async (res) => {
-            if (res.status === 200) {
-                await this.setDiscussionId(res.data.id)
-                await this.setDiscussionPermission('allowed')
-            }
-            else if (res.status === 204) {
-                await this.setDiscussionPermission('not allowed')
-            }
-        })
+            //load the most recent discussion of the user
+            this.loadRecentDiscussion().then(async (res) => {
+                if (res.status === 200) {
+                    await this.setDiscussionId(res.data.id)
+                    await this.setDiscussionPermission('allowed')
+                }
+                else if (res.status === 204) {
+                    await this.setDiscussionPermission('not allowed')
+                }
+            })
     },
     methods: {
         ...mapMutations([
@@ -508,14 +462,14 @@ export default {
             'setGlobalError',
             'viewingCompany/setError',
             'viewingCompany/setStatus',
-            
+
         ]),
         ...mapMutations('layout', [
-          'setIsLeftDrawerOpened',
-          'setIsLeftDrawerMini',
+            'setIsLeftDrawerOpened',
+            'setIsLeftDrawerMini',
         ]),
         ...mapMutations('learnerMembership', [
-          'setCurrentMembershipId',
+            'setCurrentMembershipId',
         ]),
         ...mapActions('viewingCompany', [
             'sendCompanyTeacherRequest',
@@ -523,7 +477,7 @@ export default {
         ...mapActions([
             'loadBelongingCompanyProfile',
         ]),
-        ...mapActions('chatDiscussion',['loadRecentDiscussion','setDiscussionId', 'initiateChat','setDiscussionPermission','checkBlockUser']),
+        ...mapActions('chatDiscussion', ['loadRecentDiscussion', 'setDiscussionId', 'initiateChat', 'setDiscussionPermission', 'checkBlockUser']),
         resetPasswordFormOpen(open) {
             if (open) {
                 this.passwordResetForm = true;
@@ -551,7 +505,7 @@ export default {
             let timezone = 'America/New_York';
             try {
                 timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            } catch (e) {}
+            } catch (e) { }
 
             this.sendCompanyTeacherRequest({
                 name: this.teacherRequestName,
@@ -579,14 +533,14 @@ export default {
             this.city = city
             this.searchClasses(this.subcategory, this.category)
         },
-        searchClasses(scId=null, cId=null) {
+        searchClasses(scId = null, cId = null) {
             this.subcategory = scId
             this.category = cId
             this.categoryMenuVisible = false
             console.log(this.category, this.subcategory, this.city)
-            if(!this.city)
+            if (!this.city)
                 return
-            if(this.city === 'online') {
+            if (this.city === 'online') {
                 this.$router.push(`/learners/search/online/none/${this.category || '0'}/${this.subcategory || ''}`)
             } else {
                 this.$router.push(`/learners/search/${this.city.address_city}/${this.city.address_state}/${this.category || '0'}/${this.subcategory || ''}`)
@@ -595,7 +549,7 @@ export default {
         onAccountClick: function (event) {
             this.isLoading = false
             if (!this.$store.state.user || !Object.keys(this.$store.state.user).length) {
-                if(event && event.register === 'close') {
+                if (event && event.register === 'close') {
                     this.isAlreadyRegisterOpened = true
                 } else {
                     this.isAlreadyRegisterOpened = false
@@ -616,8 +570,8 @@ export default {
                 console.log(logoutRes)
                 if (this.$store.state.lastLesson) {
                     const classId = this.$store.state.lastLesson.klass;
-                    const companyId = this.$store.state.lastLesson.data['class'] && 
-                        this.$store.state.lastLesson.data['class'].teacher.user.company_profile && 
+                    const companyId = this.$store.state.lastLesson.data['class'] &&
+                        this.$store.state.lastLesson.data['class'].teacher.user.company_profile &&
                         this.$store.state.lastLesson.data['class'].teacher.user.company_profile.slug
                     this.$nextTick(() => {
                         if (companyId) this.$router.push(`/company/${companyId}`);
@@ -655,7 +609,7 @@ export default {
                     await this.loadBelongingCompanyProfile(init.data.user.belongs_to);
                 }
             }
-            if(this.isLoggedIn && this.loginFormOpened) {
+            if (this.isLoggedIn && this.loginFormOpened) {
                 // close login since already logged in
                 this.setLoginFormOpened(null)
             }
@@ -664,15 +618,15 @@ export default {
             return true
         },
         checkAuth() {
-            if(!this.isLoggedIn && this.$route.matched.some(v => v.meta.requiresAuth)) {
+            if (!this.isLoggedIn && this.$route.matched.some(v => v.meta.requiresAuth)) {
                 // redirect to login
-                this.$router.push('/?login&from='+this.$route.fullPath)
+                this.$router.push('/?login&from=' + this.$route.fullPath)
             }
         },
         onUserAuth() {
             // login or register
             this.setLoginFormOpened(null)
-            if(this.savedRedirect) {
+            if (this.savedRedirect) {
                 this.$router.push(this.savedRedirect)
                 this.savedRedirect = null
             }
@@ -694,7 +648,7 @@ export default {
                 return axios.post('/api/auth/login/', params)
             }).catch((loginRes) => {
                 console.log('err!', loginRes)
-                if(loginRes.response.data.not_exist) {
+                if (loginRes.response.data.not_exist) {
                     this.registerLink = true
                     this.loginError = 'Whoops! We don’t have that name please, register '
                 } else
@@ -702,16 +656,16 @@ export default {
                 this.isLoading = false
             }).then((loginRes) => {
                 console.log(loginRes)
-                if(!loginRes)
+                if (!loginRes)
                     return
                 return this.restoreUser()
             }).then(res => {
-                if(!res)
+                if (!res)
                     return
                 //this.$store.dispatch('setInitialdata', res)
                 //this.user = this.$store.state.user
                 this.setLoginFormOpened(null)
-                if(this.savedRedirect) {
+                if (this.savedRedirect) {
                     this.$router.push(this.savedRedirect)
                     this.savedRedirect = null
                 }
@@ -730,7 +684,7 @@ export default {
                 email: this.passwordResetEmail
             }).then((resetRes) => {
                 console.log(resetRes)
-                if(resetRes.data.success) {
+                if (resetRes.data.success) {
                     this.passwordResetSuccess = true
                 } else {
                     this.passwordResetSuccess = false
@@ -745,30 +699,30 @@ export default {
         clickRegister() {
             this.setLoginFormOpened(null)
             this.loginError = ''
-            if(!this.isAlreadyRegisterOpened) {
+            if (!this.isAlreadyRegisterOpened) {
                 this.registerLink = false
                 this.isLoading = true
-                this.$router.push({path: '/register'})
+                this.$router.push({ path: '/register' })
             }
 
         },
         processOpenLoginRoute(route) {
-            if('login' in route.query || 'register' in route.query) {
+            if ('login' in route.query || 'register' in route.query) {
                 this.minRegFormMode = 'login' in route.query ? 'login' : 'register';
                 this.setLoginFormOpened({})
-                if('from' in route.query) {
+                if ('from' in route.query) {
                     this.savedRedirect = route.query['from']
                 }
                 this.$router.replace(this.$route.path)
             }
         },
         async onTeacherDashboardClick() {
-            if(/\/dashboard\/teach/.test(this.$route.path) || this.isTeacherDashboardLoading)
+            if (/\/dashboard\/teach/.test(this.$route.path) || this.isTeacherDashboardLoading)
                 return
             this.isTeacherDashboardLoading = true
-            const {data: preloaded} = await axios.get('/api/teacher_dashboard_preload/')
+            const { data: preloaded } = await axios.get('/api/teacher_dashboard_preload/')
             this.isTeacherDashboardLoading = false
-            if(preloaded.upcoming) {
+            if (preloaded.upcoming) {
                 return this.$router.push('/dashboard/teach/schedule_list?filter=upcoming')
             }
             /*
@@ -786,10 +740,10 @@ export default {
             })
         },
         switchLeftDrawerType() {
-          this.$router.push(this.isTeacherLeftDrawer ? '/dashboard/learn' : '/dashboard/teach' );
+            this.$router.push(this.isTeacherLeftDrawer ? '/dashboard/learn' : '/dashboard/teach');
         },
         async redirectToDiscussionPage() {
-             //load the most recent discussion of the user
+            //load the most recent discussion of the user
             this.loadRecentDiscussion().then(async (res) => {
                 if (res.status === 200) {
                     await this.setDiscussionId(res.data.id)
@@ -802,7 +756,7 @@ export default {
                     this.$router.push({ path: '/dashboard/teach/teacher-chat-setup' })
                 }
             })
-            
+
         },
         // showDiscussion() {
         //     console.log(this.isCompanyAdmin)
@@ -852,19 +806,19 @@ export default {
             'belongingCompanyProfile',
             'isLogoCompanyProfileChecked',
         ]),
-        ...mapGetters('chatDiscussion',['discussionId','discussionPermission']),
+        ...mapGetters('chatDiscussion', ['discussionId', 'discussionPermission']),
         membershipSettingsDict() {
-          return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({...acc, [v.id]: v}), {}) : {};
+            return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({ ...acc, [v.id]: v }), {}) : {};
         },
         membershipOptions() {
-          return this.memberships ? this.memberships.map(v => ({value: v.id, text: this.membershipSettingsDict[v.membership].name})) : [];
+            return this.memberships ? this.memberships.map(v => ({ value: v.id, text: this.membershipSettingsDict[v.membership].name })) : [];
         },
         leftDrawerType() {
             if (this.$route.path.includes("/dashboard/teach") || this.$route.path.includes("/teachers")) return LEFT_DRAWER_TYPE.TEACH;
             return LEFT_DRAWER_TYPE.LEARN
         },
         isTeacherLeftDrawer() {
-          return this.leftDrawerType === LEFT_DRAWER_TYPE.TEACH
+            return this.leftDrawerType === LEFT_DRAWER_TYPE.TEACH
         },
         actualLogo() {
             const pathMatch = /(learners_step|classpage|teacher_classes|teacher_profile|company_membership|buy_membership|company_profile|dashboard|company_group_calendar|company_classes_group_slug|teachers_start|teachers_class)/.test(this.$route.name);
@@ -974,21 +928,21 @@ export default {
             }
         },
         full_name: function () {
-            return this.first_name+' '+this.last_name
+            return this.first_name + ' ' + this.last_name
         },
-        emailErrors () {
+        emailErrors() {
             const errors = []
             if (!this.$v.email.$dirty) return errors
             !this.$v.email.required && errors.push('Login(Email) is required')
             return errors
         },
-        passwordErrors () {
+        passwordErrors() {
             const errors = []
             if (!this.$v.password.$dirty) return errors
             !this.$v.password.required && errors.push('Password is required')
             return errors
         },
-        resetPasswordEmailErrors () {
+        resetPasswordEmailErrors() {
             const errors = []
             if (!this.$v.passwordResetEmail.$dirty) return errors
             !this.$v.passwordResetEmail.email && errors.push('Must be valid e-mail')
@@ -1014,14 +968,14 @@ export default {
 
         },
         loginFormOpened(newVal, oldVal) {
-            if(!newVal) {
+            if (!newVal) {
                 this.passwordResetSuccess = null
                 this.passwordResetForm = false
             }
         },
-        '$route' (to, from) {
+        '$route'(to, from) {
             console.log(to, from)
-            if(/\/dashboard\/teach/.test(to.path)) {
+            if (/\/dashboard\/teach/.test(to.path)) {
                 this.topTeachBtnActive = true
             } else {
                 this.topTeachBtnActive = false
@@ -1046,67 +1000,92 @@ export default {
     color: #2c3e50;
     font-size: 17px;
     overflow: hidden;
+
     .main-toolbar {
         z-index: 12;
         height: 64px;
         background-color: white;
+
         .add-class-top-btn {
-          background-color: #434343;
-          color: #ffffff;
-          margin-right: 40px;
-          height: 32px;
+            background-color: #434343;
+            color: #ffffff;
+            margin-right: 40px;
+            height: 32px;
         }
     }
+
     .left-drawer {
         width: 156px;
         display: flex;
         flex-flow: column;
         background-color: #434343;
-        
+
+        .v-list__tile__title {
+            color: #ffffff;
+            margin-right: 40px;
+            height: 32px;
+        }
+    }
+
+    .left-drawer {
+        width: 156px;
+        display: flex;
+        flex-flow: column;
+        background-color: #434343;
+
         .v-list__tile__title {
             color: #ffffff;
             font-size: 18px;
         }
+
         .collapse-drawer-container {
-          text-align: end;
-          padding-right: 15px;
+            text-align: end;
+            padding-right: 15px;
         }
+
         .v-list__tile--active {
-          background: #F5F5F5;
-          .v-list__tile__title {
-            color: #262626;
-            font-weight: bold;
-          }
+            background: #F5F5F5;
+
+            .v-list__tile__title {
+                color: #262626;
+                font-weight: bold;
+            }
         }
+
         .list-subitem {
             .v-list__tile__title {
                 padding-left: 2em;
             }
         }
     }
+
     .logo-container {
-      position: absolute;
-      left: 24px;
+        position: absolute;
+        left: 24px;
     }
 }
+
 .switch-dashboard-link {
-  align-self: center;
-  margin-right: 1em;
+    align-self: center;
+    margin-right: 1em;
 }
-.search-bar{
+
+.search-bar {
     width: 71%;
     display: flex;
     margin-right: 79px;
     position: relative;
 }
-.search-bar input{
+
+.search-bar input {
     border: 1px solid #D9D9D9;
     width: 344px;
     height: 40px;
     padding: 2px 5px;
     outline: none;
 }
-.search-bar img{
+
+.search-bar img {
     position: absolute;
     top: 5px;
     left: 309px;
