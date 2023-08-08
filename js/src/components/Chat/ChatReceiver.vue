@@ -7,8 +7,13 @@
                     </div>
                     <div class="RecieverContent-about">
                         <div class="RecieverContent-about-bio">
-                            <span class="AboutBio-Person" @click="showBlockUserDialog()">{{ message.user.first_name+" "+ message.user.last_name }}</span>
+                            <!-- <div class="flex"> -->
+                            <!-- <div> -->
+                            <span class="AboutBio-Person">{{ message.user.first_name+" "+ message.user.last_name }}</span>
                             <span class="AboutBio-MessageDate">{{ datePipe(message.created_at) }}</span>
+                            <!-- </div> -->
+                            
+                        <!-- </div> -->
                         </div>
                         <p>{{ message.content }}</p>
                         <img v-if="message.image" :src="message.image" class="upload-image"/>
@@ -46,39 +51,55 @@
                             </span>
                         </div>
                     </div>
+                    <!-- <span @click="showBlockUserDialog()"> -->
+                        <v-menu>
+                            <v-card width="140">
+                        <v-card-actions>
+                        <v-list style="padding:0;cursor:pointer">
+                            <v-list-item>
+                                <v-list-item-action  @click="showBlockUserDialog()">Block</v-list-item-action>
+                            </v-list-item>
+                        </v-list>
+                        </v-card-actions>
+                        </v-card>
+                        <template v-slot:activator="{ on, attrs }">
+                    <v-icon bottom left :offset-x="true" v-bind="attrs" v-on="on" class="material-icons" style="font-size: 24px;margin-left:auto;margin-right:15px;cursor: pointer;"> more_vert </v-icon>
+                 </template>    
+                </v-menu>
+                    <!-- </span> -->
     </div>
     <div v-if="showPostMessage" class="ChatGroup-ReceiverMessage">
     <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
     </div>
-             <v-dialog
-                v-model="blockUserDialog"
-                  width="290"
-                >
-                    <v-card
-                  >
-                    <v-card-text>
-                      Do you want to block {{ message.user.first_name }} ?
-                    </v-card-text>
-                    <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="red darken-1"
-                    depressed
-                    outlined
-                    @click="blockSelectedUser(message.user.id)"
-                  >
-                    Block
-                  </v-btn>
-                  <v-btn
-                    depressed
-                    outlined
-                    @click="blockUserDialog = !blockUserDialog"
-                  >
-                    Cancel
-                  </v-btn>
-                </v-card-actions>
-                  </v-card>
-            </v-dialog>
+    <v-dialog
+    v-model="blockUserDialog"
+        width="290"
+    >
+        <v-card
+        >
+        <v-card-text>
+            Do you want to block {{ message.user.first_name }} ?
+        </v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+        color="red darken-1"
+        depressed
+        outlined
+        @click="blockSelectedUser(message.user.id)"
+        >
+        Block
+        </v-btn>
+        <v-btn
+        depressed
+        outlined
+        @click="blockUserDialog = !blockUserDialog"
+        >
+        Cancel
+        </v-btn>
+    </v-card-actions>
+        </v-card>
+    </v-dialog>
     </div>
 </template>
 
@@ -205,5 +226,10 @@ export default {
 <style scoped>
 ::file-selector-button,.hidden {
   display: none;
+}
+.flex{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 </style>
