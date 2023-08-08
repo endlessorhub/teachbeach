@@ -18,14 +18,16 @@
                 <div class="WelcomeTab-AdminModule">
 
                     <div class="AdminModule-Person">
-                        <h2 class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
-                        <span>14 MARCH, 2023</span>
+                        <h2  class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
+                        <span>{{ datePipe(discussionCreated) }}</span>
                     </div>
-                    <p>You’re in The Business Expansion Event!</p>
+                    <p v-if="descriptionDetails">{{ descriptionDetails.content }}</p>
                     <div class="ChatContainer-Divider"></div>         
                 </div>
-                <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
+                <div v-if="descriptionDetails">
+                <div  class="ChatContainer-Divider"></div>
                 <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
+                </div>
             </div>
             </div>
 
@@ -211,6 +213,7 @@ import { mapGetters, mapActions } from 'vuex'
 import ChatReceiver from '../components/Chat/ChatReceiver.vue';
 import ChatSender from '../components/Chat/ChatSender.vue';
 import PostMessage from '../components/Chat/PostMessage.vue';
+import moment from 'moment'
 
 export default {
     name: 'TeacherChatDiscussion',
@@ -234,7 +237,8 @@ export default {
                 'content': null
             },
             isReply: false,
-            trendingDiscussionTitle:[]
+            trendingDiscussionTitle: [],
+            discussionCreated:null
 
         };
     },
@@ -255,6 +259,7 @@ export default {
             // load the description of the post
             const res = await this.loadDicussionDetails(this.discussionId)
             if (res.status === 200) {
+                this.discussionCreated = res.data.created_at
                 this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
@@ -334,6 +339,10 @@ export default {
         },
         async uploadImage(payload){
             await this.sendMessage(payload)
+        },
+        datePipe(created_at) {
+            const date = new Date(created_at)
+            return moment(date).format("Do MMMM, YYYY")
         },
     },
 }
