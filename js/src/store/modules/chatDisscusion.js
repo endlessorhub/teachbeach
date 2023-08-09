@@ -5,7 +5,8 @@ const state = () => ({
   webSocketConnection: null,
   discussionId: null,
   discussionPermission: "allowed",
-  chatPermission:false,
+  chatPermission: false,
+  topComment:null,
 });
 
 const mutations = {
@@ -49,7 +50,7 @@ const mutations = {
                 (reply) => reply.id === discussionMessage.parent_comment_id
               );
 
-              // if found add the child reply next to preant reply with in the array
+              // if found add the child reply next to parent reply with in the array
               if (index >= 0) {
                 parent.replies.splice(index + 1, 0, discussionMessage);
                 parentIdentified = true;
@@ -71,6 +72,8 @@ const mutations = {
     state.chat = state.chat.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
+
+    console.log(state.chat);
   },
   setWSConnection(state, connection) {
     state.webSocketConnection = connection;
@@ -93,33 +96,93 @@ const mutations = {
     let chat = [...state.chat];
     let comment = undefined;
     let reply = undefined;
-    comment = chat.find(
-      (comment) => comment.id === discussionMessage.comment_id
-    );
-    let commentIndex = chat.findIndex(
-      (comment) => comment.id === discussionMessage.comment_id
-    );
-    if (comment && commentIndex > -1) {
-      const updatedComment = { ...comment, image: discussionMessage.image_url };
-      state.chat.splice(commentIndex, 1, updatedComment);
+
+    if (
+      state.topComment &&
+      state.topComment.id === discussionMessage.comment_id
+    ) {
+      state.topComment.image = discussionMessage.image_url;
     } else {
-      chat.forEach((comment, index) => {
-        reply = comment.replies.find(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        let replyIndex = comment.replies.findIndex(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        if (reply && replyIndex > -1) {
-          const updatedReply = { ...reply, image: discussionMessage.image_url };
-          comment.replies.splice(replyIndex, 1, updatedReply);
-        }
-      });
-      state.chat = [...chat];
+      comment = chat.find(
+        (comment) => comment.id === discussionMessage.comment_id
+      );
+      let commentIndex = chat.findIndex(
+        (comment) => comment.id === discussionMessage.comment_id
+      );
+      if (comment && commentIndex > -1) {
+        const updatedComment = {
+          ...comment,
+          image: discussionMessage.image_url,
+        };
+        state.chat.splice(commentIndex, 1, updatedComment);
+      } else {
+        chat.forEach((comment, index) => {
+          reply = comment.replies.find(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          let replyIndex = comment.replies.findIndex(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          if (reply && replyIndex > -1) {
+            const updatedReply = {
+              ...reply,
+              image: discussionMessage.image_url,
+            };
+            comment.replies.splice(replyIndex, 1, updatedReply);
+          }
+        });
+        state.chat = [...chat];
+      }
     }
   },
-  setChatPermission(state, chatPermission) { 
-    state.chatPermission = chatPermission
+  setChatPermission(state, chatPermission) {
+    state.chatPermission = chatPermission;
+  },
+  setFirstPost(state,post) { 
+    state.topComment = post
+  },
+  updateLike(state, discussionMessage) {
+    let chat = [...state.chat];
+    let comment = undefined;
+    let reply = undefined;
+
+    if (
+      state.topComment &&
+      state.topComment.id === discussionMessage.comment_id
+    ) {
+      state.topComment.is_liked = discussionMessage.is_liked;
+    } else {
+      comment = chat.find(
+        (comment) => comment.id === discussionMessage.comment_id
+      );
+      let commentIndex = chat.findIndex(
+        (comment) => comment.id === discussionMessage.comment_id
+      );
+      if (comment && commentIndex > -1) {
+        const updatedComment = {
+          ...comment,
+          is_liked: discussionMessage.is_liked,
+        };
+        state.chat.splice(commentIndex, 1, updatedComment);
+      } else {
+        chat.forEach((comment, index) => {
+          reply = comment.replies.find(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          let replyIndex = comment.replies.findIndex(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          if (reply && replyIndex > -1) {
+            const updatedReply = {
+              ...reply,
+              is_liked: discussionMessage.is_liked,
+            };
+            comment.replies.splice(replyIndex, 1, updatedReply);
+          }
+        });
+        state.chat = [...chat];
+      }
+    }
   }
 };
 
@@ -132,10 +195,14 @@ const actions = {
       commit("setWSConnection", connection);
       connection.onmessage = (message) => {
         let discussionMessage = JSON.parse(message.data)
-        if (!Object.hasOwn(discussionMessage, "image_url"))
+        if (
+          !Object.hasOwn(discussionMessage, "image_url") &&
+          !Object.hasOwn(discussionMessage, "is_liked")
+        )
           commit("pushMessage", discussionMessage);
-        else
+        else if (Object.hasOwn(discussionMessage, "image_url"))
           commit("uploadImage", discussionMessage);
+        else commit("updateLike", discussionMessage);
       };
     };
   },
@@ -187,14 +254,18 @@ const actions = {
       localStorage.setItem("chatPermission",response.data.is_allowed_to_chat)
         commit("setChatPermission", response.data.is_allowed_to_chat);
     }
-  }
+  },
+  setFirstPost({ commit }, post) {
+      commit('setFirstPost',post)
+   }
 };
 
 const getters = {
   chatMessages: (state) => state.chat,
   discussionId: (state) => state.discussionId,
   discussionPermission: (state) => state.discussionPermission,
-  chatPermission:(state)=>state.chatPermission
+  chatPermission: (state) => state.chatPermission,
+  topComment: state => state.topComment
 }
 
 export default {

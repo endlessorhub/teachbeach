@@ -230,11 +230,13 @@ export default {
             reply: {
                 'type': 'REPLY',
                 'content': null,
-                'parent_comment': null
+                'parent_comment': null,
+                'is_liked':false
             },
             comment: {
                 'type': 'COMMENT',
-                'content': null
+                'content': null,
+                'is_liked': false
             },
             isReply: false,
             trendingDiscussionTitle: [],
