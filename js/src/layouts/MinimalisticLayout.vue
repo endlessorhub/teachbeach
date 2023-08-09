@@ -90,7 +90,7 @@
             <v-toolbar-title class="logo-container">
                 <router-link v-if="isLearnerDashboard" to="/dashboard/learn"
                     style="text-decoration: none; color: black;font-size: 1.2em;">
-                    Learning dashboard
+                    Member dashboard
                 </router-link>
                 <a v-else-if="actualLogo.homeUrl" :href="actualLogo.homeUrl">
                     <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc"
@@ -749,7 +749,7 @@ export default {
                     await this.setDiscussionId(res.data.id)
                     await this.checkBlockUser()
                     await this.setDiscussionPermission('allowed')
-                    this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
+                    this.$router.push({ path: '/dashboard/learn/chat-discussion' })
                 }
                 else if (res.status === 204 && this.isCompanyAdmin) {
                     await this.setDiscussionPermission('not allowed')
