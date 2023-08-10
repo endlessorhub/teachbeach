@@ -88,7 +88,7 @@
                         </div>
                         <p v-if="topComment">{{ topComment.content }}</p>
                         <div class="ChatContainer-Divider"></div>         
-                    <ChatReceiver v-if="topComment" :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
+                    <ChatReceiver v-if="topComment" :message="topComment" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     </div>
                 </div>
                 
@@ -105,7 +105,7 @@
             <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
                     <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                        :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage"/>
+                        :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <div class="ChatContainer-Divider"></div>
                 </div>
 
@@ -190,7 +190,7 @@ export default {
             if (res.status === 200) {
                 this.setFirstPost(res.data.top_comment)
                 this.discussionCreated = res.data.created_at
-                this.descriptionDetails = res.data.top_comment
+                // this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
 

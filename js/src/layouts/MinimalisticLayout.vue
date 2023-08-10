@@ -749,7 +749,7 @@ export default {
                     await this.setDiscussionId(res.data.id)
                     await this.checkBlockUser()
                     await this.setDiscussionPermission('allowed')
-                    this.$router.push({ path: '/dashboard/learn/chat-discussion' })
+                    this.$router.push({ path: '/dashboard/teach/teacher-chat-discussion' })
                 }
                 else if (res.status === 204 && this.isCompanyAdmin) {
                     await this.setDiscussionPermission('not allowed')

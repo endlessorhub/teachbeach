@@ -21,12 +21,12 @@
                         <h2  class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
                         <span>{{ datePipe(discussionCreated) }}</span>
                     </div>
-                    <p v-if="descriptionDetails">{{ descriptionDetails.content }}</p>
+                    <p v-if="topComment">{{ topComment.content }}</p>
                     <div class="ChatContainer-Divider"></div>         
                 </div>
-                <div v-if="descriptionDetails">
+                <div v-if="topComment">
                 <div  class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
+                <ChatReceiver :message="topComment" :isReplyIcon="true" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
                 </div>
             </div>
             </div>
@@ -36,9 +36,9 @@
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 <div v-for="reply in message.replies" :key="reply.id">
-                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 </div>
                 <div class="ChatContainer-Divider"></div>
             </div>
@@ -245,7 +245,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission']),
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission','topComment']),
         ...mapGetters(['userInfo']),
         chat: {
             get() {
@@ -261,8 +261,9 @@ export default {
             // load the description of the post
             const res = await this.loadDicussionDetails(this.discussionId)
             if (res.status === 200) {
+                this.setFirstPost(res.data.top_comment)
                 this.discussionCreated = res.data.created_at
-                this.descriptionDetails = res.data.top_comment
+                // this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
 
@@ -303,7 +304,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket',"setReplyParentId"]),
+        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket', 'setFirstPost']),
         show(val) {
             this.activeItem = val;
         },
@@ -340,6 +341,9 @@ export default {
             }
         },
         async uploadImage(payload){
+            await this.sendMessage(payload)
+        },
+        async updateLike(payload) {
             await this.sendMessage(payload)
         },
         datePipe(created_at) {

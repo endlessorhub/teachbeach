@@ -136,5 +136,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
         comment.save()
         return {
             "comment_id":comment.id,
-            "is_liked":comment.is_liked
+            "comment_like":comment.is_liked
         }
