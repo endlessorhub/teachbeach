@@ -13,67 +13,108 @@ const mutations = {
   pushMessage(state, discussionMessage) {
     let replyPushed = false;
     let parentIdentified = false;
+    let topCommentReply = false
+    let topComment = state.topComment
 
-    // adding child if reply is for the main comment
-    if (state.chat.length > 0) {
-      // loop through each main comment
-      state.chat = state.chat.map((chat) => {
-        //if parent id matches to that of the main comment
-        if (chat.id === discussionMessage.parent_comment_id) {
-          // check for replies array , if exsist than insert else create one and then insert
-          if (Object.hasOwn(chat, "replies")) {
-            replyPushed = true;
-            parentIdentified = true;
-            chat.replies.push(discussionMessage);
-            return chat;
+    if (state.topComment.id === discussionMessage.parent_comment_id) {
+      if (Object.hasOwn(state.topComment, "replies")) {
+        replyPushed = true;
+        parentIdentified = true;
+        topCommentReply = true
+        state.topComment.replies = [
+          ...state.topComment.replies,
+          discussionMessage,
+        ];
+        // state.topComment = topComment;
+      }
+      else {
+        replyPushed = true;
+        parentIdentified = true;
+        topCommentReply = true;
+        state.topComment.replies = [];
+        state.topComment.replies = [
+          ...state.topComment.replies,
+          discussionMessage,
+        ];
+        // state.topComment = topComment;
+      }
+      
+    }
+    else{
+      const index = topComment.replies.findIndex(
+        (reply) => reply.id === discussionMessage.parent_comment_id
+      );
+
+      // if found add the child reply next to parent reply with in the array
+      if (index >= 0) {
+        topComment.replies.splice(index + 1, 0, discussionMessage);
+        parentIdentified = true;
+        replyPushed = true;
+        topCommentReply = true
+        state.topComment.replies = [...topComment.replies]
+      }
+    }
+    // else {
+    if(!topCommentReply)
+      if (state.chat.length > 0) {
+        // adding child if reply is for the main comment
+        // loop through each main comment
+        state.chat = state.chat.map((chat) => {
+          //if parent id matches to that of the main comment
+          if (chat.id === discussionMessage.parent_comment_id) {
+            // check for replies array , if exsist than insert else create one and then insert
+            if (Object.hasOwn(chat, "replies")) {
+              replyPushed = true;
+              parentIdentified = true;
+              chat.replies.push(discussionMessage);
+              return chat;
+            } else {
+              replyPushed = true;
+              parentIdentified = true;
+              chat.replies = [];
+              chat.replies.push(discussionMessage);
+              return chat;
+            }
           } else {
-            replyPushed = true;
-            parentIdentified = true;
-            chat.replies = [];
-            chat.replies.push(discussionMessage);
             return chat;
           }
-        } else {
-          return chat;
-        }
-      });
+        });
 
-      // adding child if it is the reply to a reply
-      if (!parentIdentified) {
-        if (discussionMessage.parent_comment_id)
-          //loop through all the main comments
-          state.chat = state.chat.map((parent) => {
-            // check for replies array
-            if (Object.hasOwn(parent, "replies")) {
-              // find index of the parent reply whose id matches the id of child reply
-              const index = parent.replies.findIndex(
-                (reply) => reply.id === discussionMessage.parent_comment_id
-              );
+        // adding child if it is the reply to a reply
+        if (!parentIdentified) {
+          if (discussionMessage.parent_comment_id)
+            //loop through all the main comments
+            state.chat = state.chat.map((parent) => {
+              // check for replies array
+              if (Object.hasOwn(parent, "replies")) {
+                // find index of the parent reply whose id matches the id of child reply
+                const index = parent.replies.findIndex(
+                  (reply) => reply.id === discussionMessage.parent_comment_id
+                );
 
-              // if found add the child reply next to parent reply with in the array
-              if (index >= 0) {
-                parent.replies.splice(index + 1, 0, discussionMessage);
-                parentIdentified = true;
-                replyPushed = true;
+                // if found add the child reply next to parent reply with in the array
+                if (index >= 0) {
+                  parent.replies.splice(index + 1, 0, discussionMessage);
+                  parentIdentified = true;
+                  replyPushed = true;
+                }
               }
-            }
-            return parent;
-          });
+              return parent;
+            });
+        }
+
+        // if the message is neither the reply of main comment nor the child reply of a reply
+        if (!replyPushed) state.chat.push(discussionMessage);
       }
-
-      // if the message is neither the reply of main comment nor the child reply of a reply
-      if (!replyPushed) state.chat.push(discussionMessage);
-    }
-
-    // if it is the first comment of the discussion
-    else state.chat.push(discussionMessage);
-
+    
+      // if it is the first comment of the discussion
+      else state.chat.push(discussionMessage);
+    
     // sort the discussion array in descending order according to created_at(time) attribute
     state.chat = state.chat.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
 
-    console.log(state.chat);
   },
   setWSConnection(state, connection) {
     state.webSocketConnection = connection;
@@ -94,6 +135,8 @@ const mutations = {
   },
   uploadImage(state, discussionMessage) {
     let chat = [...state.chat];
+    // let topComment = [...state.topComment.replies]
+    let topComment = state.topComment
     let comment = undefined;
     let reply = undefined;
 
@@ -116,6 +159,23 @@ const mutations = {
         };
         state.chat.splice(commentIndex, 1, updatedComment);
       } else {
+
+        // chat.forEach((comment, index) => {
+          reply = topComment.replies.find(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          let replyIndex = topComment.replies.findIndex(
+            (reply) => reply.id === discussionMessage.comment_id
+          );
+          if (reply && replyIndex > -1) {
+            const updatedReply = {
+              ...reply,
+              image: discussionMessage.image_url,
+            };
+            topComment.replies.splice(replyIndex, 1, updatedReply);
+          }
+        // });
+
         chat.forEach((comment, index) => {
           reply = comment.replies.find(
             (reply) => reply.id === discussionMessage.comment_id
@@ -132,6 +192,7 @@ const mutations = {
           }
         });
         state.chat = [...chat];
+        state.topComment = topComment
       }
     }
   },
@@ -143,28 +204,44 @@ const mutations = {
   },
   updateLike(state, discussionMessage) {
     let chat = [...state.chat];
-    let comment = undefined;
+    let foundComment = undefined;
     let reply = undefined;
+    let topComment = state.topComment;
 
     if (
       state.topComment &&
       state.topComment.id === discussionMessage.comment_id
     ) {
       state.topComment.is_liked = discussionMessage.comment_like;
-    } else {
-      comment = chat.find(
+    }
+    else {
+      foundComment = chat.find(
         (comment) => comment.id === discussionMessage.comment_id
       );
       let commentIndex = chat.findIndex(
         (comment) => comment.id === discussionMessage.comment_id
       );
-      if (comment && commentIndex > -1) {
+      if (foundComment && commentIndex > -1) {
         const updatedComment = {
-          ...comment,
+          ...foundComment,
           is_liked: discussionMessage.comment_like,
         };
         state.chat.splice(commentIndex, 1, updatedComment);
       } else {
+        reply = topComment.replies.find(
+          (reply) => reply.id === discussionMessage.comment_id
+        );
+        let replyIndex = topComment.replies.findIndex(
+          (reply) => reply.id === discussionMessage.comment_id
+        );
+        if (reply && replyIndex > -1) {
+          const updatedReply = {
+            ...reply,
+            is_liked: discussionMessage.comment_like,
+          };
+          topComment.replies.splice(replyIndex, 1, updatedReply);
+        }
+
         chat.forEach((comment, index) => {
           reply = comment.replies.find(
             (reply) => reply.id === discussionMessage.comment_id
@@ -180,7 +257,9 @@ const mutations = {
             comment.replies.splice(replyIndex, 1, updatedReply);
           }
         });
+
         state.chat = [...chat];
+        state.topComment = topComment;
       }
     }
   }
