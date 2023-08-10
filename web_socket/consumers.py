@@ -52,6 +52,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             comment_data = await self.create_comment_reply_obj(text_data_json)
         if type == 'IMAGE':
             comment_data = await self.create_comment_image_obj(text_data_json)
+        if type == 'COMMENT-LIKE':
+            comment_data = await self.create_comment_like(text_data_json)
 
         await self.channel_layer.group_send(
             self.discussion, {
@@ -80,13 +82,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             user=self.user,
             discussion=Discussion.objects.get(id=self.discussion_id),
             content=data['content'],
+            is_liked=data['is_liked']
         )
         return {
             "type": "COMMENT",
             "id": c.id,
             "user": UserSerializer(c.user).data,
             "content": c.content,
-            "created_at": str(c.created_at)
+            "created_at": str(c.created_at),
+            "is_liked" : c.is_liked
         }
 
 
@@ -122,4 +126,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return {
             "comment_id": c.id,
             "image_url": c.image.url
+        }
+    
+    @database_sync_to_async
+    def create_comment_like(self,data):
+        print("Updating comment like")
+        comment = Comment.objects.get(id=data['comment_id'])
+        comment.is_liked = data['is_liked']
+        comment.save()
+        return {
+            "comment_id":comment.id,
+            "comment_like":comment.is_liked
         }

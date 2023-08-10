@@ -12,7 +12,7 @@
           >
             <v-toolbar-title>
               <router-link v-if="isLearnerDashboard" to="/dashboard/learn" style="text-decoration: none; color: black;font-size: 1.2em;">
-                Learning dashboard
+                Member dashboard
               </router-link>
               <a v-else-if="actualLogo.homeUrl" :href="actualLogo.homeUrl">
                 <img ref="logoImg" v-if="actualLogo.logoSrc" :alt="actualLogo.logoAlt" :src="actualLogo.logoSrc" style="height:72px;max-width: 100%;" @load="onLoadLogoImg"/>
