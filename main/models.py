@@ -742,6 +742,7 @@ class Comment(models.Model):
     image = models.ImageField(upload_to='uploads/chat/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_reply = models.BooleanField(default=False)
+    is_liked = models.BooleanField(default=False)
     top_comment = models.BooleanField(default=False) # FOR THE TOP COMMENT HANDLED AS DESCRIPTION
 
     def __str__(self):

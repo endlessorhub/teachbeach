@@ -18,14 +18,19 @@
                 <div class="WelcomeTab-AdminModule">
 
                     <div class="AdminModule-Person">
-                        <h2 class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
-                        <span>14 MARCH, 2023</span>
+                        <h2  class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
+                        <span>{{ datePipe(discussionCreated) }}</span>
                     </div>
-                    <p>You’re in The Business Expansion Event!</p>
+                    <p v-if="topComment">{{ topComment.content }}</p>
                     <div class="ChatContainer-Divider"></div>         
                 </div>
-                <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
+                <div v-if="topComment">
+                <div  class="ChatContainer-Divider"></div>
+                <ChatReceiver :message="topComment" :isReplyIcon="true" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
+                <div v-for="reply in topComment.replies" :key="reply.id">
+                <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
+                </div>
+            </div>
             </div>
             </div>
 
@@ -34,9 +39,9 @@
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
-                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 <div v-for="reply in message.replies" :key="reply.id">
-                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" />
+                <ChatSender  :reply="reply" :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 </div>
                 <div class="ChatContainer-Divider"></div>
             </div>
@@ -211,6 +216,7 @@ import { mapGetters, mapActions } from 'vuex'
 import ChatReceiver from '../components/Chat/ChatReceiver.vue';
 import ChatSender from '../components/Chat/ChatSender.vue';
 import PostMessage from '../components/Chat/PostMessage.vue';
+import moment from 'moment'
 
 export default {
     name: 'TeacherChatDiscussion',
@@ -227,19 +233,22 @@ export default {
             reply: {
                 'type': 'REPLY',
                 'content': null,
-                'parent_comment': null
+                'parent_comment': null,
+                'is_liked':false
             },
             comment: {
                 'type': 'COMMENT',
-                'content': null
+                'content': null,
+                'is_liked': false
             },
             isReply: false,
-            trendingDiscussionTitle:[]
+            trendingDiscussionTitle: [],
+            discussionCreated:null
 
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission']),
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission','chatPermission','topComment']),
         ...mapGetters(['userInfo']),
         chat: {
             get() {
@@ -255,7 +264,9 @@ export default {
             // load the description of the post
             const res = await this.loadDicussionDetails(this.discussionId)
             if (res.status === 200) {
-                this.descriptionDetails = res.data.top_comment
+                this.setFirstPost(res.data.top_comment)
+                this.discussionCreated = res.data.created_at
+                // this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
 
@@ -296,7 +307,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket',"setReplyParentId"]),
+        ...mapActions('chatDiscussion',["loadDicussionDetails", "sendMessage", "loadPreviousChats",'initiateChat','closeSocket', 'setFirstPost']),
         show(val) {
             this.activeItem = val;
         },
@@ -334,6 +345,13 @@ export default {
         },
         async uploadImage(payload){
             await this.sendMessage(payload)
+        },
+        async updateLike(payload) {
+            await this.sendMessage(payload)
+        },
+        datePipe(created_at) {
+            const date = new Date(created_at)
+            return moment(date).format("Do MMMM, YYYY")
         },
     },
 }

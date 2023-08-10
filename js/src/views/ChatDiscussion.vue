@@ -1,7 +1,16 @@
 <template>
     <div class="Discussion-divider" >
     <div class="ChatContainer">
-        <h3>Discussion</h3>
+        <div class="header-selection">
+                    <h3>Discussions</h3>
+                    <div class="selector-options">
+                        <ul>
+                    <li :class="{ 'active': activeItem === 'Community' }" @click="show('Community')">Community</li>
+                    <li :class="{ 'active': activeItem === 'By event' }" @click="show('By event')">By event</li>
+                    <li :class="{ 'active': activeItem === 'By Topic' }" @click="show('By Topic')">By Topic</li>
+                        </ul>
+                    </div>
+        </div>
 
         <!-- <div class="ChatContainer-WelcomeTab">
             <svg width="834" height="362" viewBox="0 0 834 362" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -71,23 +80,35 @@
         <div class="ChatContainer-ChatGroup">
                 <div class="ChatContainer-WelcomeTab">
                     <img :src="thumbnail" alt="" class="upload-image">
-                    <h2 class="WelcomeTab-h2">Welcome Jake!</h2>
-                    <div v-if="descriptionDetails" class="ChatContainer-Divider"></div>
-                    <ChatReceiver :message="descriptionDetails" :isReplyIcon="false" />
-                </div>
-                </div>        
-        <div class="ChatContainer-Divider"></div>
+                    <div class="WelcomeTab-AdminModule">
 
-        <PostMessage @onEnter="sendDiscussion" />
+                        <div class="AdminModule-Person">
+                            <h2 class="WelcomeTab-h2">Welcome {{ userInfo.first_name }}!</h2>
+                            <span>{{ datePipe(discussionCreated) }}</span>
+                        </div>
+                        <p v-if="topComment">{{ topComment.content }}</p>
+                        <div class="ChatContainer-Divider"></div>         
+                    <ChatReceiver v-if="topComment" :message="topComment" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
+                    <div v-for="reply in topComment.replies" :key="reply.id">
+                    <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
+                    </div>
+                    </div>
+                </div>
+                
+        </div>
+
+        <!-- <div class="ChatContainer-Divider"></div> -->
+
+        <!-- <PostMessage :user="userInfo" @onEnter="sendDiscussion" /> -->
 
 
         <!-- chat container where all the text messages displayed 
             =========== -->
 
             <div class="ChatContainer-ChatGroup" v-for="(message, index) in chatMessages" :key="index">
-                    <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion"/>
+                    <ChatReceiver :message="message" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <ChatSender v-for="(reply, index) in message.replies" :key="index" :reply="reply"
-                        :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"/>
+                        :parentNode="message.id" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <div class="ChatContainer-Divider"></div>
                 </div>
 
@@ -131,6 +152,7 @@ import { mapGetters, mapActions } from 'vuex'
 import ChatReceiver from '../components/Chat/ChatReceiver.vue';
 import ChatSender from '../components/Chat/ChatSender.vue';
 import PostMessage from '../components/Chat/PostMessage.vue';
+import moment from 'moment'
 
 export default {
     name: 'TeacherChatDiscussion',
@@ -154,12 +176,14 @@ export default {
                 'content': null
             },
             isReply: false,
-            trendingDiscussionTitle: []
+            trendingDiscussionTitle: [],
+            discussionCreated: null
 
         };
     },
     computed: {
-        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission'])
+        ...mapGetters('chatDiscussion', ['chatMessages', 'discussionId', 'discussionPermission', 'chatPermission','topComment']),
+        ...mapGetters(['userInfo']),
     },
     async created() {
 
@@ -167,7 +191,9 @@ export default {
             // load the description of the post
             const res = await this.loadDicussionDetails(this.discussionId)
             if (res.status === 200) {
-                this.descriptionDetails = res.data.top_comment
+                this.setFirstPost(res.data.top_comment)
+                this.discussionCreated = res.data.created_at
+                // this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
 
@@ -208,7 +234,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('chatDiscussion', ["loadDicussionDetails", "sendMessage", "loadPreviousChats", 'initiateChat', 'closeSocket']),
+        ...mapActions('chatDiscussion', ["loadDicussionDetails", "sendMessage", "loadPreviousChats", 'initiateChat', 'closeSocket','setFirstPost']),
         show(val) {
             this.activeItem = val;
         },
@@ -244,6 +270,16 @@ export default {
                 this.isReply = false
             }
         },
+        async uploadImage(payload) {
+            await this.sendMessage(payload)
+        },
+        async updateLike(payload) {
+           await this.sendMessage(payload) 
+        },
+        datePipe(created_at) {
+            const date = new Date(created_at)
+            return moment(date).format("Do MMMM, YYYY")
+        },
     },
 }
 
@@ -251,6 +287,27 @@ export default {
 
 
 <style scoped>
+ul.active a {
+    text-decoration: none;
+    color: #757575;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 19.44px;
+    font-family: 'poppins';
+    padding-left: 10px;
+}
+li.active {
+    text-decoration: underline;
+    color: #434343;
+	text-decoration: underline;
+	text-decoration-thickness: 3px;
+	text-underline-offset: 6px;
+	cursor: pointer;
+}
+
+li:hover{
+    cursor: pointer;
+}
     .RecieverContent-about-ShareLinks>span:nth-of-type(3){
         display: flex;
         gap: 3px;

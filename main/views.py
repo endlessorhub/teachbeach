@@ -4925,12 +4925,15 @@ class DiscussionSetupView(APIView):
             )
             # ADD PARTICIPANT
             if post['participants'] == 'members':
-                d.users.add(
-                    *MembershipStudent.objects.filter(
-                        membership__owner_user=request.user,
-                        status='active'
-                    ).values('student')
-                )
+                try:
+                    d.users.add(
+                        *MembershipStudent.objects.filter(
+                            membership__owner_user=request.user,
+                            status='active'
+                        ).values_list('student', flat=True)
+                    )
+                except Exception as e:
+                    print(e)
                 print(d.users.all())
             d_id=d.id
         elif data['is_topic']:
