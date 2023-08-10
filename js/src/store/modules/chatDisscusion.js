@@ -150,7 +150,7 @@ const mutations = {
       state.topComment &&
       state.topComment.id === discussionMessage.comment_id
     ) {
-      state.topComment.is_liked = discussionMessage.is_liked;
+      state.topComment.is_liked = discussionMessage.comment_like;
     } else {
       comment = chat.find(
         (comment) => comment.id === discussionMessage.comment_id
@@ -161,7 +161,7 @@ const mutations = {
       if (comment && commentIndex > -1) {
         const updatedComment = {
           ...comment,
-          is_liked: discussionMessage.is_liked,
+          is_liked: discussionMessage.comment_like,
         };
         state.chat.splice(commentIndex, 1, updatedComment);
       } else {
@@ -175,7 +175,7 @@ const mutations = {
           if (reply && replyIndex > -1) {
             const updatedReply = {
               ...reply,
-              is_liked: discussionMessage.is_liked,
+              is_liked: discussionMessage.comment_like,
             };
             comment.replies.splice(replyIndex, 1, updatedReply);
           }
@@ -195,14 +195,11 @@ const actions = {
       commit("setWSConnection", connection);
       connection.onmessage = (message) => {
         let discussionMessage = JSON.parse(message.data)
-        if (
-          !Object.hasOwn(discussionMessage, "image_url") &&
-          !Object.hasOwn(discussionMessage, "is_liked")
-        )
-          commit("pushMessage", discussionMessage);
+        if (Object.hasOwn(discussionMessage, "comment_like"))
+          commit("updateLike", discussionMessage);
         else if (Object.hasOwn(discussionMessage, "image_url"))
           commit("uploadImage", discussionMessage);
-        else commit("updateLike", discussionMessage);
+        else commit("pushMessage", discussionMessage);
       };
     };
   },
