@@ -44,19 +44,14 @@
                         >
                     </div>
                 </div>
-                <div class="input-outer-div remember-me-div">
-                    <div>
-                        <input 
-                            type="checkbox" 
-                            id="remember-me" 
-                            name="remember-me"
-                            v-model="buildWebsite"
-                        >
-                        <label for="remember-me">Build a website</label>
-                    </div>
-                </div>
                 <div class="login-btn-div">
-                    <input type="submit" value="Register" @click="submit" />
+                    <input
+                        type="submit" 
+                        value="Register" 
+                        @click="submit" 
+                        :disabled="isLoading"
+                        :loading="isLoading"
+                    />
                 </div>
             </form>
         </div>
@@ -79,10 +74,11 @@ export default {
         password: { required, minLength: minLength(8) },
     },
     data: function () {
+        console.log(this.$route);
         return {
             email: this.$store.state.user ? this.$store.state.user.email : '',
             password: '',
-            buildWebsite: false,
+            buildWebsite: this.$route.query.build,
             isLoading: false,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             errors: {},
@@ -124,7 +120,7 @@ export default {
                 email: this.email,
                 password: this.password,
                 timezone: this.timezone,
-                is_company: this.buildWebsite,
+                is_company: !!this.buildWebsite,
             }).then(function (res) {
                 //console.log(arguments)
 

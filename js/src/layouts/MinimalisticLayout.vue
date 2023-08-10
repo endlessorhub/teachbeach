@@ -1,8 +1,165 @@
 <template>
     <v-app id="app">
-        <v-navigation-drawer v-if="isLoggedIn && !hideNav" :value="isLeftDrawerOpened" :mini-variant="isLeftDrawerMini"
-            :width="160" class="left-drawer" absolute clipped app @input="(v) => setIsLeftDrawerOpened(v)"
-            @update:mini-variant="(v) => setIsLeftDrawerMini(v)">
+        <v-navigation-drawer 
+            v-if="isLoggedIn && !hideNav" 
+            :value="isLeftDrawerOpened" 
+            :mini-variant="isLeftDrawerMini"
+            :width="220" 
+            class="left-drawer" 
+            absolute 
+            clipped 
+            app 
+            @input="(v) => setIsLeftDrawerOpened(v)"
+            @update:mini-variant="(v) => setIsLeftDrawerMini(v)"
+        >
+            <!--div class="menu-toggle-wrap">
+                <button class="menu-toggle" @click="isLeftDrawerMini = !isLeftDrawerMini">
+                <span class="material-icons double-arrow">
+                    keyboard_double_arrow_right
+                </span>
+                </button>
+            </div>
+            <div v-if="isTeacherLeftDrawer" class="menu">
+            <router-link to="/">
+              <div class="button" @click="toggleDropdown1">
+                <span class="material-icons"><img src="@/assets/leftaside/spin.svg" /></span>
+                <span class="text">My Collab</span>
+                <div class="dropdown-toggle-wrap">
+                  <button class="dropdown-toggle">
+                    <span class="material-icons double-arrow">
+                      keyboard_arrow_down
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <transition name="dropdown">
+                <div v-if="isDropdownVisible1" class="dropdown">
+                  <div class="dropdown-option">View
+                  </div>
+                  <div class="dropdown-option">Set up
+                  </div>
+                  <div class="dropdown-option">Edit hosts
+                  </div>
+                </div>
+              </transition>
+            </router-link>
+
+            <router-link to="/">
+              <div class="button" @click="toggleDropdown2">
+                <span class="material-icons"><img src="@/assets/leftaside/Membership.svg" /></span>
+                <span class="text">Members</span>
+                <div class="dropdown-toggle-wrap">
+                  <button class="dropdown-toggle">
+                    <span class="material-icons double-arrow">
+                      keyboard_arrow_down
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <transition name="dropdown">
+                <div v-if="isDropdownVisible2" class="dropdown">
+                  <div class="dropdown-option">View
+                  </div>
+                  <div class="dropdown-option">Sales
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                  <div class="dropdown-option">Directory
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                  <div class="dropdown-option">Upload
+                  </div>
+                </div>
+              </transition>
+            </router-link>
+
+            <router-link to="/">
+              <div class="button" @click="toggleDropdown3">
+                <span class="material-icons"><img src="@/assets/leftaside/Running_Man.svg" /></span>
+                <span class="text">Activites</span>
+                <div class="dropdown-toggle-wrap">
+                  <button class="dropdown-toggle">
+                    <span class="material-icons double-arrow">
+                      keyboard_arrow_down
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <transition name="dropdown">
+                <div v-if="isDropdownVisible3" class="dropdown">
+                  <div class="dropdown-option">View
+                  </div>
+                  <div class="dropdown-option">Events
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                  <div class="dropdown-option">Classes
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                  <div class="dropdown-option">Groups
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                  <div class="dropdown-option">Services
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                </div>
+              </transition>
+            </router-link>
+
+
+            <router-link to="/">
+              <div class="button" @click="toggleDropdown4">
+                <span class="material-icons"><img src="@/assets/leftaside/Discussion.svg" /></span>
+                <span class="text">Discussions</span>
+                <div class="dropdown-toggle-wrap">
+                  <button class="dropdown-toggle">
+                    <span class="material-icons double-arrow">
+                      keyboard_arrow_down
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <transition name="dropdown">
+                <div v-if="isDropdownVisible4" class="dropdown">
+                  <div class="dropdown-option">View
+                  </div>
+                  <div class="dropdown-option">Setup
+                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
+                  </div>
+                </div>
+              </transition>
+            </router-link>
+
+            <router-link to="/">
+              <div class="button" @click="toggleDropdown5">
+                <span class="material-icons"><img src="@/assets/leftaside/Directory.svg" /></span>
+                <span class="text">Manage</span>
+                <div class="dropdown-toggle-wrap">
+                  <button class="dropdown-toggle">
+                    <span class="material-icons double-arrow">
+                      keyboard_arrow_down
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <transition name="dropdown">
+                <div v-if="isDropdownVisible5" class="dropdown">
+                  <div class="dropdown-option">CRM
+                  </div>
+                  <div class="dropdown-option">Reports
+                  </div>
+                  <div class="dropdown-option">Account
+                  </div>
+                </div>
+              </transition>
+            </router-link>
+
+            </div-->
+
+
             <v-list v-if="isTeacherLeftDrawer">
                 <v-list-tile>
                     <v-list-tile-title>Dashboard</v-list-tile-title>
@@ -243,10 +400,8 @@
                     <form>
                         <v-text-field v-model.trim="teacherRequestName" :error-messages="teacherRequestNameErrors"
                             label="Name" required @input="$v.passwordResetEmail.$touch()"
-                            @blur="$v.passwordResetEmail.$touch()" label="Enter email"></v-text-field>
+                            @blur="$v.passwordResetEmail.$touch()"></v-text-field>
                     </form>
-                    </div>
-
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
@@ -415,7 +570,7 @@ export default {
             }
             if (error.response.status === 401) {
                 this.$store.commit('setUser', null)
-                this.$router.push('/?login&from=' + this.$route.fullPath)
+                this.$router.push('/min-reg?build='+(this.$route.query.build || '')+'&from='+this.$route.fullPath)
                 return Promise.reject(error)
             }
             if (error.response.status >= 500) {
@@ -620,7 +775,7 @@ export default {
         checkAuth() {
             if (!this.isLoggedIn && this.$route.matched.some(v => v.meta.requiresAuth)) {
                 // redirect to login
-                this.$router.push('/?login&from=' + this.$route.fullPath)
+                this.$router.push('/min-reg?build='+(this.$route.query.build || '')+'&from='+this.$route.fullPath)
             }
         },
         onUserAuth() {
@@ -668,6 +823,8 @@ export default {
                 if (this.savedRedirect) {
                     this.$router.push(this.savedRedirect)
                     this.savedRedirect = null
+                } else if (this.isTeacher) {
+                    this.$router.push('/dashboard/teach')
                 }
             }).catch(e => {
                 console.log(e)
@@ -807,6 +964,9 @@ export default {
             'isLogoCompanyProfileChecked',
         ]),
         ...mapGetters('chatDiscussion', ['discussionId', 'discussionPermission']),
+        hideNav() {
+            return this.$route.meta && this.$route.meta.hideNav;
+        },
         membershipSettingsDict() {
             return this.membershipSettings ? this.membershipSettings.reduce((acc, v) => ({ ...acc, [v.id]: v }), {}) : {};
         },
@@ -814,8 +974,8 @@ export default {
             return this.memberships ? this.memberships.map(v => ({ value: v.id, text: this.membershipSettingsDict[v.membership].name })) : [];
         },
         leftDrawerType() {
-            if (this.$route.path.includes("/dashboard/teach") || this.$route.path.includes("/teachers")) return LEFT_DRAWER_TYPE.TEACH;
-            return LEFT_DRAWER_TYPE.LEARN
+            if (this.$route.path.includes("/dashboard/learn") || this.$route.path.includes("/learners")) return LEFT_DRAWER_TYPE.LEARN;
+            return LEFT_DRAWER_TYPE.TEACH
         },
         isTeacherLeftDrawer() {
             return this.leftDrawerType === LEFT_DRAWER_TYPE.TEACH
@@ -992,6 +1152,15 @@ export default {
 </script>
 
 <style lang="scss">
+:root {
+  --primary: #337BDD;
+  --grey: #64748b;
+  --dark: #212529;
+  --dark-alt: #334155;
+  --light: #f1f5f9;
+  --sidebar-width: 300px;
+}
+
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -1090,5 +1259,70 @@ export default {
     top: 5px;
     left: 309px;
     cursor: pointer;
+}
+
+.aside {
+    top: 0;
+    // position: relative;
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    width: calc(2rem + 2rem);
+    // min-height: 100vh;
+    height: fit-content;
+    overflow: hidden;
+    background-color: var(--light);
+    color: var(--dark);
+    border-radius: 0 30px 30px 0;
+    box-shadow: -3px -1px 14px #4a4a4a;
+    transition: 0.2s ease-out;
+
+    .logo {
+        margin-bottom: 1rem;
+        text-align: center;
+        padding: 24px;
+        background-color: var(--vt-c-white);
+
+        img {
+            width: 100%;
+            max-width: 160px;
+        }
+    }
+
+    .menu-heading {
+        display: none;
+    }
+
+    .menu-toggle-wrap {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+
+        position: absolute;
+        top: 0;
+        right: 6px;
+        transition: 0.2s ease-out;
+
+        .menu-toggle {
+            transition: 0.2s ease-out;
+
+            .material-icons {
+            font-size: 2rem;
+            color: var(--vt-c-white);
+            transition: 0.2s ease-out;
+            }
+
+            .material-icons.double-arrow {
+            color: black;
+            }
+
+            &:hover {
+            .material-icons {
+                color: var(--primary);
+                transform: translate(0.5rem);
+            }
+            }
+        }
+    }
 }
 </style>

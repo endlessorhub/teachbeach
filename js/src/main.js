@@ -157,7 +157,7 @@ router.beforeEach((to, from, next) => {
                 })
             } else {
                 next({
-                    path: '/?register&from='+to.fullPath,
+                    path: '/min-reg?build=' + (to.query.build || '') + '&from='+to.fullPath,
                     //query: { redirect: to.fullPath }
                 })
             }
@@ -187,7 +187,7 @@ new Vue({
         })
         store.commit('setGlobals', globals)
 
-        console.log('addEventListener', 'scroll');
+        // console.log('addEventListener', 'scroll');
         window.addEventListener('scroll', _.debounce(() => {
             let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
             if (bottomOfWindow) {
