@@ -26,8 +26,11 @@
                 </div>
                 <div v-if="topComment">
                 <div  class="ChatContainer-Divider"></div>
-                <ChatReceiver :message="topComment" :isReplyIcon="true" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
+                <ChatReceiver :message="topComment" :isReplyIcon="true" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
+                <div v-for="reply in topComment.replies" :key="reply.id">
+                <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 </div>
+            </div>
             </div>
             </div>
 
