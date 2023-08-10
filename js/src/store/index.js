@@ -73,6 +73,7 @@ export default new Vuex.Store({
       return state.user && Object.keys(state.user).length;
     },
     isTeacher(state) {
+      console.log(state.teacher);
       return state.teacher && Object.keys(state.teacher).length;
     },
     isTeacherOfCompany(state) {

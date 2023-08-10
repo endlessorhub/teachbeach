@@ -66,7 +66,14 @@
         </div>
         <div class="student-list-item__bottom">
             <div class="student-list-item__bottom-title">About me:</div>
-            <div class="student-list-item__bottom-text">{{ description }}</div>
+            <div ref="descrOuter" :class="{ 'student-list-item__bottom-text': true, expanded: isExpanded }">
+                <div ref="descrInner" class="description-wrapper">{{ description }}</div>
+            </div>
+            <div v-if="isExpandAvailable" class="expand-container">
+                <v-btn flat icon :class="{ expanded: isExpanded }" @click="onClickExpand">
+                    <v-icon>keyboard_arrow_down</v-icon>
+                </v-btn>
+            </div>
         </div>
     </div>
 </template>
@@ -77,7 +84,8 @@
 export default {
     name: 'dashboard_teach_student_list_item',
     data: () => ({
-        
+        isExpanded: false,
+        isExpandAvailable: false,
     }),
     props: [
         'id', 'first_name', 'last_name', 'email', 'phone', 'is_company', 
@@ -102,10 +110,23 @@ export default {
         startDM() {
 
         },
+        onClickExpand() {
+            this.isExpanded = !this.isExpanded;
+        },
     },
 
     watch: {
-
+        description: {
+            immediate: true,
+            handler(v) {
+                this.$nextTick(() => {
+                    console.log(this.$refs.descrInner, this.$refs.descrOuter);
+                    if (this.$refs.descrInner.clientHeight > this.$refs.descrOuter.clientHeight) {
+                        this.isExpandAvailable = true;
+                    } else this.isExpandAvailable = false;
+                });
+            }
+        }
     }
 }
 </script>
@@ -208,6 +229,21 @@ export default {
         font-size: 15px;
         font-family: Poppins;
         line-height: 22px;
+        text-align: left;
+        max-height: 62px;
+        overflow: hidden;
+        &.expanded {
+            max-height: fit-content;
+        }
+    }
+}
+.expand-container {
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .expanded {
+        transform: rotate(180deg);
     }
 }
 </style>

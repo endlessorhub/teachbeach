@@ -31,7 +31,13 @@
                 </div>
 
                 <div class="login-btn-div">
-                    <input type="submit" value="Next" @click="submit" />
+                    <input 
+                        type="submit" 
+                        value="Next" 
+                        @click="submit"
+                        :disabled="isLoading"
+                        :loading="isLoading"
+                    />
                 </div>
             </form>
         </div>
