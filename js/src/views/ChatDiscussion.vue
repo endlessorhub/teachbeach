@@ -88,7 +88,7 @@
                         </div>
                         <p v-if="topComment">{{ topComment.content }}</p>
                         <div class="ChatContainer-Divider"></div>         
-                    <ChatReceiver v-if="topComment" :message="topComment" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
+                    <ChatReceiver v-if="topComment" :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <div v-for="reply in topComment.replies" :key="reply.id">
                     <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                     </div>
@@ -97,9 +97,8 @@
                 
         </div>
 
-        <!-- <div class="ChatContainer-Divider"></div> -->
-
-        <!-- <PostMessage :user="userInfo" @onEnter="sendDiscussion" /> -->
+        <div class="ChatContainer-Divider"></div>
+        <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
 
 
         <!-- chat container where all the text messages displayed 
@@ -169,11 +168,14 @@ export default {
             reply: {
                 'type': 'REPLY',
                 'content': null,
-                'parent_comment': null
+                'parent_comment': null,
+                'is_liked':false
+
             },
             comment: {
                 'type': 'COMMENT',
-                'content': null
+                'content': null,
+                'is_liked': false
             },
             isReply: false,
             trendingDiscussionTitle: [],
