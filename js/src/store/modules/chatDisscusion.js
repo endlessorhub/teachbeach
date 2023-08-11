@@ -199,6 +199,13 @@ const mutations = {
   setChatPermission(state, chatPermission) {
     state.chatPermission = chatPermission;
   },
+  resetDiscussionState(state) { 
+    state.topComment = null
+    state.chat = []
+    state.discussionId = null
+    state.chatPermission = false
+
+  },
   setFirstPost(state,post) { 
     state.topComment = post
   },
@@ -273,7 +280,7 @@ const actions = {
     connection.onopen = () => {
       commit("setWSConnection", connection);
       connection.onmessage = (message) => {
-        let discussionMessage = JSON.parse(message.data)
+        let discussionMessage = JSON.parse(message.data);
         if (Object.hasOwn(discussionMessage, "comment_like"))
           commit("updateLike", discussionMessage);
         else if (Object.hasOwn(discussionMessage, "image_url"))
@@ -283,7 +290,7 @@ const actions = {
     };
   },
   receiveMessage({ commit, dispatch }, message) {
-    dispatch("checkBlockUser","");
+    dispatch("checkBlockUser", "");
     commit("pushMessage", message);
   },
   sendMessage({ state }, payload) {
@@ -291,7 +298,7 @@ const actions = {
       state.webSocketConnection.send(JSON.stringify(payload));
     }
   },
-  async loadPreviousChats({ commit , dispatch}, discussionId) {
+  async loadPreviousChats({ commit, dispatch }, discussionId) {
     dispatch("checkBlockUser", "");
     const response = await axios.get(`/api/comments/${discussionId}/`);
     if (response.status === 200) commit("loadPreviousChat", response.data);
@@ -312,28 +319,36 @@ const actions = {
     return axios.get("/api/discussion/");
   },
   closeSocket({ state }) {
-    if (state.webSocketConnection) state.webSocketConnection.close();
+    if (state.webSocketConnection) {
+      state.webSocketConnection.close();
+      commit("resetDiscussionState");
+    }
   },
-  emptyChats({ commit }) {
-    commit("emptyChat");
+  resetDiscussionState({ commit }) {
+    commit("resetDiscussionState");
   },
-  setDiscussionPermission({ commit }, permission) { 
-    commit('setDiscussionPermission',permission)
+  setDiscussionPermission({ commit }, permission) {
+    commit("setDiscussionPermission", permission);
   },
-  async blockUser(_, blockUserDetails) { 
-    const response = await axios.post("/api/discussion/block/", blockUserDetails);
-    return response.status
+  async blockUser(_, blockUserDetails) {
+    const response = await axios.post(
+      "/api/discussion/block/",
+      blockUserDetails
+    );
+    return response.status;
   },
-  async checkBlockUser({ commit,state }, payload) { 
-    const response = await axios.get(`/api/discussion/chat-allowed/${state.discussionId}/`)
-    if (response.status === 200) { 
-      localStorage.setItem("chatPermission",response.data.is_allowed_to_chat)
-        commit("setChatPermission", response.data.is_allowed_to_chat);
+  async checkBlockUser({ commit, state }, payload) {
+    const response = await axios.get(
+      `/api/discussion/chat-allowed/${state.discussionId}/`
+    );
+    if (response.status === 200) {
+      localStorage.setItem("chatPermission", response.data.is_allowed_to_chat);
+      commit("setChatPermission", response.data.is_allowed_to_chat);
     }
   },
   setFirstPost({ commit }, post) {
-      commit('setFirstPost',post)
-   }
+    commit("setFirstPost", post);
+  },
 };
 
 const getters = {
