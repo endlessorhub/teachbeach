@@ -227,7 +227,7 @@ export default {
         };
     },
     methods: {
-        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId','emptyChats','setDiscussionPermission']),
+        ...mapActions('chatDiscussion',['discussionSetup','initiateChat','setDiscussionId','emptyChats','setDiscussionPermission', 'resetDiscussionState','checkBlockUser']),
         show(val) {
             this.activeItem = val;
         },
@@ -255,7 +255,14 @@ export default {
             }
             this.saveDiscussionLoader = true
             // requesting backend
-            this.discussionSetup(setupOptions).then(async(res) => {
+
+            //checking for blocked user
+            await this.checkBlockUser()
+
+            // reseting all the discussion state
+            await this.resetDiscussionState()
+
+            this.discussionSetup(setupOptions).then(async (res) => {
                 if (res.status === 201) {
 
                     this.saveButtonText = 'Completed'
@@ -265,9 +272,6 @@ export default {
 
                     //clear all fields
                     this.clearInputs()
-
-                    //clear all the chats
-                    this.emptyChats()
 
                     // set discussion permission 
                     this.setDiscussionPermission('allowed')
