@@ -915,18 +915,6 @@ export default {
             })
 
         },
-        // showDiscussion() {
-        //     console.log(this.isCompanyAdmin)
-        //     if (this.isCompanyAdmin) {
-        //         return true
-        //     }
-        //     else if (this.discussionPermission === 'not allowed') {
-        //         return false
-        //     }
-        //     else if (this.discussionPermission === 'allowed') {
-        //         return true
-        //     }
-        // }
 
     },
     computed: {

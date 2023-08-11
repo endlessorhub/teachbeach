@@ -63,6 +63,21 @@
                 </div>
             </div>
 
+            <v-menu >
+                    <v-card width="140">
+                        <v-card-actions>
+                            <v-list style="padding:0;cursor:pointer">
+                                <v-list-item>
+                                    <v-list-item-action  @click="showBlockUserDialog()">Block</v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-card-actions>
+                    </v-card>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon bottom left :offset-x="true" v-bind="attrs" v-on="on" class="material-icons" style="font-size: 24px;margin-left:auto;margin-right:15px;cursor: pointer;"> more_vert </v-icon>
+                    </template>    
+            </v-menu>
+
         </div>
         <div v-if="showPostMessage" class="ChatGroup-SenderMessage">
             <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
