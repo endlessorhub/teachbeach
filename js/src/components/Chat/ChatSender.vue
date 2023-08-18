@@ -12,12 +12,12 @@
             </div>
 
             <div class="SenderContent-image">
-                <img v-if="reply.user.is_company_owner" src="../../../../image/profile.png" alt="">
-                <v-icon v-else class="material-icons" style="font-size: 43px;">account_circle</v-icon>
+                <!-- <img v-if="reply.user.is_company_owner" src="../../../../image/profile.png" alt=""> -->
+                <v-icon  class="material-icons" style="font-size: 43px;">account_circle</v-icon>
             </div>
             <div class="SenderContent-about">
                 <div class="SenderContent-about-bio">
-                    <span class="AboutBio-Person" @click="showBlockUserDialog()">{{ reply.user.first_name + " "
+                    <span class="AboutBio-Person">{{ reply.user.first_name + " "
                         + reply.user.last_name }}</span>
                     <span class="AboutBio-MessageDate">{{ datePipe(reply.created_at) }}</span>
                 </div>
@@ -63,15 +63,20 @@
                 </div>
             </div>
 
-            <v-menu >
-                    <v-card width="140">
-                        <v-card-actions>
-                            <v-list style="padding:0;cursor:pointer">
+            <v-menu v-if="accessToBlockUser" >
+                    <v-card width="200">
+                        <!-- <v-card-actions> -->
+                            <v-list style="cursor:pointer">
+                                <v-list-item-group>
                                 <v-list-item>
-                                    <v-list-item-action  @click="showBlockUserDialog()">Block</v-list-item-action>
+                                    <v-list-item-action  @click="showBlockUserDialog()">Block User</v-list-item-action>
                                 </v-list-item>
+                                <v-list-item>
+                                        <v-list-item-action  @click="showRemoveCommentDialog()">Remove Comment</v-list-item-action>
+                                </v-list-item>
+                                </v-list-item-group>
                             </v-list>
-                        </v-card-actions>
+                        <!-- </v-card-actions> -->
                     </v-card>
                     <template v-slot:activator="{ on, attrs }">
                         <v-icon bottom left :offset-x="true" v-bind="attrs" v-on="on" class="material-icons" style="font-size: 24px;margin-left:auto;margin-right:15px;cursor: pointer;"> more_vert </v-icon>
@@ -98,6 +103,24 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <v-dialog v-model="removeCommentDialog" width="290">
+        <v-card>
+            <v-card-text>
+                Do you want to delete the comment ?
+            </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" @click="removeSelectedComment(reply.id)">
+                    Delete
+                </v-btn>
+                <v-btn @click="removeCommentDialog = !removeCommentDialog">
+                    Cancel
+                </v-btn>
+            </v-card-actions>
+        </v-card>
+        </v-dialog>
+
     </div>
 </template>
 <script>
@@ -129,15 +152,16 @@ export default {
     },
     data: () => ({
         showPostMessage: false,
-        blockUserDialog: false
+        blockUserDialog: false,
+        removeCommentDialog:false
     }),
     computed: {
         ...mapGetters(['userInfo']),
-        ...mapGetters('chatDiscussion', ['discussionId']),
+        ...mapGetters('chatDiscussion', ['discussionId','accessToBlockUser']),
     },
 
     methods: {
-        ...mapActions('chatDiscussion', ['blockUser']),
+        ...mapActions('chatDiscussion', ['blockUser','removeComment']),
         /**
          * This function takes date:String and converts it to appropriate format 
          * e.g.  5d , 17 hrs ago etc ...
@@ -204,9 +228,10 @@ export default {
             }
         },
         showBlockUserDialog() {
-            if (this.userInfo.is_company_owner) {
                 this.blockUserDialog = true
-            }
+        },
+        showRemoveCommentDialog() {
+                this.removeCommentDialog = true
         },
         async blockSelectedUser(userId) {
             const payload = {
@@ -224,6 +249,10 @@ export default {
                 "is_liked": !this.reply.is_liked
             }
             this.$emit("updateLike", payload)
+        },
+        async removeSelectedComment(commentId) { 
+            await this.removeComment(commentId)
+            this.removeCommentDialog = false
         }
     }
 }
