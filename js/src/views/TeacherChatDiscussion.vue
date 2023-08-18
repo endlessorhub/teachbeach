@@ -1,6 +1,6 @@
 <template>
     <div class="Discussion-divider" >
-        <div class="ChatContainer" v-if="discussionPermission==='allowed' && chatPermission===true">
+        <div class="ChatContainer">
             <div class="header-selection">
                 <h3>Discussions</h3>
                 <div class="selector-options">
@@ -12,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="ChatContainer-ChatGroup">
+            <div v-if="topComment && thumbnail" class="ChatContainer-ChatGroup">
             <div class="ChatContainer-WelcomeTab">
                 <img :src="thumbnail" alt="" class="upload-image">
                 <div class="WelcomeTab-AdminModule">
@@ -21,21 +21,30 @@
                         <h2  class="WelcomeTab-h2">Welcome {{userInfo.first_name}}!</h2>
                         <span>{{ datePipe(discussionCreated) }}</span>
                     </div>
-                    <p v-if="topComment">{{ topComment.content }}</p>
-                    <div class="ChatContainer-Divider"></div>         
+                    <p v-if="topComment">{{ topComment.content }}</p>       
                 </div>
-                <div v-if="topComment">
+            <!-- <div v-if="topComment">
                 <div  class="ChatContainer-Divider"></div>
                 <ChatReceiver :message="topComment" :isReplyIcon="true" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
                 <div v-for="reply in topComment.replies" :key="reply.id">
                 <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 </div>
-            </div>
+            </div> -->
             </div>
             </div>
 
             <div class="ChatContainer-Divider"></div>
             <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
+
+
+            <!-- top comment  -->
+            <div class="ChatContainer-ChatGroup" v-if="topComment">
+                <ChatReceiver :message="topComment" :isReplyIcon="true" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
+                <div v-for="reply in topComment.replies" :key="reply.id">
+                <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
+                </div>
+            </div>
+            <!-- top comment  -->
 
             <!-- chat container where all the text messages displayed =========== -->
             <div class="ChatContainer-ChatGroup" v-for="message in chat" :key="message.id">
