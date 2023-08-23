@@ -65,18 +65,16 @@
 
             <v-menu v-if="accessToBlockUser" >
                     <v-card width="200">
-                        <!-- <v-card-actions> -->
-                            <v-list style="cursor:pointer">
-                                <v-list-item-group>
-                                <v-list-item>
-                                    <v-list-item-action  @click="showBlockUserDialog()">Block User</v-list-item-action>
-                                </v-list-item>
-                                <v-list-item>
-                                        <v-list-item-action  @click="showRemoveCommentDialog()">Remove Comment</v-list-item-action>
-                                </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                        <!-- </v-card-actions> -->
+                        
+                            <div style="cursor: pointer;display: flex;flex-direction: column;justify-content: center;align-items: flex-start;padding: 0;">
+                                <div style="border-bottom: 1px solid #8080805e;width: 100%;text-align: left;padding: 8px 12px;">
+                                    <span @click="showBlockUserDialog()">Block User</span>
+                                </div>
+                                <div style="width: 100%;text-align: left;padding: 8px 12px;">
+                                        <span  @click="showRemoveCommentDialog()">Remove Comment</span>
+                                </div>
+                            </div>
+                        
                     </v-card>
                     <template v-slot:activator="{ on, attrs }">
                         <v-icon bottom left :offset-x="true" v-bind="attrs" v-on="on" class="material-icons" style="font-size: 24px;margin-left:auto;margin-right:15px;cursor: pointer;"> more_vert </v-icon>

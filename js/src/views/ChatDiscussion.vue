@@ -101,12 +101,12 @@
         <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
 
 
-        <div class="ChatContainer-ChatGroup" v-if="topComment">
+        <!-- <div class="ChatContainer-ChatGroup" v-if="topComment">
         <ChatReceiver :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
         <div v-for="reply in topComment.replies" :key="reply.id">
         <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
         </div>
-        </div>
+        </div> -->
         <!-- chat container where all the text messages displayed 
             =========== -->
 
