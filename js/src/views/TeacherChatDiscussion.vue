@@ -38,12 +38,12 @@
 
 
             <!-- top comment  -->
-            <div class="ChatContainer-ChatGroup" v-if="topComment">
+            <!-- <div class="ChatContainer-ChatGroup" v-if="topComment">
                 <ChatReceiver :message="topComment" :isReplyIcon="true" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike" />
                 <div v-for="reply in topComment.replies" :key="reply.id">
                 <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
                 </div>
-            </div>
+            </div> -->
             <!-- top comment  -->
 
             <!-- chat container where all the text messages displayed =========== -->
@@ -275,7 +275,6 @@ export default {
             if (res.status === 200) {
                 this.setFirstPost(res.data.top_comment)
                 this.discussionCreated = res.data.created_at
-                // this.descriptionDetails = res.data.top_comment
                 this.thumbnail = res.data.thumbnail
             }
 

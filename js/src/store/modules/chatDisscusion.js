@@ -14,46 +14,6 @@ const mutations = {
   pushMessage(state, discussionMessage) {
     let replyPushed = false;
     let parentIdentified = false;
-    let topCommentReply = false;
-    let topComment = state.topComment;
-
-    if (state.topComment.id === discussionMessage.parent_comment_id) {
-      if (Object.hasOwn(state.topComment, "replies")) {
-        replyPushed = true;
-        parentIdentified = true;
-        topCommentReply = true;
-        state.topComment.replies = [
-          ...state.topComment.replies,
-          discussionMessage,
-        ];
-        // state.topComment = topComment;
-      } else {
-        replyPushed = true;
-        parentIdentified = true;
-        topCommentReply = true;
-        state.topComment.replies = [];
-        state.topComment.replies = [
-          ...state.topComment.replies,
-          discussionMessage,
-        ];
-        // state.topComment = topComment;
-      }
-    } else {
-      const index = topComment.replies.findIndex(
-        (reply) => reply.id === discussionMessage.parent_comment_id
-      );
-
-      // if found add the child reply next to parent reply with in the array
-      if (index >= 0) {
-        topComment.replies.splice(index + 1, 0, discussionMessage);
-        parentIdentified = true;
-        replyPushed = true;
-        topCommentReply = true;
-        state.topComment.replies = [...topComment.replies];
-      }
-    }
-    // else {
-    if (!topCommentReply)
       if (state.chat.length > 0) {
         // adding child if reply is for the main comment
         // loop through each main comment
@@ -120,7 +80,7 @@ const mutations = {
     state.discussionId = discussionId;
   },
   loadPreviousChat(state, previousChats) {
-    state.chat = [...previousChats];
+    state.chat = [...previousChats,state.topComment];
 
     // sort the discussion array in descending order according to created_at(time) attribute
     state.chat = state.chat.sort(
@@ -132,17 +92,8 @@ const mutations = {
   },
   uploadImage(state, discussionMessage) {
     let chat = [...state.chat];
-    // let topComment = [...state.topComment.replies]
-    let topComment = state.topComment;
     let comment = undefined;
     let reply = undefined;
-
-    if (
-      state.topComment &&
-      state.topComment.id === discussionMessage.comment_id
-    ) {
-      state.topComment.image = discussionMessage.image_url;
-    } else {
       comment = chat.find(
         (comment) => comment.id === discussionMessage.comment_id
       );
@@ -156,21 +107,6 @@ const mutations = {
         };
         state.chat.splice(commentIndex, 1, updatedComment);
       } else {
-        // chat.forEach((comment, index) => {
-        reply = topComment.replies.find(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        let replyIndex = topComment.replies.findIndex(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        if (reply && replyIndex > -1) {
-          const updatedReply = {
-            ...reply,
-            image: discussionMessage.image_url,
-          };
-          topComment.replies.splice(replyIndex, 1, updatedReply);
-        }
-        // });
 
         chat.forEach((comment, index) => {
           reply = comment.replies.find(
@@ -188,8 +124,7 @@ const mutations = {
           }
         });
         state.chat = [...chat];
-        state.topComment = topComment;
-      }
+
     }
   },
   setChatPermission(state, chatPermission) {
@@ -208,14 +143,7 @@ const mutations = {
     let chat = [...state.chat];
     let foundComment = undefined;
     let reply = undefined;
-    let topComment = state.topComment;
-
-    if (
-      state.topComment &&
-      state.topComment.id === discussionMessage.comment_id
-    ) {
-      state.topComment.is_liked = discussionMessage.comment_like;
-    } else {
+      
       foundComment = chat.find(
         (comment) => comment.id === discussionMessage.comment_id
       );
@@ -228,20 +156,8 @@ const mutations = {
           is_liked: discussionMessage.comment_like,
         };
         state.chat.splice(commentIndex, 1, updatedComment);
-      } else {
-        reply = topComment.replies.find(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        let replyIndex = topComment.replies.findIndex(
-          (reply) => reply.id === discussionMessage.comment_id
-        );
-        if (reply && replyIndex > -1) {
-          const updatedReply = {
-            ...reply,
-            is_liked: discussionMessage.comment_like,
-          };
-          topComment.replies.splice(replyIndex, 1, updatedReply);
-        }
+      }
+      else {
 
         chat.forEach((comment, index) => {
           reply = comment.replies.find(
@@ -260,9 +176,8 @@ const mutations = {
         });
 
         state.chat = [...chat];
-        state.topComment = topComment;
       }
-    }
+   
   },
   setAccessToBlockUser(state,accessToBlockUser) { 
     state.accessToBlockUser = accessToBlockUser
