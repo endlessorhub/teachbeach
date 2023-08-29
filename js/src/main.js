@@ -21,7 +21,12 @@ import EditIcon from '@/components/icons/Edit';
 import HistoryIcon from '@/components/icons/History';
 import LogoutIcon from '@/components/icons/Logout';
 import MembershipsIcon from '@/components/icons/Memberships';
-
+import AsideSpin from '@/components/icons/Spin';
+import AsideMembership from '@/components/icons/Membership';
+import AsideRunning from '@/components/icons/RunningMan';
+import AsideDiscussion from '@/components/icons/Discussion';
+import AsideDirectory from '@/components/icons/Directory';
+import AsideEdit from '@/components/icons/EditPen';
 
 import wysiwyg from "vue-wysiwyg";
 Vue.use(wysiwyg, {
@@ -83,6 +88,24 @@ Vue.use(Vuetify, {
         },
         'cust_memberships': {
             component: MembershipsIcon,
+        },
+        'aside_spin': {
+            component: AsideSpin,
+        },
+        'aside_directory': {
+            component: AsideDirectory,
+        },
+        'aside_discussion': {
+            component: AsideDiscussion,
+        },
+        'aside_edit': {
+            component: AsideEdit,
+        },
+        'aside_membership': {
+            component: AsideMembership,
+        },
+        'aside_running': {
+            component: AsideRunning,
         },
     },
 });
