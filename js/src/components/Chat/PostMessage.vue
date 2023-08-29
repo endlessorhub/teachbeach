@@ -1,8 +1,8 @@
 <template>
     <div class="ChatContainer-MessageBox">
 
-        <img v-if="user.is_company_owner" src="../../../../image/profile.png" alt="">
-        <v-icon v-else class="material-icons" style="font-size: 43px;">account_circle</v-icon>
+        <!-- <img v-if="user.is_company_owner" src="../../../../image/profile.png" alt=""> -->
+        <v-icon class="material-icons" style="font-size: 43px;">account_circle</v-icon>
 
         <div class="textarea-container">
             <textarea v-model="message" placeholder="Message the group" rows="5" cols="60" >

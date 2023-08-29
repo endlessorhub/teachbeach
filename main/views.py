@@ -5045,3 +5045,10 @@ class DiscussionChatAllowView(APIView):
         return Response({
             "is_allowed_to_chat": is_allowed
         }, status=status.HTTP_200_OK)
+
+class DiscussionCommentRemove(APIView):
+    permission_classes = [permissions.AllowAny]
+    def delete(self,request,pk):
+        comment  = Comment.objects.get(id=pk)
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

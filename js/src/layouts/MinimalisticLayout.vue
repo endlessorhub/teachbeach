@@ -589,7 +589,7 @@ export default {
         ...mapActions([
             'loadBelongingCompanyProfile',
         ]),
-        ...mapActions('chatDiscussion', ['loadRecentDiscussion', 'setDiscussionId', 'initiateChat', 'setDiscussionPermission', 'checkBlockUser']),
+        ...mapActions('chatDiscussion', ['loadRecentDiscussion', 'setDiscussionId', 'initiateChat', 'setDiscussionPermission', 'checkBlockUser','setAccessToBlockUser']),
         setIsLeftDrawerMiniWrap(mode) {
             if (!mode) {
                 this.isLeftDrawerMyCollab = true;
@@ -932,7 +932,11 @@ export default {
             return this.memberships ? this.memberships.map(v => ({ value: v.id, text: this.membershipSettingsDict[v.membership].name })) : [];
         },
         leftDrawerType() {
-            if (this.$route.path.includes("/dashboard/learn") || this.$route.path.includes("/learners")) return LEFT_DRAWER_TYPE.LEARN;
+            if (this.$route.path.includes("/dashboard/learn") || this.$route.path.includes("/learners")) {
+                this.setAccessToBlockUser(false)
+                return LEFT_DRAWER_TYPE.LEARN;
+            }
+            this.setAccessToBlockUser(true)
             return LEFT_DRAWER_TYPE.TEACH
         },
         isTeacherLeftDrawer() {

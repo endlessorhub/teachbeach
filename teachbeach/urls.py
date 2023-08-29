@@ -39,7 +39,7 @@ from main.views import (
     StripeCancelMembershipView, CsvMembersExportView, TeacherCancelPrivateEnrollmentView,
     VueEditorUploadFileView, FacebookSignUp, GoogleSocialAuthView, StudentMembershipView,
     DiscussionSetupView, DiscussionDetailView, DiscussionCommentView,
-    DiscussionAllListView, DiscussionChatAllowView, DiscussionBlockUserView
+    DiscussionAllListView, DiscussionChatAllowView, DiscussionBlockUserView, DiscussionCommentRemove
 )
 from . import views
 from .sitemaps import (
@@ -192,7 +192,7 @@ urlpatterns = [
     
     url(r'^api/discussion/block/$', DiscussionBlockUserView.as_view()), # DISc. User Block
     url(r'^api/discussion/chat-allowed/(\d*)/$', DiscussionChatAllowView.as_view()), # DISc. User Block
-
+    url(r'^api/comment/delete/(\d*)$', csrf_exempt(DiscussionCommentRemove.as_view())),
     url(r'^api/', include(router.urls)),
 ]
 

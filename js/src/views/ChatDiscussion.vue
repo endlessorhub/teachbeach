@@ -77,7 +77,7 @@
 
         </div> -->
 
-        <div class="ChatContainer-ChatGroup">
+        <div v-if="topComment && thumbnail" class="ChatContainer-ChatGroup">
                 <div class="ChatContainer-WelcomeTab">
                     <img :src="thumbnail" alt="" class="upload-image">
                     <div class="WelcomeTab-AdminModule">
@@ -87,11 +87,11 @@
                             <span>{{ datePipe(discussionCreated) }}</span>
                         </div>
                         <p v-if="topComment">{{ topComment.content }}</p>
-                        <div class="ChatContainer-Divider"></div>         
-                    <ChatReceiver v-if="topComment" :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
+                        <!-- <div class="ChatContainer-Divider"></div>          -->
+                    <!-- <ChatReceiver v-if="topComment" :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
                     <div v-for="reply in topComment.replies" :key="reply.id">
                     <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
-                    </div>
+                    </div> -->
                     </div>
                 </div>
                 
@@ -101,6 +101,12 @@
         <PostMessage :user="userInfo" @onEnter="sendDiscussion" />
 
 
+        <!-- <div class="ChatContainer-ChatGroup" v-if="topComment">
+        <ChatReceiver :message="topComment" @replyId="replyId" @sendReply="sendDiscussion"  @uploadImage="uploadImage" @updateLike="updateLike"/>
+        <div v-for="reply in topComment.replies" :key="reply.id">
+        <ChatSender  :reply="reply" :parentNode="topComment.id" @replyId="replyId" @sendReply="sendDiscussion" @uploadImage="uploadImage" @updateLike="updateLike"/>
+        </div>
+        </div> -->
         <!-- chat container where all the text messages displayed 
             =========== -->
 
