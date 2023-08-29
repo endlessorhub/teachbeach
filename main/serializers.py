@@ -90,7 +90,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('id', 'password', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'timezone', 'lat', 'lng', 'tz_address', 'class_id', 'memberships', 'membership', 'belongs_to', 'source', 'notes',
-                  "is_company_owner"
+                  "is_company_owner", "media"
                 )
 
 
@@ -159,7 +159,7 @@ class UserAllClassesSerializer(UserSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ('id', 'classes', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'source', 'notes', 'notes2', 'date_joined', 'managed_by', 'memberships')
+        fields = ('id', 'classes', 'first_name', 'last_name', 'email', 'phone', 'is_company', 'company_profile', 'source', 'notes', 'notes2', 'date_joined', 'managed_by', 'memberships', 'media')
 
 
 class UserShortSerializer(serializers.ModelSerializer):

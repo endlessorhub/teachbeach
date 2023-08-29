@@ -1,4 +1,5 @@
 import os
+import io
 from django.conf import settings
 from io import StringIO
 from html.parser import HTMLParser
@@ -10,6 +11,7 @@ from django.core.mail.message import (
     EmailMultiAlternatives,
 )
 from django.core.mail import get_connection
+import boto3
 
 def send_mail_reply_to(subject, message, from_email, recipient_list,
               fail_silently=False, auth_user=None, auth_password=None,
@@ -71,8 +73,22 @@ def save_thumbnail(image_file, size=300):
         ext = ext[1:]
     if not ext:
         ext = 'png'
-    image_path = os.path.join(settings.MEDIA_ROOT, file + ".thumbnail%s.%s" % (size, ext))
-    image.save(image_path)
+    if os.environ['FILE_UPLOAD_STORAGE'] == "s3":
+        region = os.environ['AWS_REGION']
+        key = os.environ['AWS_ACCESS_KEY_ID']
+        secret = os.environ['AWS_SECRET_ACCESS_KEY']
+        bucket = os.environ['AWS_S3_BUCKET']
+        in_mem_file = io.BytesIO()
+        format = ext
+        if format.lower() == 'jpg':
+            format = 'JPEG'
+        image.save(in_mem_file, format=format)
+        in_mem_file.seek(0)
+        s3_client = boto3.client('s3', region_name=region, aws_access_key_id=key, aws_secret_access_key=secret)
+        s3_client.upload_fileobj(in_mem_file, bucket, file + ".thumbnail%s.%s" % (size, ext))
+    else:
+        image_path = os.path.join(settings.MEDIA_ROOT, file + ".thumbnail%s.%s" % (size, ext))
+        image.save(image_path)
 
 
 def format_date_time(d, t):

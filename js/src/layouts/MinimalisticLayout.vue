@@ -4,212 +4,164 @@
             v-if="isLoggedIn && !hideNav" 
             :value="isLeftDrawerOpened" 
             :mini-variant="isLeftDrawerMini"
-            :width="220" 
-            class="left-drawer" 
+            :width="300" 
+            :class="{'left-drawer': true, 'is-expanded': !isLeftDrawerMini}" 
             absolute 
             clipped 
             app 
             @input="(v) => setIsLeftDrawerOpened(v)"
-            @update:mini-variant="(v) => setIsLeftDrawerMini(v)"
+            @update:mini-variant="(v) => setIsLeftDrawerMiniWrap(v)"
         >
-            <!--div class="menu-toggle-wrap">
-                <button class="menu-toggle" @click="isLeftDrawerMini = !isLeftDrawerMini">
-                <span class="material-icons double-arrow">
-                    keyboard_double_arrow_right
-                </span>
-                </button>
+            <div class="menu-toggle-wrap">
+                <v-btn flat icon class="menu-toggle" @click="setIsLeftDrawerMiniWrap(!isLeftDrawerMini)">
+                    <v-icon class="double-arrow">
+                        double_arrow
+                    </v-icon>
+                </v-btn>
             </div>
-            <div v-if="isTeacherLeftDrawer" class="menu">
-            <router-link to="/">
-              <div class="button" @click="toggleDropdown1">
-                <span class="material-icons"><img src="@/assets/leftaside/spin.svg" /></span>
-                <span class="text">My Collab</span>
-                <div class="dropdown-toggle-wrap">
-                  <button class="dropdown-toggle">
-                    <span class="material-icons double-arrow">
-                      keyboard_arrow_down
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <transition name="dropdown">
-                <div v-if="isDropdownVisible1" class="dropdown">
-                  <div class="dropdown-option">View
-                  </div>
-                  <div class="dropdown-option">Set up
-                  </div>
-                  <div class="dropdown-option">Edit hosts
-                  </div>
-                </div>
-              </transition>
-            </router-link>
-
-            <router-link to="/">
-              <div class="button" @click="toggleDropdown2">
-                <span class="material-icons"><img src="@/assets/leftaside/Membership.svg" /></span>
-                <span class="text">Members</span>
-                <div class="dropdown-toggle-wrap">
-                  <button class="dropdown-toggle">
-                    <span class="material-icons double-arrow">
-                      keyboard_arrow_down
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <transition name="dropdown">
-                <div v-if="isDropdownVisible2" class="dropdown">
-                  <div class="dropdown-option">View
-                  </div>
-                  <div class="dropdown-option">Sales
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                  <div class="dropdown-option">Directory
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                  <div class="dropdown-option">Upload
-                  </div>
-                </div>
-              </transition>
-            </router-link>
-
-            <router-link to="/">
-              <div class="button" @click="toggleDropdown3">
-                <span class="material-icons"><img src="@/assets/leftaside/Running_Man.svg" /></span>
-                <span class="text">Activites</span>
-                <div class="dropdown-toggle-wrap">
-                  <button class="dropdown-toggle">
-                    <span class="material-icons double-arrow">
-                      keyboard_arrow_down
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <transition name="dropdown">
-                <div v-if="isDropdownVisible3" class="dropdown">
-                  <div class="dropdown-option">View
-                  </div>
-                  <div class="dropdown-option">Events
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                  <div class="dropdown-option">Classes
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                  <div class="dropdown-option">Groups
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                  <div class="dropdown-option">Services
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                </div>
-              </transition>
-            </router-link>
-
-
-            <router-link to="/">
-              <div class="button" @click="toggleDropdown4">
-                <span class="material-icons"><img src="@/assets/leftaside/Discussion.svg" /></span>
-                <span class="text">Discussions</span>
-                <div class="dropdown-toggle-wrap">
-                  <button class="dropdown-toggle">
-                    <span class="material-icons double-arrow">
-                      keyboard_arrow_down
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <transition name="dropdown">
-                <div v-if="isDropdownVisible4" class="dropdown">
-                  <div class="dropdown-option">View
-                  </div>
-                  <div class="dropdown-option">Setup
-                    <span><img src="@/assets/leftaside/edit-pen.svg" /> </span>
-                  </div>
-                </div>
-              </transition>
-            </router-link>
-
-            <router-link to="/">
-              <div class="button" @click="toggleDropdown5">
-                <span class="material-icons"><img src="@/assets/leftaside/Directory.svg" /></span>
-                <span class="text">Manage</span>
-                <div class="dropdown-toggle-wrap">
-                  <button class="dropdown-toggle">
-                    <span class="material-icons double-arrow">
-                      keyboard_arrow_down
-                    </span>
-                  </button>
-                </div>
-              </div>
-
-              <transition name="dropdown">
-                <div v-if="isDropdownVisible5" class="dropdown">
-                  <div class="dropdown-option">CRM
-                  </div>
-                  <div class="dropdown-option">Reports
-                  </div>
-                  <div class="dropdown-option">Account
-                  </div>
-                </div>
-              </transition>
-            </router-link>
-
-            </div-->
-
-
             <v-list v-if="isTeacherLeftDrawer">
-                <v-list-tile>
-                    <v-list-tile-title>Dashboard</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/profile?main">
-                    <v-list-tile-title>Collab Set-up</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/profile/teachers/">
-                    <v-list-tile-title>Edit Hosts</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/membership-setup">
-                    <v-list-tile-title>Memberships</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/students_list">
-                    <v-list-tile-title>Directory</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile class="list-subitem" to="/dashboard/teach/membership-directory">
-                    <v-list-tile-title>Set-up</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/classes?activities">
-                    <v-list-tile-title>Activities</v-list-tile-title>
-                </v-list-tile>
+                <v-list-group
+                    prepend-icon="$vuetify.icons.aside_spin"
+                    v-model="isLeftDrawerMyCollab"
+                >
+                    <template v-slot:activator>
+                    <v-list-tile>
+                        <v-list-tile-title>My Collab</v-list-tile-title>
+                    </v-list-tile>
+                    </template>
+                    <v-list-tile exact to="/dashboard/teach/profile">
+                        <v-list-tile-title>View</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/profile?main">
+                        <v-list-tile-title>Set up</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/profile/teachers/">
+                        <v-list-tile-title>Edit hosts</v-list-tile-title>
+                    </v-list-tile>
+                </v-list-group>
 
-                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?events">
-                    <v-list-tile-title>Events</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?classes">
-                    <v-list-tile-title>Classes</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?groups">
-                    <v-list-tile-title>Groups</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile class="list-subitem" to="/dashboard/teach/classes?services">
-                    <v-list-tile-title>Services</v-list-tile-title>
-                </v-list-tile>
+                <v-list-group
+                    prepend-icon="$vuetify.icons.aside_membership"
+                    v-model="isLeftDrawerMember"
+                >
+                    <template v-slot:activator>
+                    <v-list-tile>
+                        <v-list-tile-title>Members</v-list-tile-title>
+                    </v-list-tile>
+                    </template>
+                    <v-list-tile exact to="/dashboard/teach/students_list">
+                        <v-list-tile-title>View</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/membership-setup">
+                        <v-list-tile-title>Sales</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/membership-directory">
+                        <v-list-tile-title>Directory</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile exact
+                        to="/dashboard/teach/membership-setup"
+                    >
+                        <v-list-tile-title>Upload</v-list-tile-title>
+                    </v-list-tile>
+                </v-list-group>
 
-                <v-list-tile v-if="isCompanyAdmin" to="/dashboard/teach/teacher-chat-setup">
-                    <v-list-tile-title>Chat Setup</v-list-tile-title>
-                </v-list-tile>
+                <v-list-group
+                    prepend-icon="$vuetify.icons.aside_running"
+                    v-model="isLeftDrawerActivity"
+                >
+                    <template v-slot:activator>
+                    <v-list-tile>
+                        <v-list-tile-title>Activities</v-list-tile-title>
+                    </v-list-tile>
+                    </template>
+                    <v-list-tile exact to="/dashboard/teach/classes?activities">
+                        <v-list-tile-title>View</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/classes?events">
+                        <v-list-tile-title>Events</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/classes?classes">
+                        <v-list-tile-title>Classes</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/classes?groups">
+                        <v-list-tile-title>Groups</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                    <v-list-tile exact to="/dashboard/teach/classes?services">
+                        <v-list-tile-title>Services</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                </v-list-group>
 
-                <v-list-tile @click="redirectToDiscussionPage()">
-                    <v-list-tile-title>Discussions</v-list-tile-title>
-                </v-list-tile>
+                <v-list-group
+                    prepend-icon="$vuetify.icons.aside_discussion"
+                    v-model="isLeftDrawerDiscussion"
+                >
+                    <template v-slot:activator>
+                    <v-list-tile>
+                        <v-list-tile-title>Discussions</v-list-tile-title>
+                    </v-list-tile>
+                    </template>
+                    <v-list-tile @click="redirectToDiscussionPage()">
+                        <v-list-tile-title>View</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile v-if="isCompanyAdmin" to="/dashboard/teach/teacher-chat-setup">
+                        <v-list-tile-title>Set up</v-list-tile-title>
+                        <v-list-tile-action>
+                            <v-btn icon ripple>
+                                <v-icon>$vuetify.icons.aside_edit</v-icon>
+                            </v-btn>
+                        </v-list-tile-action>
+                    </v-list-tile>
+                </v-list-group>
 
-                <v-list-tile to="/dashboard/teach/new_crm">
-                    <v-list-tile-title>CRM</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile to="/dashboard/teach/reports">
-                    <v-list-tile-title>Reports</v-list-tile-title>
-                </v-list-tile>
+                <v-list-group
+                    prepend-icon="$vuetify.icons.aside_directory"
+                    v-model="isLeftDrawerManage"
+                >
+                    <template v-slot:activator>
+                    <v-list-tile>
+                        <v-list-tile-title>Manage</v-list-tile-title>
+                    </v-list-tile>
+                    </template>
+                    <v-list-tile to="/dashboard/teach/new_crm">
+                        <v-list-tile-title>CRM</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile to="/dashboard/teach/reports">
+                        <v-list-tile-title>Reports</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile to="/dashboard/teach">
+                        <v-list-tile-title>Account</v-list-tile-title>
+                    </v-list-tile>
+                </v-list-group>
 
             </v-list>
             <v-list v-else>
@@ -556,6 +508,11 @@ export default {
             drawer: true,
             mini: false,
             // showDiscussion:true
+            isLeftDrawerMyCollab: true,
+            isLeftDrawerMember: false,
+            isLeftDrawerDiscussion: false,
+            isLeftDrawerActivity: false,
+            isLeftDrawerManage: false,
         }
     },
     created() {
@@ -633,6 +590,18 @@ export default {
             'loadBelongingCompanyProfile',
         ]),
         ...mapActions('chatDiscussion', ['loadRecentDiscussion', 'setDiscussionId', 'initiateChat', 'setDiscussionPermission', 'checkBlockUser','setAccessToBlockUser']),
+        setIsLeftDrawerMiniWrap(mode) {
+            if (!mode) {
+                this.isLeftDrawerMyCollab = true;
+                return this.setIsLeftDrawerMini(mode);
+            }
+            this.isLeftDrawerMyCollab = false;
+            this.isLeftDrawerActivity = false;
+            this.isLeftDrawerDiscussion = false;
+            this.isLeftDrawerManage = false;
+            this.isLeftDrawerMember = false;
+            this.setIsLeftDrawerMini(mode);
+        },
         resetPasswordFormOpen(open) {
             if (open) {
                 this.passwordResetForm = true;
@@ -820,11 +789,12 @@ export default {
                 //this.$store.dispatch('setInitialdata', res)
                 //this.user = this.$store.state.user
                 this.setLoginFormOpened(null)
-                if (this.savedRedirect) {
+                if (this.isTeacher) {
+                    this.$router.push('/dashboard/teach');
+                    this.setIsLeftDrawerMiniWrap(true);
+                } else if (this.savedRedirect) {
                     this.$router.push(this.savedRedirect)
                     this.savedRedirect = null
-                } else if (this.isTeacher) {
-                    this.$router.push('/dashboard/teach')
                 }
             }).catch(e => {
                 console.log(e)
@@ -1145,12 +1115,28 @@ export default {
 
 <style lang="scss">
 :root {
-  --primary: #337BDD;
-  --grey: #64748b;
-  --dark: #212529;
-  --dark-alt: #334155;
-  --light: #f1f5f9;
-  --sidebar-width: 300px;
+    --primary: #337BDD;
+    --grey: #64748b;
+    --dark: #212529;
+    --dark-alt: #334155;
+    --light: #f1f5f9;
+    --sidebar-width: 300px;
+
+    --vt-c-white: #ffffff;
+    --vt-c-white-soft: #f8f8f8;
+    --vt-c-white-mute: #f2f2f2;
+    --vt-c-black: #181818;
+    --vt-c-black-soft: #222222;
+    --vt-c-black-mute: #282828;
+    --vt-c-indigo: #2c3e50;
+    --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+    --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+    --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+    --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+    --vt-c-text-light-1: var(--vt-c-indigo);
+    --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+    --vt-c-text-dark-1: var(--vt-c-white);
+    --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 }
 
 #app {
@@ -1176,41 +1162,82 @@ export default {
     }
 
     .left-drawer {
-        width: 156px;
         display: flex;
         flex-flow: column;
-        background-color: #434343;
+        height: fit-content;
+        overflow: hidden;
+        background-color: var(--light);
+        color: var(--dark);
+        border-radius: 0 30px 30px 0;
+        box-shadow: -3px -1px 14px #4a4a4a;
+        transition: 0.2s ease-out;
 
-        .v-list__tile__title {
-            color: #ffffff;
-            margin-right: 40px;
-            height: 32px;
+        &.is-expanded {
+            width: var(--sidebar-width);
+
+            .menu-toggle {
+                transform: rotate(-180deg);
+                color: var(--dark);
+            }
         }
-    }
 
-    .left-drawer {
-        width: 156px;
-        display: flex;
-        flex-flow: column;
-        background-color: #434343;
+        .menu-toggle-wrap {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+            transition: 0.2s ease-out;
+
+            .menu-toggle {
+                transition: 0.2s ease-out;
+
+                .material-icons {
+                    font-size: 2rem;
+                    color: var(--vt-c-white);
+                    transition: 0.2s ease-out;
+                }
+
+                .material-icons.double-arrow {
+                    color: black;
+                }
+
+                &:hover {
+                    .material-icons {
+                        color: var(--primary);
+                        transform: translate(0.5rem);
+                    }
+                }
+            }
+        }
+        .v-list__group__items > div {
+            background-color: var(--vt-c-white);
+            padding-left: 2em;
+            &:hover {
+              background-color: var(--dark-alt);
+              color: var(--vt-c-white);
+              .v-list__tile__title {
+                color: var(--vt-c-white);
+              }
+            }
+
+            &:hover .v-btn__content svg {
+              filter: invert(1);
+            }
+        }
 
         .v-list__tile__title {
-            color: #ffffff;
-            font-size: 18px;
+            color: var(--dark);
+            font-size: 24px;
+            line-height: 28px;
+            height: 32px;
+
+            .v-list__tile__action {
+                min-width: auto;
+            }
         }
 
         .collapse-drawer-container {
             text-align: end;
             padding-right: 15px;
-        }
-
-        .v-list__tile--active {
-            background: #F5F5F5;
-
-            .v-list__tile__title {
-                color: #262626;
-                font-weight: bold;
-            }
         }
 
         .list-subitem {
@@ -1251,70 +1278,5 @@ export default {
     top: 5px;
     left: 309px;
     cursor: pointer;
-}
-
-.aside {
-    top: 0;
-    // position: relative;
-    position: sticky;
-    display: flex;
-    flex-direction: column;
-    width: calc(2rem + 2rem);
-    // min-height: 100vh;
-    height: fit-content;
-    overflow: hidden;
-    background-color: var(--light);
-    color: var(--dark);
-    border-radius: 0 30px 30px 0;
-    box-shadow: -3px -1px 14px #4a4a4a;
-    transition: 0.2s ease-out;
-
-    .logo {
-        margin-bottom: 1rem;
-        text-align: center;
-        padding: 24px;
-        background-color: var(--vt-c-white);
-
-        img {
-            width: 100%;
-            max-width: 160px;
-        }
-    }
-
-    .menu-heading {
-        display: none;
-    }
-
-    .menu-toggle-wrap {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 1rem;
-
-        position: absolute;
-        top: 0;
-        right: 6px;
-        transition: 0.2s ease-out;
-
-        .menu-toggle {
-            transition: 0.2s ease-out;
-
-            .material-icons {
-            font-size: 2rem;
-            color: var(--vt-c-white);
-            transition: 0.2s ease-out;
-            }
-
-            .material-icons.double-arrow {
-            color: black;
-            }
-
-            &:hover {
-            .material-icons {
-                color: var(--primary);
-                transform: translate(0.5rem);
-            }
-            }
-        }
-    }
 }
 </style>
