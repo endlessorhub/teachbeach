@@ -44,6 +44,12 @@ class User(AbstractUser):
     # text field requested for bulk upload
     notes2 = models.TextField(null=True, blank=True)
     auth_provider = models.CharField(max_length=100, default='email')
+    media = models.FileField(upload_to='uploads/', null=True, blank=True)
+
+    def save_thumbnail(self):
+        if self.media:
+            save_thumbnail(self.media)
+    
     def __str__(self):
         name = ''
         if self.first_name:

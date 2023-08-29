@@ -4725,7 +4725,19 @@ class StudentMembershipView(APIView):
             request.user.email = request.data.get('email')
         if membershipSetting.isPhoneAllowed:
             request.user.phone = request.data.get('phone')
-        request.user.save()
+        if request.data.get('avatar') and request.data.get('avatar')['uploadPhoto']['imageUrl'] and request.data.get('avatar')['uploadPhoto']['imageUrl'].startswith('data:'):
+            imgstr = request.data['avatar']['uploadPhoto']['imageUrl']
+            imgname = request.data['avatar']['uploadPhoto']['imageName']
+
+            _, imgstr = imgstr.split(';base64,')
+            name = '%s-%s' % (uuid.uuid1(), imgname)
+            fdata = ContentFile(base64.b64decode(imgstr), name=name)
+            request.user.media = fdata
+            # for debug only:
+            request.user.save()
+            request.user.save_thumbnail()
+        else:
+            request.user.save()
         if membershipSetting.isAboutAllowed:
             membership.description = request.data.get('description')
         if membershipSetting.isTitleAllowed:
