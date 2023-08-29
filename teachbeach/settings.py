@@ -186,6 +186,7 @@ if FILE_UPLOAD_STORAGE == "s3":
     AWS_S3_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_S3_BUCKET")
     AWS_S3_REGION_NAME = os.environ.get("AWS_REGION")
+    AWS_QUERYSTRING_AUTH = False
     
 
 if DEBUG:

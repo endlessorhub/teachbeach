@@ -1,165 +1,190 @@
 <template>
     <div class="client-profile-container">
         <v-layout v-if="currentMembership && currentMembershipSetting" class="client-profile-layout" align-start justify-start row wrap>
-            <v-flex xs12 class="text-xs-center" >
+            <v-flex xs12 class="text-xs-center title-container">
                 <div class="title">Profile Set-Up</div>
-            </v-flex>
-            
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">First Name</div>
-                <v-text-field
-                    v-model="firstName"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="firstNameErrors"
-                    @input="$v.firstName.$touch()"
-                    @blur="$v.firstName.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Last Name</div>
-                <v-text-field
-                    v-model="lastName"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="lastNameErrors"
-                    @input="$v.lastName.$touch()"
-                    @blur="$v.lastName.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex v-if="currentMembershipSetting.isEmailAllowed" xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Email Address</div>
-                <v-text-field
-                    v-model="email"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="emailErrors"
-                    @input="$v.email.$touch()"
-                    @blur="$v.email.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex v-if="currentMembershipSetting.isPhoneAllowed" xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Phone Number</div>
-                <v-text-field
-                    v-model="phone"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="phoneErrors"
-                    @input="$v.phone.$touch()"
-                    @blur="$v.phone.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex v-if="currentMembershipSetting.isUploadAllowed" xs12 md3 class="text-xs-left">
-                <div class="field-title">Main image</div>
-                <image-upload-crop
-                    :imageUrl="imageUrl"
-                    :imageName="imageName"
-                    :imageFile="imageFile"
-                    width="100%"
-                    :aspectRatio="1.25"
-                    @change="onFileChanged"
-                />
-            </v-flex>
-            <v-flex v-if="currentMembershipSetting.isAboutAllowed" xs12 md9 class="text-xs-left" >
-                <div class="field-title">About me</div>
-                <v-textarea
-                    v-model.trim="description"
-                    class="text__collab-design"
-                    auto-grow
-                    outline
-                    rows="5"
-                ></v-textarea>
-            </v-flex>
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Title</div>
-                <v-text-field
-                    v-model="title"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="titleErrors"
-                    @input="$v.title.$touch()"
-                    @blur="$v.title.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">City</div>
-                <v-text-field
-                    v-model="city"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="cityErrors"
-                    @input="$v.city.$touch()"
-                    @blur="$v.city.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Document</div>
-                <v-text-field
-                    v-model="document"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="documentErrors"
-                    @input="$v.document.$touch()"
-                    @blur="$v.document.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Social</div>
-                <v-text-field
-                    v-model="social"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="socialErrors"
-                    @input="$v.social.$touch()"
-                    @blur="$v.social.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex v-if="currentMembershipSetting.isProjectsAllowed" xs12 md6 lg3 class="text-xs-left">
-                <div class="field-title">Website</div>
-                <v-text-field
-                    v-model="website"
-                    class="text__collab-design"
-                    outline
-                    :error-messages="websiteErrors"
-                    @input="$v.website.$touch()"
-                    @blur="$v.website.$touch()"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md9 class="text-xs-left" >
-                <div class="field-title multifield-title">Select all that apply</div>
-                <div class="select-container">
-                    <div class="select-in-row">
-                        <div class="field-title">Interests</div>
-                        <v-select
-                            v-model="interest"
-                            :items="interests"
-                            class="select__collab-design"
-                            outline
-                        ></v-select>
-                    </div>
-                    <div class="select-in-row">
-                        <div class="field-title">Skills</div>
-                        <v-select
-                            v-model="skill"
-                            :items="skills"
-                            class="select__collab-design"
-                            outline
-                        ></v-select>
-                    </div>
-                    <div class="select-in-row">
-                        <div class="field-title">Levels</div>
-                        <v-select
-                            v-model="level"
-                            :items="levels"
-                            class="select__collab-design"
-                            outline
-                        ></v-select>
-                    </div>
+                <div class="preview-btn">
+                    <v-btn class="button__collab-design--dark" @click="preview" :loading="isLoading" :disabled="isLoading">{{ isPreview ? "Back to edit" : "Preview" }}</v-btn>
                 </div>
             </v-flex>
-            <v-flex xs12 class="text-xs-center" >
-                <v-btn class="button__collab-design--dark" @click="submit" :loading="isLoading" :disabled="isLoading">Save</v-btn>
-            </v-flex>
+            <template v-if="isPreview">
+                <StudentListItem
+                    :id="id"
+                    :isMember="isMember"
+                    :isRegistered="isRegistered"
+                    :email="email"
+                    :first_name="firstName"
+                    :last_name="lastName"
+                    :phone="phone"
+                    :media="imageUrl"
+                    :title="currentMembershipSetting.title"
+                    :city="currentMembershipSetting.city"
+                    :document="currentMembershipSetting.document"
+                    :social="currentMembershipSetting.social"
+                    :website="currentMembershipSetting.website"
+                    :description="currentMembershipSetting.description"
+                    :level="currentMembershipSetting.level"
+                    :skill="currentMembershipSetting.skill"
+                    :interest="currentMembershipSetting.interest"
+                ></StudentListItem>
+            </template>
+            <template v-else>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">First Name</div>
+                    <v-text-field
+                        v-model="firstName"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="firstNameErrors"
+                        @input="$v.firstName.$touch()"
+                        @blur="$v.firstName.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Last Name</div>
+                    <v-text-field
+                        v-model="lastName"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="lastNameErrors"
+                        @input="$v.lastName.$touch()"
+                        @blur="$v.lastName.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex v-if="currentMembershipSetting.isEmailAllowed" xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Email Address</div>
+                    <v-text-field
+                        v-model="email"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="emailErrors"
+                        @input="$v.email.$touch()"
+                        @blur="$v.email.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex v-if="currentMembershipSetting.isPhoneAllowed" xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Phone Number</div>
+                    <v-text-field
+                        v-model="phone"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="phoneErrors"
+                        @input="$v.phone.$touch()"
+                        @blur="$v.phone.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex v-if="currentMembershipSetting.isUploadAllowed" xs12 md3 class="text-xs-left">
+                    <div class="field-title">Main image</div>
+                    <image-upload-crop
+                        :imageUrl="imageUrl"
+                        :imageName="imageName"
+                        :imageFile="imageFile"
+                        width="100%"
+                        :aspectRatio="1.25"
+                        @change="onFileChanged"
+                    />
+                </v-flex>
+                <v-flex v-if="currentMembershipSetting.isAboutAllowed" xs12 md9 class="text-xs-left" >
+                    <div class="field-title">About me</div>
+                    <v-textarea
+                        v-model.trim="description"
+                        class="text__collab-design"
+                        auto-grow
+                        outline
+                        rows="5"
+                    ></v-textarea>
+                </v-flex>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Title</div>
+                    <v-text-field
+                        v-model="title"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="titleErrors"
+                        @input="$v.title.$touch()"
+                        @blur="$v.title.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">City</div>
+                    <v-text-field
+                        v-model="city"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="cityErrors"
+                        @input="$v.city.$touch()"
+                        @blur="$v.city.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Document</div>
+                    <v-text-field
+                        v-model="document"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="documentErrors"
+                        @input="$v.document.$touch()"
+                        @blur="$v.document.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Social</div>
+                    <v-text-field
+                        v-model="social"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="socialErrors"
+                        @input="$v.social.$touch()"
+                        @blur="$v.social.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex v-if="currentMembershipSetting.isProjectsAllowed" xs12 md6 lg3 class="text-xs-left">
+                    <div class="field-title">Website</div>
+                    <v-text-field
+                        v-model="website"
+                        class="text__collab-design"
+                        outline
+                        :error-messages="websiteErrors"
+                        @input="$v.website.$touch()"
+                        @blur="$v.website.$touch()"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs12 md9 class="text-xs-left" >
+                    <div class="field-title multifield-title">Select all that apply</div>
+                    <div class="select-container">
+                        <div class="select-in-row">
+                            <div class="field-title">Interests</div>
+                            <v-select
+                                v-model="interest"
+                                :items="interests"
+                                class="select__collab-design"
+                                outline
+                            ></v-select>
+                        </div>
+                        <div class="select-in-row">
+                            <div class="field-title">Skills</div>
+                            <v-select
+                                v-model="skill"
+                                :items="skills"
+                                class="select__collab-design"
+                                outline
+                            ></v-select>
+                        </div>
+                        <div class="select-in-row">
+                            <div class="field-title">Levels</div>
+                            <v-select
+                                v-model="level"
+                                :items="levels"
+                                class="select__collab-design"
+                                outline
+                            ></v-select>
+                        </div>
+                    </div>
+                </v-flex>
+                <v-flex xs12 class="text-xs-center" >
+                    <v-btn class="button__collab-design--dark" @click="submit" :loading="isLoading" :disabled="isLoading">Save</v-btn>
+                </v-flex>
+            </template>
         </v-layout>
         <v-progress-circular v-else-if="isLoading"></v-progress-circular>
         <div v-else></div>
@@ -174,6 +199,7 @@ import { validationMixin } from 'vuelidate'
 import { numeric, required, url, maxLength, email } from 'vuelidate/lib/validators'
 import ImageUploadCrop from '@/components/basic/ImageUploadCrop'
 import UploadPopup from '@/components/basic/UploadPopup'
+import StudentListItem from '@/components/Dashboard/Teach/Components/StudentListItem'
 
 export default {
     name: 'LearnerProfile',
@@ -192,6 +218,7 @@ export default {
     components: {
         ImageUploadCrop,
         UploadPopup,
+        StudentListItem,
     },
     data: () => ({
         firstName: '',
@@ -213,6 +240,7 @@ export default {
         crop: {},
         memberships: [],
         selectedMembership: null,
+        isPreview: false,
     }),
     created() {
         this.reload()
@@ -220,6 +248,7 @@ export default {
         this.lastName = this.user.last_name;
         this.phone = this.user.phone;
         this.email = this.user.email;
+        this.imageUrl = this.user.media;
     },
     computed: {
         ...mapGetters('learnerMembership', [
@@ -350,6 +379,9 @@ export default {
         reload() {
             this.loadMemberships();
         },
+        preview() {
+            this.isPreview = !this.isPreview;
+        },
         submit () {
             this.$v.$touch()
             console.log('submit')
@@ -371,6 +403,15 @@ export default {
                 skill: this.skill,
                 interest: this.interest,
             };
+            if (this.crop.canvas) {
+                data.avatar = {
+                    uploadPhoto: {
+                        imageName: this.imageName,
+                        imageUrl: this.crop.canvas ? this.crop.canvas.toDataURL() : '',
+                        imageFile: this.imageFile,
+                    },
+                }
+            }
             this.saveMembership(data).then(() => {
                 const user = {...this.user};
                 user.first_name = data.firstName;
@@ -439,5 +480,10 @@ export default {
         margin-top: -1em;
         margin-bottom: 1em;
     }
+}
+.title-container {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
 }
 </style>

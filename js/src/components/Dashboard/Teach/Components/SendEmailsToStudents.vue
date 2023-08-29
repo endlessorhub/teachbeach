@@ -32,6 +32,10 @@ export default {
         'studentFilter': {
             type: String,
             default: 'students',
+        },
+        'students': {
+            type: Array,
+            default: [],
         }
     },
     computed: {
@@ -43,7 +47,11 @@ export default {
                 return this.sendEmailsFormClose()
             }
             this.sendEmailsFormLoading = true
-            axios.post('/api/teacher_students_email/', {text: this.sendEmailsFormText, filter: this.studentFilter}).then(res => {
+            axios.post('/api/teacher_students_email/', {
+                text: this.sendEmailsFormText, 
+                filter: this.studentFilter,
+                students: this.students,
+            }).then(res => {
                 if(res.data.success) {
                     this.sendEmailsFormSent = true
                 } else {

@@ -64,7 +64,7 @@
                 >Start DM</v-btn>
             </div>
         </div>
-        <div class="student-list-item__bottom">
+        <div v-if="description" class="student-list-item__bottom">
             <div class="student-list-item__bottom-title">About me:</div>
             <div ref="descrOuter" :class="{ 'student-list-item__bottom-text': true, expanded: isExpanded }">
                 <div ref="descrInner" class="description-wrapper">{{ description }}</div>
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-
+import helperClass from '@/lib/helpers/Class'
 
 export default {
     name: 'dashboard_teach_student_list_item',
@@ -95,15 +95,12 @@ export default {
         'orders', 'cost', 'city', 'document', 'social', 'website', 'description', 'level',
         'skill', 'interest',
     ],
-    components: {
-        
-    },
     created() {
         
     },
     computed: {
         avatarStyle() {
-            return this.media ? `background: url(${this.media}), lightgray 50% / cover no-repeat` : '';
+            return this.media ? `background: url(${helperClass.previewImageSrc(this.media)}), lightgray 50% / contain no-repeat` : '';
         },
     },
     methods: {
@@ -120,7 +117,8 @@ export default {
             immediate: true,
             handler(v) {
                 this.$nextTick(() => {
-                    console.log(this.$refs.descrInner, this.$refs.descrOuter);
+                    if (!this.$refs.descrInner || !this.$refs.descrOuter) return;
+                    // console.log(this.$refs.descrInner, this.$refs.descrOuter);
                     if (this.$refs.descrInner.clientHeight > this.$refs.descrOuter.clientHeight) {
                         this.isExpandAvailable = true;
                     } else this.isExpandAvailable = false;
@@ -163,6 +161,7 @@ export default {
         flex-direction: column;
         align-items: flex-start;
         gap: 11.529px;
+        aspect-ratio: 1;
     }
     &__top-content-left-text {
         display: flex;
